@@ -1,11 +1,15 @@
-# Run this as follows: 'docker compose up'  (keep running in terminal session, exist via [STRG] + [C]) 
-#                   or 'docker compose up -d' (keep running in background)
-version: "3"
 services:
   synctube:
-     build: .
-    #image: synctube
-     ports:
-       - "4200:4200"
-     volumes:
-       - "${PWD}/user:/usr/src/app/user"
+    build: .
+    container_name: SyncTube
+    user: 99:100
+    # ports:
+      # - :4200/tcp
+    networks:
+      - proxy
+    volumes:
+      - /mnt/user/appdata/SyncTube:/usr/src/app/user
+
+networks:
+  proxy:
+    external: true
