@@ -5,7 +5,10 @@ import js.Browser.document;
 import js.Browser.navigator;
 import js.Browser.window;
 import js.html.Element;
+import js.html.FileReader;
 import js.html.URL;
+import js.html.audio.AudioContext;
+import js.lib.ArrayBuffer;
 
 class Utils {
 	public static function nativeTrace(msg:Dynamic, ?infos:haxe.PosInfos):Void {
@@ -26,6 +29,16 @@ class Utils {
 			|| (~/^Mac/.match(navigator.platform) && navigator.maxTouchPoints > 4);
 	}
 
+	public static var isMacSafari = _isMacSafari();
+
+	static function _isMacSafari():Bool {
+		final isMac = navigator.userAgent.contains("Macintosh");
+		final isSafari = navigator.userAgent.contains("Safari")
+			&& !navigator.userAgent.contains("Chrom")
+			&& !navigator.userAgent.contains("Edg");
+		return isMac && isSafari;
+	}
+
 	public static function isAndroid():Bool {
 		final ua = navigator.userAgent.toLowerCase();
 		return ua.indexOf("android") > -1;
@@ -37,9 +50,11 @@ class Utils {
 		return wrapper.firstElementChild;
 	}
 
-	public static function prepend(parent:Element, child:Element):Void {
-		if (parent.firstChild == null) parent.appendChild(child);
-		else parent.insertBefore(child, parent.firstChild);
+	public static function outerHeight(el:Element):Float {
+		final style = window.getComputedStyle(el);
+		return (el.getBoundingClientRect().height
+			+ Std.parseFloat(style.marginTop)
+			+ Std.parseFloat(style.marginBottom));
 	}
 
 	public static function insertAtIndex(parent:Element, child:Element, i:Int) {
@@ -66,8 +81,6 @@ class Utils {
 		final el2:Dynamic = el;
 		if (el.requestFullscreen != null) {
 			el.requestFullscreen();
-		} else if (el2.mozRequestFullScreen != null) {
-			el2.mozRequestFullScreen();
 		} else if (el2.webkitRequestFullscreen != null) {
 			el2.webkitRequestFullscreen(untyped Element.ALLOW_KEYBOARD_INPUT);
 		} else return false;
@@ -77,7 +90,6 @@ class Utils {
 	public static function cancelFullscreen(el:Element):Void {
 		final doc:Dynamic = document;
 		if (doc.cancelFullScreen != null) doc.cancelFullScreen();
-		else if (doc.mozCancelFullScreen != null) doc.mozCancelFullScreen();
 		else if (doc.webkitCancelFullScreen != null) doc.webkitCancelFullScreen();
 	}
 
@@ -118,25 +130,51 @@ class Utils {
 		#end
 	}
 
+	public static function browseFile(
+		onFileLoad:(buffer:ArrayBuffer, name:String) -> Void
+	):Void {
+		browseFileImpl(onFileLoad, true, false);
+	}
+
 	public static function browseFileUrl(
 		onFileLoad:(url:String, name:String) -> Void,
-		isBinary = true,
 		revoke = false
 	):Void {
-		final input = document.createElement("input");
+		browseFileImpl(onFileLoad, false, revoke);
+	}
+
+	static function browseFileImpl(
+		onFileLoad:(data:Dynamic, name:String) -> Void,
+		isBinary:Bool,
+		revokeAfterLoad:Bool
+	):Void {
+		final input = document.createInputElement();
 		input.style.visibility = "hidden";
-		input.setAttribute("type", "file");
+		input.type = "file";
 		input.id = "browse";
-		input.onclick = function(e) {
+		input.onclick = e -> {
 			e.cancelBubble = true;
 			e.stopPropagation();
 		}
-		input.onchange = function() {
-			final file:Dynamic = (input : Dynamic).files[0];
-			final url = URL.createObjectURL(file);
-			onFileLoad(url, file.name);
-			document.body.removeChild(input);
-			if (revoke) URL.revokeObjectURL(url);
+		input.onchange = e -> {
+			final file = input.files[0] ?? return;
+			if (!isBinary) {
+				final url = URL.createObjectURL(file);
+				onFileLoad(url, file.name);
+				document.body.removeChild(input);
+				if (revokeAfterLoad) URL.revokeObjectURL(url);
+				return;
+			}
+			final reader = new FileReader();
+			reader.onload = e -> {
+				final result:ArrayBuffer = reader.result;
+				onFileLoad(result, file.name);
+				document.body.removeChild(input);
+			}
+			reader.onerror = e -> {
+				document.body.removeChild(input);
+			}
+			reader.readAsArrayBuffer(file);
 		}
 		document.body.appendChild(input);
 		input.click();
@@ -147,10 +185,10 @@ class Utils {
 			type: mime
 		});
 		final url = URL.createObjectURL(blob);
-		final a = document.createElement("a");
-		untyped a.download = name;
-		untyped a.href = url;
-		a.onclick = function(e) {
+		final a = document.createAnchorElement();
+		a.download = name;
+		a.href = url;
+		a.onclick = e -> {
 			e.cancelBubble = true;
 			e.stopPropagation();
 		}
@@ -158,5 +196,20 @@ class Utils {
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
+	}
+
+	public static function createResizeObserver(callback:(entries:Array<Dynamic>) -> Void):Null<{
+		observe:(el:Element) -> Void
+	}> {
+		return null;
+		final window = js.Browser.window;
+		final observer = (window : Dynamic).ResizeObserver ?? return null;
+		return js.Syntax.code("new ResizeObserver({0})", callback);
+	}
+
+	public static function createAudioContext():Null<AudioContext> {
+		final w:Dynamic = js.Browser.window;
+		final ctx = w.AudioContext ?? w.webkitAudioContext ?? return null;
+		return js.Syntax.code("new {0}()", ctx);
 	}
 }

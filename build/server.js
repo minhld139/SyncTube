@@ -523,7 +523,7 @@ JsonParser_$1.__name__ = true;
 JsonParser_$1.__super__ = json2object_reader_BaseParser;
 JsonParser_$1.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ ?updatePlaylist : Null<{ videoList : Array<VideoItem> }>, ?updateClients : Null<{ clients : Array<ClientData> }>, type : WsEventType, ?togglePlaylistLock : Null<{ isOpen : Bool }>, ?toggleItemType : Null<{ pos : Int }>, ?skipVideo : Null<{ url : String }>, ?setTime : Null<{ time : Float }>, ?setRate : Null<{ rate : Float }>, ?setNextItem : Null<{ pos : Int }>, ?setLeader : Null<{ clientName : String }>, ?serverMessage : Null<{ textId : String }>, ?rewind : Null<{ time : Float }>, ?removeVideo : Null<{ url : String }>, ?playItem : Null<{ pos : Int }>, ?play : Null<{ time : Float }>, ?pause : Null<{ time : Float }>, ?message : Null<{ text : String, clientName : String }>, ?logout : Null<{ oldClientName : String, clients : Array<ClientData>, clientName : String }>, ?login : Null<{ ?passHash : Null<String>, ?isUnknownClient : Null<Bool>, ?clients : Null<Array<ClientData>>, clientName : String }>, ?kickClient : Null<{ name : String }>, ?getYoutubeVideoInfo : Null<{ url : String, ?response : Null<utils.YouTubeVideoInfo> }>, ?getTime : Null<{ time : Float, ?rate : Null<Float>, ?paused : Null<Bool> }>, ?dump : Null<{ data : String }>, ?connected : Null<{ videoList : Array<VideoItem>, uuid : String, itemPos : Int, isUnknownClient : Bool, isPlaylistOpen : Bool, history : Array<Message>, globalIp : String, config : Config, clients : Array<ClientData>, clientName : String }>, ?banClient : Null<{ time : Float, name : String }>, ?addVideo : Null<{ item : VideoItem, atEnd : Bool }> }",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ ?updatePlaylist : Null<{ videoList : Array<VideoItem> }>, ?updateClients : Null<{ clients : Array<ClientData> }>, type : WsEventType, ?togglePlaylistLock : Null<{ isOpen : Bool }>, ?toggleItemType : Null<{ pos : Int }>, ?skipVideo : Null<{ url : String }>, ?setTime : Null<{ time : Float }>, ?setRate : Null<{ rate : Float }>, ?setNextItem : Null<{ pos : Int }>, ?setLeader : Null<{ clientName : String }>, ?serverMessage : Null<{ textId : String }>, ?rewind : Null<{ time : Float }>, ?removeVideo : Null<{ url : String }>, ?progress : Null<{ type : ProgressType, ratio : Float, ?data : Null<String> }>, ?playItem : Null<{ pos : Int }>, ?play : Null<{ time : Float }>, ?pause : Null<{ time : Float }>, ?message : Null<{ text : String, clientName : String }>, ?logout : Null<{ oldClientName : String, clients : Array<ClientData>, clientName : String }>, ?login : Null<{ ?passHash : Null<String>, ?isUnknownClient : Null<Bool>, ?clients : Null<Array<ClientData>>, clientName : String }>, ?kickClient : Null<{ name : String }>, ?getTime : Null<GetTimeEvent>, ?dump : Null<{ data : String }>, ?connected : Null<{ videoList : Array<VideoItem>, uuid : String, playersCacheSupport : Array<PlayerType>, itemPos : Int, isUnknownClient : Bool, isPlaylistOpen : Bool, history : Array<Message>, globalIp : String, config : Config, clients : Array<ClientData>, clientName : String }>, ?banClient : Null<{ time : Float, name : String }>, ?addVideo : Null<{ item : VideoItem, atEnd : Bool }> }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
 	,loadJsonNull: function(pos,variable) {
@@ -531,7 +531,7 @@ JsonParser_$1.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	}
 	,loadJsonObject: function(o,pos,variable) {
 		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["addVideo","banClient","connected","dump","getTime","getYoutubeVideoInfo","kickClient","login","logout","message","pause","play","playItem","removeVideo","rewind","serverMessage","setLeader","setNextItem","setRate","setTime","skipVideo","toggleItemType","togglePlaylistLock","type","updateClients","updatePlaylist"],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,true]);
+		this.objectSetupAssign(assigned,["addVideo","banClient","connected","dump","getTime","kickClient","login","logout","message","pause","play","playItem","progress","removeVideo","rewind","serverMessage","setLeader","setNextItem","setRate","setTime","skipVideo","toggleItemType","togglePlaylistLock","type","updateClients","updatePlaylist"],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,true]);
 		this.value = this.getAuto();
 		var _g = 0;
 		while(_g < o.length) {
@@ -551,70 +551,70 @@ JsonParser_$1.prototype = $extend(json2object_reader_BaseParser.prototype,{
 				this.value.dump = this.loadObjectField(($_=new JsonParser_$9(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"dump",assigned,this.value.dump,pos);
 				break;
 			case "getTime":
-				this.value.getTime = this.loadObjectField(($_=new JsonParser_$11(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"getTime",assigned,this.value.getTime,pos);
-				break;
-			case "getYoutubeVideoInfo":
-				this.value.getYoutubeVideoInfo = this.loadObjectField(($_=new JsonParser_$13(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"getYoutubeVideoInfo",assigned,this.value.getYoutubeVideoInfo,pos);
+				this.value.getTime = this.loadObjectField(($_=new JsonParser_$12(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"getTime",assigned,this.value.getTime,pos);
 				break;
 			case "kickClient":
-				this.value.kickClient = this.loadObjectField(($_=new JsonParser_$15(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"kickClient",assigned,this.value.kickClient,pos);
+				this.value.kickClient = this.loadObjectField(($_=new JsonParser_$14(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"kickClient",assigned,this.value.kickClient,pos);
 				break;
 			case "login":
-				this.value.login = this.loadObjectField(($_=new JsonParser_$17(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"login",assigned,this.value.login,pos);
+				this.value.login = this.loadObjectField(($_=new JsonParser_$16(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"login",assigned,this.value.login,pos);
 				break;
 			case "logout":
-				this.value.logout = this.loadObjectField(($_=new JsonParser_$19(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"logout",assigned,this.value.logout,pos);
+				this.value.logout = this.loadObjectField(($_=new JsonParser_$18(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"logout",assigned,this.value.logout,pos);
 				break;
 			case "message":
-				this.value.message = this.loadObjectField(($_=new JsonParser_$21(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"message",assigned,this.value.message,pos);
+				this.value.message = this.loadObjectField(($_=new JsonParser_$20(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"message",assigned,this.value.message,pos);
 				break;
 			case "pause":
-				this.value.pause = this.loadObjectField(($_=new JsonParser_$23(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"pause",assigned,this.value.pause,pos);
+				this.value.pause = this.loadObjectField(($_=new JsonParser_$22(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"pause",assigned,this.value.pause,pos);
 				break;
 			case "play":
-				this.value.play = this.loadObjectField(($_=new JsonParser_$23(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"play",assigned,this.value.play,pos);
+				this.value.play = this.loadObjectField(($_=new JsonParser_$22(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"play",assigned,this.value.play,pos);
 				break;
 			case "playItem":
-				this.value.playItem = this.loadObjectField(($_=new JsonParser_$25(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"playItem",assigned,this.value.playItem,pos);
+				this.value.playItem = this.loadObjectField(($_=new JsonParser_$24(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"playItem",assigned,this.value.playItem,pos);
+				break;
+			case "progress":
+				this.value.progress = this.loadObjectField(($_=new JsonParser_$26(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"progress",assigned,this.value.progress,pos);
 				break;
 			case "removeVideo":
-				this.value.removeVideo = this.loadObjectField(($_=new JsonParser_$27(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"removeVideo",assigned,this.value.removeVideo,pos);
+				this.value.removeVideo = this.loadObjectField(($_=new JsonParser_$28(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"removeVideo",assigned,this.value.removeVideo,pos);
 				break;
 			case "rewind":
-				this.value.rewind = this.loadObjectField(($_=new JsonParser_$23(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"rewind",assigned,this.value.rewind,pos);
+				this.value.rewind = this.loadObjectField(($_=new JsonParser_$22(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"rewind",assigned,this.value.rewind,pos);
 				break;
 			case "serverMessage":
-				this.value.serverMessage = this.loadObjectField(($_=new JsonParser_$29(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"serverMessage",assigned,this.value.serverMessage,pos);
+				this.value.serverMessage = this.loadObjectField(($_=new JsonParser_$30(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"serverMessage",assigned,this.value.serverMessage,pos);
 				break;
 			case "setLeader":
-				this.value.setLeader = this.loadObjectField(($_=new JsonParser_$31(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"setLeader",assigned,this.value.setLeader,pos);
+				this.value.setLeader = this.loadObjectField(($_=new JsonParser_$32(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"setLeader",assigned,this.value.setLeader,pos);
 				break;
 			case "setNextItem":
-				this.value.setNextItem = this.loadObjectField(($_=new JsonParser_$25(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"setNextItem",assigned,this.value.setNextItem,pos);
+				this.value.setNextItem = this.loadObjectField(($_=new JsonParser_$24(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"setNextItem",assigned,this.value.setNextItem,pos);
 				break;
 			case "setRate":
-				this.value.setRate = this.loadObjectField(($_=new JsonParser_$33(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"setRate",assigned,this.value.setRate,pos);
+				this.value.setRate = this.loadObjectField(($_=new JsonParser_$34(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"setRate",assigned,this.value.setRate,pos);
 				break;
 			case "setTime":
-				this.value.setTime = this.loadObjectField(($_=new JsonParser_$23(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"setTime",assigned,this.value.setTime,pos);
+				this.value.setTime = this.loadObjectField(($_=new JsonParser_$22(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"setTime",assigned,this.value.setTime,pos);
 				break;
 			case "skipVideo":
-				this.value.skipVideo = this.loadObjectField(($_=new JsonParser_$27(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"skipVideo",assigned,this.value.skipVideo,pos);
+				this.value.skipVideo = this.loadObjectField(($_=new JsonParser_$28(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"skipVideo",assigned,this.value.skipVideo,pos);
 				break;
 			case "toggleItemType":
-				this.value.toggleItemType = this.loadObjectField(($_=new JsonParser_$25(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"toggleItemType",assigned,this.value.toggleItemType,pos);
+				this.value.toggleItemType = this.loadObjectField(($_=new JsonParser_$24(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"toggleItemType",assigned,this.value.toggleItemType,pos);
 				break;
 			case "togglePlaylistLock":
-				this.value.togglePlaylistLock = this.loadObjectField(($_=new JsonParser_$35(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"togglePlaylistLock",assigned,this.value.togglePlaylistLock,pos);
+				this.value.togglePlaylistLock = this.loadObjectField(($_=new JsonParser_$36(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"togglePlaylistLock",assigned,this.value.togglePlaylistLock,pos);
 				break;
 			case "type":
-				this.value.type = this.loadObjectField(($_=new JsonParser_$36(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"type",assigned,this.value.type,pos);
+				this.value.type = this.loadObjectField(($_=new JsonParser_$37(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"type",assigned,this.value.type,pos);
 				break;
 			case "updateClients":
-				this.value.updateClients = this.loadObjectField(($_=new JsonParser_$38(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"updateClients",assigned,this.value.updateClients,pos);
+				this.value.updateClients = this.loadObjectField(($_=new JsonParser_$39(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"updateClients",assigned,this.value.updateClients,pos);
 				break;
 			case "updatePlaylist":
-				this.value.updatePlaylist = this.loadObjectField(($_=new JsonParser_$40(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"updatePlaylist",assigned,this.value.updatePlaylist,pos);
+				this.value.updatePlaylist = this.loadObjectField(($_=new JsonParser_$41(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"updatePlaylist",assigned,this.value.updatePlaylist,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -623,21 +623,21 @@ JsonParser_$1.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { addVideo : new JsonParser_$3([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), banClient : new JsonParser_$5([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), connected : new JsonParser_$7([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), dump : new JsonParser_$9([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), getTime : new JsonParser_$11([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), getYoutubeVideoInfo : new JsonParser_$13([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), kickClient : new JsonParser_$15([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), login : new JsonParser_$17([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), logout : new JsonParser_$19([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), message : new JsonParser_$21([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), pause : new JsonParser_$23([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), play : new JsonParser_$23([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), playItem : new JsonParser_$25([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), removeVideo : new JsonParser_$27([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), rewind : new JsonParser_$23([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), serverMessage : new JsonParser_$29([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), setLeader : new JsonParser_$31([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), setNextItem : new JsonParser_$25([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), setRate : new JsonParser_$33([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), setTime : new JsonParser_$23([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), skipVideo : new JsonParser_$27([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), toggleItemType : new JsonParser_$25([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), togglePlaylistLock : new JsonParser_$35([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), type : new JsonParser_$36([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), updateClients : new JsonParser_$38([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), updatePlaylist : new JsonParser_$40([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { addVideo : new JsonParser_$3([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), banClient : new JsonParser_$5([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), connected : new JsonParser_$7([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), dump : new JsonParser_$9([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), getTime : new JsonParser_$12([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), kickClient : new JsonParser_$14([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), login : new JsonParser_$16([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), logout : new JsonParser_$18([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), message : new JsonParser_$20([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), pause : new JsonParser_$22([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), play : new JsonParser_$22([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), playItem : new JsonParser_$24([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), progress : new JsonParser_$26([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), removeVideo : new JsonParser_$28([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), rewind : new JsonParser_$22([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), serverMessage : new JsonParser_$30([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), setLeader : new JsonParser_$32([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), setNextItem : new JsonParser_$24([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), setRate : new JsonParser_$34([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), setTime : new JsonParser_$22([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), skipVideo : new JsonParser_$28([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), toggleItemType : new JsonParser_$24([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), togglePlaylistLock : new JsonParser_$36([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), type : new JsonParser_$37([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), updateClients : new JsonParser_$39([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), updatePlaylist : new JsonParser_$41([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
 	,__class__: JsonParser_$1
 });
-var JsonParser_$11 = function(errors,putils,errorType) {
+var JsonParser_$12 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$11.__name__ = true;
-JsonParser_$11.__super__ = json2object_reader_BaseParser;
-JsonParser_$11.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$12.__name__ = true;
+JsonParser_$12.__super__ = json2object_reader_BaseParser;
+JsonParser_$12.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ time : Float, ?rate : Null<Float>, ?paused : Null<Bool> }",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ time : Float, ?rate : Null<Float>, ?pausedByServer : Null<Bool>, ?paused : Null<Bool> }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
 	,loadJsonNull: function(pos,variable) {
@@ -645,7 +645,7 @@ JsonParser_$11.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	}
 	,loadJsonObject: function(o,pos,variable) {
 		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["paused","rate","time"],[true,true,false]);
+		this.objectSetupAssign(assigned,["paused","pausedByServer","rate","time"],[true,true,true,false]);
 		this.value = this.getAuto();
 		var _g = 0;
 		while(_g < o.length) {
@@ -653,13 +653,16 @@ JsonParser_$11.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "paused":
-				this.value.paused = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"paused",assigned,this.value.paused,pos);
+				this.value.paused = this.loadObjectField(($_=new JsonParser_$61(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"paused",assigned,this.value.paused,pos);
+				break;
+			case "pausedByServer":
+				this.value.pausedByServer = this.loadObjectField(($_=new JsonParser_$61(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"pausedByServer",assigned,this.value.pausedByServer,pos);
 				break;
 			case "rate":
-				this.value.rate = this.loadObjectField(($_=new JsonParser_$79(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"rate",assigned,this.value.rate,pos);
+				this.value.rate = this.loadObjectField(($_=new JsonParser_$63(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"rate",assigned,this.value.rate,pos);
 				break;
 			case "time":
-				this.value.time = this.loadObjectField(($_=new JsonParser_$45(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"time",assigned,this.value.time,pos);
+				this.value.time = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"time",assigned,this.value.time,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -668,61 +671,19 @@ JsonParser_$11.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { paused : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), rate : new JsonParser_$79([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), time : new JsonParser_$45([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { paused : new JsonParser_$61([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), pausedByServer : new JsonParser_$61([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), rate : new JsonParser_$63([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), time : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$11
+	,__class__: JsonParser_$12
 });
-var JsonParser_$13 = function(errors,putils,errorType) {
+var JsonParser_$14 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$13.__name__ = true;
-JsonParser_$13.__super__ = json2object_reader_BaseParser;
-JsonParser_$13.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ url : String, ?response : Null<utils.YouTubeVideoInfo> }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["response","url"],[true,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "response":
-				this.value.response = this.loadObjectField(($_=new JsonParser_$59(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"response",assigned,this.value.response,pos);
-				break;
-			case "url":
-				this.value.url = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"url",assigned,this.value.url,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { response : new JsonParser_$59([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), url : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$13
-});
-var JsonParser_$15 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$15.__name__ = true;
-JsonParser_$15.__super__ = json2object_reader_BaseParser;
-JsonParser_$15.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$14.__name__ = true;
+JsonParser_$14.__super__ = json2object_reader_BaseParser;
+JsonParser_$14.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ name : String }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -739,7 +700,7 @@ JsonParser_$15.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "name") {
-				this.value.name = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
+				this.value.name = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -747,19 +708,19 @@ JsonParser_$15.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { name : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { name : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$15
+	,__class__: JsonParser_$14
 });
-var JsonParser_$17 = function(errors,putils,errorType) {
+var JsonParser_$16 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$17.__name__ = true;
-JsonParser_$17.__super__ = json2object_reader_BaseParser;
-JsonParser_$17.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$16.__name__ = true;
+JsonParser_$16.__super__ = json2object_reader_BaseParser;
+JsonParser_$16.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ ?passHash : Null<String>, ?isUnknownClient : Null<Bool>, ?clients : Null<Array<ClientData>>, clientName : String }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -777,16 +738,16 @@ JsonParser_$17.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "clientName":
-				this.value.clientName = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
+				this.value.clientName = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
 				break;
 			case "clients":
-				this.value.clients = this.loadObjectField(($_=new JsonParser_$54(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clients",assigned,this.value.clients,pos);
+				this.value.clients = this.loadObjectField(($_=new JsonParser_$59(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clients",assigned,this.value.clients,pos);
 				break;
 			case "isUnknownClient":
-				this.value.isUnknownClient = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isUnknownClient",assigned,this.value.isUnknownClient,pos);
+				this.value.isUnknownClient = this.loadObjectField(($_=new JsonParser_$61(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isUnknownClient",assigned,this.value.isUnknownClient,pos);
 				break;
 			case "passHash":
-				this.value.passHash = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"passHash",assigned,this.value.passHash,pos);
+				this.value.passHash = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"passHash",assigned,this.value.passHash,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -795,19 +756,19 @@ JsonParser_$17.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { clientName : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), clients : new JsonParser_$54([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isUnknownClient : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), passHash : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { clientName : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), clients : new JsonParser_$59([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isUnknownClient : new JsonParser_$61([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), passHash : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$17
+	,__class__: JsonParser_$16
 });
-var JsonParser_$19 = function(errors,putils,errorType) {
+var JsonParser_$18 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$19.__name__ = true;
-JsonParser_$19.__super__ = json2object_reader_BaseParser;
-JsonParser_$19.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$18.__name__ = true;
+JsonParser_$18.__super__ = json2object_reader_BaseParser;
+JsonParser_$18.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ oldClientName : String, clients : Array<ClientData>, clientName : String }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -825,13 +786,13 @@ JsonParser_$19.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "clientName":
-				this.value.clientName = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
+				this.value.clientName = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
 				break;
 			case "clients":
-				this.value.clients = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clients",assigned,this.value.clients,pos);
+				this.value.clients = this.loadObjectField(($_=new JsonParser_$53(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clients",assigned,this.value.clients,pos);
 				break;
 			case "oldClientName":
-				this.value.oldClientName = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"oldClientName",assigned,this.value.oldClientName,pos);
+				this.value.oldClientName = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"oldClientName",assigned,this.value.oldClientName,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -840,19 +801,19 @@ JsonParser_$19.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { clientName : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), clients : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), oldClientName : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { clientName : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), clients : new JsonParser_$53([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), oldClientName : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$19
+	,__class__: JsonParser_$18
 });
-var JsonParser_$21 = function(errors,putils,errorType) {
+var JsonParser_$20 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$21.__name__ = true;
-JsonParser_$21.__super__ = json2object_reader_BaseParser;
-JsonParser_$21.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$20.__name__ = true;
+JsonParser_$20.__super__ = json2object_reader_BaseParser;
+JsonParser_$20.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ text : String, clientName : String }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -870,10 +831,10 @@ JsonParser_$21.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "clientName":
-				this.value.clientName = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
+				this.value.clientName = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
 				break;
 			case "text":
-				this.value.text = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"text",assigned,this.value.text,pos);
+				this.value.text = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"text",assigned,this.value.text,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -882,19 +843,19 @@ JsonParser_$21.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { clientName : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), text : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { clientName : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), text : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$21
+	,__class__: JsonParser_$20
 });
-var JsonParser_$23 = function(errors,putils,errorType) {
+var JsonParser_$22 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$23.__name__ = true;
-JsonParser_$23.__super__ = json2object_reader_BaseParser;
-JsonParser_$23.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$22.__name__ = true;
+JsonParser_$22.__super__ = json2object_reader_BaseParser;
+JsonParser_$22.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ time : Float }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -911,7 +872,7 @@ JsonParser_$23.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "time") {
-				this.value.time = this.loadObjectField(($_=new JsonParser_$45(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"time",assigned,this.value.time,pos);
+				this.value.time = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"time",assigned,this.value.time,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -919,19 +880,19 @@ JsonParser_$23.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { time : new JsonParser_$45([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { time : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$23
+	,__class__: JsonParser_$22
 });
-var JsonParser_$25 = function(errors,putils,errorType) {
+var JsonParser_$24 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$25.__name__ = true;
-JsonParser_$25.__super__ = json2object_reader_BaseParser;
-JsonParser_$25.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$24.__name__ = true;
+JsonParser_$24.__super__ = json2object_reader_BaseParser;
+JsonParser_$24.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ pos : Int }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -948,7 +909,7 @@ JsonParser_$25.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "pos") {
-				this.value.pos = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"pos",assigned,this.value.pos,pos);
+				this.value.pos = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"pos",assigned,this.value.pos,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -956,19 +917,64 @@ JsonParser_$25.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { pos : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { pos : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$25
+	,__class__: JsonParser_$24
 });
-var JsonParser_$27 = function(errors,putils,errorType) {
+var JsonParser_$26 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$27.__name__ = true;
-JsonParser_$27.__super__ = json2object_reader_BaseParser;
-JsonParser_$27.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$26.__name__ = true;
+JsonParser_$26.__super__ = json2object_reader_BaseParser;
+JsonParser_$26.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ type : ProgressType, ratio : Float, ?data : Null<String> }",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonObject: function(o,pos,variable) {
+		var assigned = new haxe_ds_StringMap();
+		this.objectSetupAssign(assigned,["data","ratio","type"],[true,false,false]);
+		this.value = this.getAuto();
+		var _g = 0;
+		while(_g < o.length) {
+			var field = o[_g];
+			++_g;
+			switch(field.name) {
+			case "data":
+				this.value.data = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"data",assigned,this.value.data,pos);
+				break;
+			case "ratio":
+				this.value.ratio = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"ratio",assigned,this.value.ratio,pos);
+				break;
+			case "type":
+				this.value.type = this.loadObjectField(($_=new JsonParser_$57(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"type",assigned,this.value.type,pos);
+				break;
+			default:
+				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
+			}
+		}
+		this.objectErrors(assigned,pos);
+	}
+	,getAuto: function() {
+		return { data : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), ratio : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), type : new JsonParser_$57([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+	}
+	,__class__: JsonParser_$26
+});
+var JsonParser_$28 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$28.__name__ = true;
+JsonParser_$28.__super__ = json2object_reader_BaseParser;
+JsonParser_$28.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ url : String }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -985,7 +991,7 @@ JsonParser_$27.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "url") {
-				this.value.url = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"url",assigned,this.value.url,pos);
+				this.value.url = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"url",assigned,this.value.url,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -993,46 +999,9 @@ JsonParser_$27.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { url : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { url : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$27
-});
-var JsonParser_$29 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$29.__name__ = true;
-JsonParser_$29.__super__ = json2object_reader_BaseParser;
-JsonParser_$29.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ textId : String }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["textId"],[false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			if(field.name == "textId") {
-				this.value.textId = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"textId",assigned,this.value.textId,pos);
-			} else {
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { textId : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$29
+	,__class__: JsonParser_$28
 });
 var JsonParser_$3 = function(errors,putils,errorType) {
 	if(errorType == null) {
@@ -1060,10 +1029,10 @@ JsonParser_$3.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "atEnd":
-				this.value.atEnd = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"atEnd",assigned,this.value.atEnd,pos);
+				this.value.atEnd = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"atEnd",assigned,this.value.atEnd,pos);
 				break;
 			case "item":
-				this.value.item = this.loadObjectField(($_=new JsonParser_$43(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"item",assigned,this.value.item,pos);
+				this.value.item = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"item",assigned,this.value.item,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -1072,19 +1041,56 @@ JsonParser_$3.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { atEnd : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), item : new JsonParser_$43([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { atEnd : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), item : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
 	,__class__: JsonParser_$3
 });
-var JsonParser_$31 = function(errors,putils,errorType) {
+var JsonParser_$30 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$31.__name__ = true;
-JsonParser_$31.__super__ = json2object_reader_BaseParser;
-JsonParser_$31.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$30.__name__ = true;
+JsonParser_$30.__super__ = json2object_reader_BaseParser;
+JsonParser_$30.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ textId : String }",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonObject: function(o,pos,variable) {
+		var assigned = new haxe_ds_StringMap();
+		this.objectSetupAssign(assigned,["textId"],[false]);
+		this.value = this.getAuto();
+		var _g = 0;
+		while(_g < o.length) {
+			var field = o[_g];
+			++_g;
+			if(field.name == "textId") {
+				this.value.textId = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"textId",assigned,this.value.textId,pos);
+			} else {
+				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
+			}
+		}
+		this.objectErrors(assigned,pos);
+	}
+	,getAuto: function() {
+		return { textId : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+	}
+	,__class__: JsonParser_$30
+});
+var JsonParser_$32 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$32.__name__ = true;
+JsonParser_$32.__super__ = json2object_reader_BaseParser;
+JsonParser_$32.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ clientName : String }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -1101,7 +1107,7 @@ JsonParser_$31.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "clientName") {
-				this.value.clientName = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
+				this.value.clientName = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -1109,19 +1115,19 @@ JsonParser_$31.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { clientName : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { clientName : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$31
+	,__class__: JsonParser_$32
 });
-var JsonParser_$33 = function(errors,putils,errorType) {
+var JsonParser_$34 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$33.__name__ = true;
-JsonParser_$33.__super__ = json2object_reader_BaseParser;
-JsonParser_$33.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$34.__name__ = true;
+JsonParser_$34.__super__ = json2object_reader_BaseParser;
+JsonParser_$34.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ rate : Float }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -1138,7 +1144,7 @@ JsonParser_$33.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "rate") {
-				this.value.rate = this.loadObjectField(($_=new JsonParser_$45(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"rate",assigned,this.value.rate,pos);
+				this.value.rate = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"rate",assigned,this.value.rate,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -1146,19 +1152,19 @@ JsonParser_$33.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { rate : new JsonParser_$45([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { rate : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$33
+	,__class__: JsonParser_$34
 });
-var JsonParser_$35 = function(errors,putils,errorType) {
+var JsonParser_$36 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$35.__name__ = true;
-JsonParser_$35.__super__ = json2object_reader_BaseParser;
-JsonParser_$35.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$36.__name__ = true;
+JsonParser_$36.__super__ = json2object_reader_BaseParser;
+JsonParser_$36.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ isOpen : Bool }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -1175,7 +1181,7 @@ JsonParser_$35.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "isOpen") {
-				this.value.isOpen = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isOpen",assigned,this.value.isOpen,pos);
+				this.value.isOpen = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isOpen",assigned,this.value.isOpen,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -1183,19 +1189,19 @@ JsonParser_$35.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { isOpen : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { isOpen : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$35
+	,__class__: JsonParser_$36
 });
-var JsonParser_$36 = function(errors,putils,errorType) {
+var JsonParser_$37 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$36.__name__ = true;
-JsonParser_$36.__super__ = json2object_reader_BaseParser;
-JsonParser_$36.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$37.__name__ = true;
+JsonParser_$37.__super__ = json2object_reader_BaseParser;
+JsonParser_$37.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.value = "Connected";
 		this.errors.push(json2object_Error.IncorrectType(variable,"WsEventType",pos));
@@ -1205,19 +1211,19 @@ JsonParser_$36.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.value = null;
 	}
 	,loadJsonString: function(s,pos,variable) {
-		this.value = this.loadString(s,pos,variable,["Connected","Disconnected","Login","PasswordRequest","LoginError","Logout","Message","ServerMessage","UpdateClients","BanClient","KickClient","AddVideo","RemoveVideo","SkipVideo","VideoLoaded","Pause","Play","GetTime","SetTime","SetRate","Rewind","Flashback","SetLeader","PlayItem","SetNextItem","ToggleItemType","ClearChat","ClearPlaylist","ShufflePlaylist","UpdatePlaylist","TogglePlaylistLock","Dump","GetYoutubeVideoInfo"],"Connected");
+		this.value = this.loadString(s,pos,variable,["Connected","Disconnected","Login","PasswordRequest","LoginError","Logout","Message","ServerMessage","Progress","UpdateClients","BanClient","KickClient","AddVideo","RemoveVideo","SkipVideo","VideoLoaded","Pause","Play","GetTime","SetTime","SetRate","Rewind","Flashback","SetLeader","PlayItem","SetNextItem","ToggleItemType","ClearChat","ClearPlaylist","ShufflePlaylist","UpdatePlaylist","TogglePlaylistLock","Dump"],"Connected");
 	}
-	,__class__: JsonParser_$36
+	,__class__: JsonParser_$37
 });
-var JsonParser_$38 = function(errors,putils,errorType) {
+var JsonParser_$39 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$38.__name__ = true;
-JsonParser_$38.__super__ = json2object_reader_BaseParser;
-JsonParser_$38.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$39.__name__ = true;
+JsonParser_$39.__super__ = json2object_reader_BaseParser;
+JsonParser_$39.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ clients : Array<ClientData> }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -1234,7 +1240,7 @@ JsonParser_$38.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "clients") {
-				this.value.clients = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clients",assigned,this.value.clients,pos);
+				this.value.clients = this.loadObjectField(($_=new JsonParser_$53(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clients",assigned,this.value.clients,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -1242,19 +1248,19 @@ JsonParser_$38.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { clients : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { clients : new JsonParser_$53([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$38
+	,__class__: JsonParser_$39
 });
-var JsonParser_$40 = function(errors,putils,errorType) {
+var JsonParser_$41 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$40.__name__ = true;
-JsonParser_$40.__super__ = json2object_reader_BaseParser;
-JsonParser_$40.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$41.__name__ = true;
+JsonParser_$41.__super__ = json2object_reader_BaseParser;
+JsonParser_$41.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ videoList : Array<VideoItem> }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -1271,7 +1277,7 @@ JsonParser_$40.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "videoList") {
-				this.value.videoList = this.loadObjectField(($_=new JsonParser_$41(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"videoList",assigned,this.value.videoList,pos);
+				this.value.videoList = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"videoList",assigned,this.value.videoList,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -1279,87 +1285,9 @@ JsonParser_$40.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { videoList : new JsonParser_$41([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$40
-});
-var JsonParser_$41 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$41.__name__ = true;
-JsonParser_$41.__super__ = json2object_reader_BaseParser;
-JsonParser_$41.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Array<VideoItem>",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$43(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+		return { videoList : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
 	,__class__: JsonParser_$41
-});
-var JsonParser_$43 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$43.__name__ = true;
-JsonParser_$43.__super__ = json2object_reader_BaseParser;
-JsonParser_$43.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ url : String, title : String, ?subs : Null<String>, isTemp : Bool, isIframe : Bool, duration : Float, author : String }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["author","duration","isIframe","isTemp","subs","title","url"],[false,false,false,false,true,false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "author":
-				this.value.author = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"author",assigned,this.value.author,pos);
-				break;
-			case "duration":
-				this.value.duration = this.loadObjectField(($_=new JsonParser_$45(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"duration",assigned,this.value.duration,pos);
-				break;
-			case "isIframe":
-				this.value.isIframe = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isIframe",assigned,this.value.isIframe,pos);
-				break;
-			case "isTemp":
-				this.value.isTemp = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isTemp",assigned,this.value.isTemp,pos);
-				break;
-			case "subs":
-				this.value.subs = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"subs",assigned,this.value.subs,pos);
-				break;
-			case "title":
-				this.value.title = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"title",assigned,this.value.title,pos);
-				break;
-			case "url":
-				this.loadObjectFieldReflect(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"url",assigned,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { author : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), duration : new JsonParser_$45([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isIframe : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isTemp : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), subs : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), title : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), url : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$43
 });
 var JsonParser_$44 = function(errors,putils,errorType) {
 	if(errorType == null) {
@@ -1371,64 +1299,89 @@ JsonParser_$44.__name__ = true;
 JsonParser_$44.__super__ = json2object_reader_BaseParser;
 JsonParser_$44.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"String",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"Array<VideoItem>",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
 	,loadJsonNull: function(pos,variable) {
 		this.value = null;
 	}
-	,loadJsonString: function(s,pos,variable) {
-		this.value = s;
+	,loadJsonArray: function(a,pos,variable) {
+		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$46(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
 	}
 	,__class__: JsonParser_$44
-});
-var JsonParser_$45 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-	this.value = 0;
-};
-JsonParser_$45.__name__ = true;
-JsonParser_$45.__super__ = json2object_reader_BaseParser;
-JsonParser_$45.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Float",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNumber: function(f,pos,variable) {
-		this.value = this.loadJsonFloat(f,pos,variable,this.value);
-	}
-	,__class__: JsonParser_$45
 });
 var JsonParser_$46 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-	this.value = false;
 };
 JsonParser_$46.__name__ = true;
 JsonParser_$46.__super__ = json2object_reader_BaseParser;
 JsonParser_$46.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Bool",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ ?voiceOverTrack : Null<String>, url : String, title : String, ?subs : Null<String>, playerType : PlayerType, isTemp : Bool, duration : Float, doCache : Bool, author : String }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
-	,loadJsonBool: function(b,pos,variable) {
-		this.value = b;
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonObject: function(o,pos,variable) {
+		var assigned = new haxe_ds_StringMap();
+		this.objectSetupAssign(assigned,["author","doCache","duration","isTemp","playerType","subs","title","url","voiceOverTrack"],[false,false,false,false,false,true,false,false,true]);
+		this.value = this.getAuto();
+		var _g = 0;
+		while(_g < o.length) {
+			var field = o[_g];
+			++_g;
+			switch(field.name) {
+			case "author":
+				this.value.author = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"author",assigned,this.value.author,pos);
+				break;
+			case "doCache":
+				this.value.doCache = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"doCache",assigned,this.value.doCache,pos);
+				break;
+			case "duration":
+				this.value.duration = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"duration",assigned,this.value.duration,pos);
+				break;
+			case "isTemp":
+				this.value.isTemp = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isTemp",assigned,this.value.isTemp,pos);
+				break;
+			case "playerType":
+				this.value.playerType = this.loadObjectField(($_=new JsonParser_$50(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"playerType",assigned,this.value.playerType,pos);
+				break;
+			case "subs":
+				this.value.subs = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"subs",assigned,this.value.subs,pos);
+				break;
+			case "title":
+				this.value.title = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"title",assigned,this.value.title,pos);
+				break;
+			case "url":
+				this.loadObjectFieldReflect(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"url",assigned,pos);
+				break;
+			case "voiceOverTrack":
+				this.value.voiceOverTrack = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"voiceOverTrack",assigned,this.value.voiceOverTrack,pos);
+				break;
+			default:
+				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
+			}
+		}
+		this.objectErrors(assigned,pos);
+	}
+	,getAuto: function() {
+		return { author : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), doCache : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), duration : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isTemp : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), playerType : new JsonParser_$50([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), subs : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), title : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), url : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), voiceOverTrack : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
 	,__class__: JsonParser_$46
 });
-var JsonParser_$48 = function(errors,putils,errorType) {
+var JsonParser_$47 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$48.__name__ = true;
-JsonParser_$48.__super__ = json2object_reader_BaseParser;
-JsonParser_$48.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$47.__name__ = true;
+JsonParser_$47.__super__ = json2object_reader_BaseParser;
+JsonParser_$47.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"String",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -1438,6 +1391,25 @@ JsonParser_$48.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	}
 	,loadJsonString: function(s,pos,variable) {
 		this.value = s;
+	}
+	,__class__: JsonParser_$47
+});
+var JsonParser_$48 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+	this.value = false;
+};
+JsonParser_$48.__name__ = true;
+JsonParser_$48.__super__ = json2object_reader_BaseParser;
+JsonParser_$48.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"Bool",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonBool: function(b,pos,variable) {
+		this.value = b;
 	}
 	,__class__: JsonParser_$48
 });
@@ -1446,19 +1418,17 @@ var JsonParser_$49 = function(errors,putils,errorType) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+	this.value = 0;
 };
 JsonParser_$49.__name__ = true;
 JsonParser_$49.__super__ = json2object_reader_BaseParser;
 JsonParser_$49.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Array<ClientData>",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"Float",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$51(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+	,loadJsonNumber: function(f,pos,variable) {
+		this.value = this.loadJsonFloat(f,pos,variable,this.value);
 	}
 	,__class__: JsonParser_$49
 });
@@ -1488,10 +1458,10 @@ JsonParser_$5.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "name":
-				this.value.name = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
+				this.value.name = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
 				break;
 			case "time":
-				this.value.time = this.loadObjectField(($_=new JsonParser_$45(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"time",assigned,this.value.time,pos);
+				this.value.time = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"time",assigned,this.value.time,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -1500,19 +1470,83 @@ JsonParser_$5.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { name : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), time : new JsonParser_$45([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { name : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), time : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
 	,__class__: JsonParser_$5
 });
-var JsonParser_$51 = function(errors,putils,errorType) {
+var JsonParser_$50 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$51.__name__ = true;
-JsonParser_$51.__super__ = json2object_reader_BaseParser;
-JsonParser_$51.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$50.__name__ = true;
+JsonParser_$50.__super__ = json2object_reader_BaseParser;
+JsonParser_$50.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.value = "RawType";
+		this.errors.push(json2object_Error.IncorrectType(variable,"PlayerType",pos));
+		this.objectThrow(pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonString: function(s,pos,variable) {
+		this.value = this.loadString(s,pos,variable,["RawType","YoutubeType","VkType","IframeType"],"RawType");
+	}
+	,__class__: JsonParser_$50
+});
+var JsonParser_$52 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$52.__name__ = true;
+JsonParser_$52.__super__ = json2object_reader_BaseParser;
+JsonParser_$52.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"String",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonString: function(s,pos,variable) {
+		this.value = s;
+	}
+	,__class__: JsonParser_$52
+});
+var JsonParser_$53 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$53.__name__ = true;
+JsonParser_$53.__super__ = json2object_reader_BaseParser;
+JsonParser_$53.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"Array<ClientData>",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonArray: function(a,pos,variable) {
+		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$55(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+	}
+	,__class__: JsonParser_$53
+});
+var JsonParser_$55 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$55.__name__ = true;
+JsonParser_$55.__super__ = json2object_reader_BaseParser;
+JsonParser_$55.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ name : String, group : Int }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -1530,10 +1564,10 @@ JsonParser_$51.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "group":
-				this.value.group = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"group",assigned,this.value.group,pos);
+				this.value.group = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"group",assigned,this.value.group,pos);
 				break;
 			case "name":
-				this.value.name = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
+				this.value.name = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -1542,20 +1576,20 @@ JsonParser_$51.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { group : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), name : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { group : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), name : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$51
+	,__class__: JsonParser_$55
 });
-var JsonParser_$52 = function(errors,putils,errorType) {
+var JsonParser_$56 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 	this.value = 0;
 };
-JsonParser_$52.__name__ = true;
-JsonParser_$52.__super__ = json2object_reader_BaseParser;
-JsonParser_$52.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$56.__name__ = true;
+JsonParser_$56.__super__ = json2object_reader_BaseParser;
+JsonParser_$56.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"Int",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -1563,49 +1597,29 @@ JsonParser_$52.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	,loadJsonNumber: function(f,pos,variable) {
 		this.value = this.loadJsonInt(f,pos,variable,this.value);
 	}
-	,__class__: JsonParser_$52
-});
-var JsonParser_$54 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$54.__name__ = true;
-JsonParser_$54.__super__ = json2object_reader_BaseParser;
-JsonParser_$54.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Array<ClientData>",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$51(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
-	}
-	,__class__: JsonParser_$54
-});
-var JsonParser_$56 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$56.__name__ = true;
-JsonParser_$56.__super__ = json2object_reader_BaseParser;
-JsonParser_$56.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Bool",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonBool: function(b,pos,variable) {
-		this.value = b;
-	}
 	,__class__: JsonParser_$56
+});
+var JsonParser_$57 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$57.__name__ = true;
+JsonParser_$57.__super__ = json2object_reader_BaseParser;
+JsonParser_$57.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.value = "Caching";
+		this.errors.push(json2object_Error.IncorrectType(variable,"ProgressType",pos));
+		this.objectThrow(pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonString: function(s,pos,variable) {
+		this.value = this.loadString(s,pos,variable,["Caching","Downloading","Uploading","Canceled"],"Caching");
+	}
+	,__class__: JsonParser_$57
 });
 var JsonParser_$59 = function(errors,putils,errorType) {
 	if(errorType == null) {
@@ -1617,43 +1631,37 @@ JsonParser_$59.__name__ = true;
 JsonParser_$59.__super__ = json2object_reader_BaseParser;
 JsonParser_$59.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ videoDetails : utils.YoutubeVideoDetails, ?liveData : Null<{ manifestUrl : String }>, ?formats : Null<Array<utils.YoutubeVideoFormat>>, ?adaptiveFormats : Null<Array<utils.YoutubeVideoFormat>> }",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"Array<ClientData>",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
 	,loadJsonNull: function(pos,variable) {
 		this.value = null;
 	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["adaptiveFormats","formats","liveData","videoDetails"],[true,true,true,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "adaptiveFormats":
-				this.value.adaptiveFormats = this.loadObjectField(($_=new JsonParser_$63(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"adaptiveFormats",assigned,this.value.adaptiveFormats,pos);
-				break;
-			case "formats":
-				this.value.formats = this.loadObjectField(($_=new JsonParser_$63(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"formats",assigned,this.value.formats,pos);
-				break;
-			case "liveData":
-				this.value.liveData = this.loadObjectField(($_=new JsonParser_$65(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"liveData",assigned,this.value.liveData,pos);
-				break;
-			case "videoDetails":
-				this.value.videoDetails = this.loadObjectField(($_=new JsonParser_$67(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"videoDetails",assigned,this.value.videoDetails,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { adaptiveFormats : new JsonParser_$63([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), formats : new JsonParser_$63([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), liveData : new JsonParser_$65([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), videoDetails : new JsonParser_$67([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+	,loadJsonArray: function(a,pos,variable) {
+		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$55(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
 	}
 	,__class__: JsonParser_$59
+});
+var JsonParser_$61 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$61.__name__ = true;
+JsonParser_$61.__super__ = json2object_reader_BaseParser;
+JsonParser_$61.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"Bool",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonBool: function(b,pos,variable) {
+		this.value = b;
+	}
+	,__class__: JsonParser_$61
 });
 var JsonParser_$63 = function(errors,putils,errorType) {
 	if(errorType == null) {
@@ -1665,14 +1673,14 @@ JsonParser_$63.__name__ = true;
 JsonParser_$63.__super__ = json2object_reader_BaseParser;
 JsonParser_$63.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Array<utils.YoutubeVideoFormat>",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"Float",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
 	,loadJsonNull: function(pos,variable) {
 		this.value = null;
 	}
-	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$73(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+	,loadJsonNumber: function(f,pos,variable) {
+		this.value = this.loadJsonFloat(f,pos,variable,this.value);
 	}
 	,__class__: JsonParser_$63
 });
@@ -1686,7 +1694,7 @@ JsonParser_$65.__name__ = true;
 JsonParser_$65.__super__ = json2object_reader_BaseParser;
 JsonParser_$65.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ manifestUrl : String }",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ youtubePlaylistLimit : Int, youtubeApiKey : String, userVideoLimit : Int, unpauseWithoutLeader : Bool, totalVideoLimit : Int, templateUrl : String, serverChatHistory : Int, ?salt : Null<String>, requestLeaderOnPause : Bool, port : Int, permissions : Permissions, maxMessageLength : Int, maxLoginLength : Int, localNetworkOnly : Bool, localAdmins : Bool, ?isVerbose : Null<Bool>, filters : Array<Filter>, emotes : Array<Emote>, channelName : String, cacheStorageLimitGiB : Float, allowProxyIps : Bool }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
 	,loadJsonNull: function(pos,variable) {
@@ -1694,24 +1702,107 @@ JsonParser_$65.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	}
 	,loadJsonObject: function(o,pos,variable) {
 		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["manifestUrl"],[false]);
+		this.objectSetupAssign(assigned,["allowProxyIps","cacheStorageLimitGiB","channelName","emotes","filters","isVerbose","localAdmins","localNetworkOnly","maxLoginLength","maxMessageLength","permissions","port","requestLeaderOnPause","salt","serverChatHistory","templateUrl","totalVideoLimit","unpauseWithoutLeader","userVideoLimit","youtubeApiKey","youtubePlaylistLimit"],[false,false,false,false,false,true,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false]);
 		this.value = this.getAuto();
 		var _g = 0;
 		while(_g < o.length) {
 			var field = o[_g];
 			++_g;
-			if(field.name == "manifestUrl") {
-				this.value.manifestUrl = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"manifestUrl",assigned,this.value.manifestUrl,pos);
-			} else {
+			switch(field.name) {
+			case "allowProxyIps":
+				this.value.allowProxyIps = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"allowProxyIps",assigned,this.value.allowProxyIps,pos);
+				break;
+			case "cacheStorageLimitGiB":
+				this.value.cacheStorageLimitGiB = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"cacheStorageLimitGiB",assigned,this.value.cacheStorageLimitGiB,pos);
+				break;
+			case "channelName":
+				this.value.channelName = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"channelName",assigned,this.value.channelName,pos);
+				break;
+			case "emotes":
+				this.value.emotes = this.loadObjectField(($_=new JsonParser_$70(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"emotes",assigned,this.value.emotes,pos);
+				break;
+			case "filters":
+				this.value.filters = this.loadObjectField(($_=new JsonParser_$71(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"filters",assigned,this.value.filters,pos);
+				break;
+			case "isVerbose":
+				this.value.isVerbose = this.loadObjectField(($_=new JsonParser_$61(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isVerbose",assigned,this.value.isVerbose,pos);
+				break;
+			case "localAdmins":
+				this.value.localAdmins = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"localAdmins",assigned,this.value.localAdmins,pos);
+				break;
+			case "localNetworkOnly":
+				this.value.localNetworkOnly = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"localNetworkOnly",assigned,this.value.localNetworkOnly,pos);
+				break;
+			case "maxLoginLength":
+				this.value.maxLoginLength = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"maxLoginLength",assigned,this.value.maxLoginLength,pos);
+				break;
+			case "maxMessageLength":
+				this.value.maxMessageLength = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"maxMessageLength",assigned,this.value.maxMessageLength,pos);
+				break;
+			case "permissions":
+				this.value.permissions = this.loadObjectField(($_=new JsonParser_$73(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"permissions",assigned,this.value.permissions,pos);
+				break;
+			case "port":
+				this.value.port = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"port",assigned,this.value.port,pos);
+				break;
+			case "requestLeaderOnPause":
+				this.value.requestLeaderOnPause = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"requestLeaderOnPause",assigned,this.value.requestLeaderOnPause,pos);
+				break;
+			case "salt":
+				this.value.salt = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"salt",assigned,this.value.salt,pos);
+				break;
+			case "serverChatHistory":
+				this.value.serverChatHistory = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"serverChatHistory",assigned,this.value.serverChatHistory,pos);
+				break;
+			case "templateUrl":
+				this.value.templateUrl = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"templateUrl",assigned,this.value.templateUrl,pos);
+				break;
+			case "totalVideoLimit":
+				this.value.totalVideoLimit = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"totalVideoLimit",assigned,this.value.totalVideoLimit,pos);
+				break;
+			case "unpauseWithoutLeader":
+				this.value.unpauseWithoutLeader = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"unpauseWithoutLeader",assigned,this.value.unpauseWithoutLeader,pos);
+				break;
+			case "userVideoLimit":
+				this.value.userVideoLimit = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"userVideoLimit",assigned,this.value.userVideoLimit,pos);
+				break;
+			case "youtubeApiKey":
+				this.value.youtubeApiKey = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"youtubeApiKey",assigned,this.value.youtubeApiKey,pos);
+				break;
+			case "youtubePlaylistLimit":
+				this.value.youtubePlaylistLimit = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"youtubePlaylistLimit",assigned,this.value.youtubePlaylistLimit,pos);
+				break;
+			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
 		}
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { manifestUrl : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { allowProxyIps : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), cacheStorageLimitGiB : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), channelName : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), emotes : new JsonParser_$70([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), filters : new JsonParser_$71([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isVerbose : new JsonParser_$61([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), localAdmins : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), localNetworkOnly : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), maxLoginLength : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), maxMessageLength : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), permissions : new JsonParser_$73([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), port : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), requestLeaderOnPause : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), salt : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), serverChatHistory : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), templateUrl : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), totalVideoLimit : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), unpauseWithoutLeader : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), userVideoLimit : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), youtubeApiKey : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), youtubePlaylistLimit : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
 	,__class__: JsonParser_$65
+});
+var JsonParser_$66 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$66.__name__ = true;
+JsonParser_$66.__super__ = json2object_reader_BaseParser;
+JsonParser_$66.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"Array<Message>",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonArray: function(a,pos,variable) {
+		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$69(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+	}
+	,__class__: JsonParser_$66
 });
 var JsonParser_$67 = function(errors,putils,errorType) {
 	if(errorType == null) {
@@ -1723,97 +1814,16 @@ JsonParser_$67.__name__ = true;
 JsonParser_$67.__super__ = json2object_reader_BaseParser;
 JsonParser_$67.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ viewCount : String, videoId : String, title : String, thumbnail : { thumbnails : Array<{ width : Int, url : String, height : Int }> }, shortDescription : String, lengthSeconds : String, keywords : Array<String>, isUnpluggedCorpus : Bool, isPrivate : Bool, isOwnerViewing : Bool, isLiveContent : Bool, isCrawlable : Bool, channelId : String, author : String, allowRatings : Bool }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["allowRatings","author","channelId","isCrawlable","isLiveContent","isOwnerViewing","isPrivate","isUnpluggedCorpus","keywords","lengthSeconds","shortDescription","thumbnail","title","videoId","viewCount"],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "allowRatings":
-				this.value.allowRatings = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"allowRatings",assigned,this.value.allowRatings,pos);
-				break;
-			case "author":
-				this.value.author = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"author",assigned,this.value.author,pos);
-				break;
-			case "channelId":
-				this.value.channelId = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"channelId",assigned,this.value.channelId,pos);
-				break;
-			case "isCrawlable":
-				this.value.isCrawlable = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isCrawlable",assigned,this.value.isCrawlable,pos);
-				break;
-			case "isLiveContent":
-				this.value.isLiveContent = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isLiveContent",assigned,this.value.isLiveContent,pos);
-				break;
-			case "isOwnerViewing":
-				this.value.isOwnerViewing = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isOwnerViewing",assigned,this.value.isOwnerViewing,pos);
-				break;
-			case "isPrivate":
-				this.value.isPrivate = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isPrivate",assigned,this.value.isPrivate,pos);
-				break;
-			case "isUnpluggedCorpus":
-				this.value.isUnpluggedCorpus = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isUnpluggedCorpus",assigned,this.value.isUnpluggedCorpus,pos);
-				break;
-			case "keywords":
-				this.value.keywords = this.loadObjectField(($_=new JsonParser_$68(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"keywords",assigned,this.value.keywords,pos);
-				break;
-			case "lengthSeconds":
-				this.value.lengthSeconds = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"lengthSeconds",assigned,this.value.lengthSeconds,pos);
-				break;
-			case "shortDescription":
-				this.value.shortDescription = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"shortDescription",assigned,this.value.shortDescription,pos);
-				break;
-			case "thumbnail":
-				this.value.thumbnail = this.loadObjectField(($_=new JsonParser_$69(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"thumbnail",assigned,this.value.thumbnail,pos);
-				break;
-			case "title":
-				this.value.title = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"title",assigned,this.value.title,pos);
-				break;
-			case "videoId":
-				this.value.videoId = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"videoId",assigned,this.value.videoId,pos);
-				break;
-			case "viewCount":
-				this.value.viewCount = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"viewCount",assigned,this.value.viewCount,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { allowRatings : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), author : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), channelId : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isCrawlable : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isLiveContent : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isOwnerViewing : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isPrivate : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isUnpluggedCorpus : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), keywords : new JsonParser_$68([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), lengthSeconds : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), shortDescription : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), thumbnail : new JsonParser_$69([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), title : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), videoId : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), viewCount : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$67
-});
-var JsonParser_$68 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$68.__name__ = true;
-JsonParser_$68.__super__ = json2object_reader_BaseParser;
-JsonParser_$68.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Array<String>",pos));
+		this.errors.push(json2object_Error.IncorrectType(variable,"Array<PlayerType>",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
 	}
 	,loadJsonNull: function(pos,variable) {
 		this.value = null;
 	}
 	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$44(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$50(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
 	}
-	,__class__: JsonParser_$68
+	,__class__: JsonParser_$67
 });
 var JsonParser_$69 = function(errors,putils,errorType) {
 	if(errorType == null) {
@@ -1824,460 +1834,6 @@ var JsonParser_$69 = function(errors,putils,errorType) {
 JsonParser_$69.__name__ = true;
 JsonParser_$69.__super__ = json2object_reader_BaseParser;
 JsonParser_$69.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ thumbnails : Array<{ width : Int, url : String, height : Int }> }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["thumbnails"],[false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			if(field.name == "thumbnails") {
-				this.value.thumbnails = this.loadObjectField(($_=new JsonParser_$70(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"thumbnails",assigned,this.value.thumbnails,pos);
-			} else {
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { thumbnails : new JsonParser_$70([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$69
-});
-var JsonParser_$7 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$7.__name__ = true;
-JsonParser_$7.__super__ = json2object_reader_BaseParser;
-JsonParser_$7.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ videoList : Array<VideoItem>, uuid : String, itemPos : Int, isUnknownClient : Bool, isPlaylistOpen : Bool, history : Array<Message>, globalIp : String, config : Config, clients : Array<ClientData>, clientName : String }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["clientName","clients","config","globalIp","history","isPlaylistOpen","isUnknownClient","itemPos","uuid","videoList"],[false,false,false,false,false,false,false,false,false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "clientName":
-				this.value.clientName = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
-				break;
-			case "clients":
-				this.value.clients = this.loadObjectField(($_=new JsonParser_$49(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clients",assigned,this.value.clients,pos);
-				break;
-			case "config":
-				this.value.config = this.loadObjectField(($_=new JsonParser_$81(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"config",assigned,this.value.config,pos);
-				break;
-			case "globalIp":
-				this.value.globalIp = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"globalIp",assigned,this.value.globalIp,pos);
-				break;
-			case "history":
-				this.value.history = this.loadObjectField(($_=new JsonParser_$82(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"history",assigned,this.value.history,pos);
-				break;
-			case "isPlaylistOpen":
-				this.value.isPlaylistOpen = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isPlaylistOpen",assigned,this.value.isPlaylistOpen,pos);
-				break;
-			case "isUnknownClient":
-				this.value.isUnknownClient = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isUnknownClient",assigned,this.value.isUnknownClient,pos);
-				break;
-			case "itemPos":
-				this.value.itemPos = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"itemPos",assigned,this.value.itemPos,pos);
-				break;
-			case "uuid":
-				this.value.uuid = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"uuid",assigned,this.value.uuid,pos);
-				break;
-			case "videoList":
-				this.value.videoList = this.loadObjectField(($_=new JsonParser_$41(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"videoList",assigned,this.value.videoList,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { clientName : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), clients : new JsonParser_$49([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), config : new JsonParser_$81([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), globalIp : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), history : new JsonParser_$82([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isPlaylistOpen : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isUnknownClient : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), itemPos : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), uuid : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), videoList : new JsonParser_$41([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$7
-});
-var JsonParser_$70 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$70.__name__ = true;
-JsonParser_$70.__super__ = json2object_reader_BaseParser;
-JsonParser_$70.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Array<{ width : Int, url : String, height : Int }>",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$71(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
-	}
-	,__class__: JsonParser_$70
-});
-var JsonParser_$71 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$71.__name__ = true;
-JsonParser_$71.__super__ = json2object_reader_BaseParser;
-JsonParser_$71.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ width : Int, url : String, height : Int }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["height","url","width"],[false,false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "height":
-				this.value.height = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"height",assigned,this.value.height,pos);
-				break;
-			case "url":
-				this.value.url = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"url",assigned,this.value.url,pos);
-				break;
-			case "width":
-				this.value.width = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"width",assigned,this.value.width,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { height : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), url : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), width : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$71
-});
-var JsonParser_$73 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$73.__name__ = true;
-JsonParser_$73.__super__ = json2object_reader_BaseParser;
-JsonParser_$73.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ width : Int, url : String, ?signatureCipher : Null<String>, qualityLabel : String, quality : String, projectionType : String, mimeType : String, lastModified : String, itag : Int, ?initRange : Null<{ start : Int, end : Int }>, ?indexRange : Null<{ start : Int, end : Int }>, height : Int, bitrate : Int, ?audioSampleRate : Null<Int>, ?audioQuality : Null<String>, ?audioChannels : Null<Int>, approxDurationMs : String }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["approxDurationMs","audioChannels","audioQuality","audioSampleRate","bitrate","height","indexRange","initRange","itag","lastModified","mimeType","projectionType","quality","qualityLabel","signatureCipher","url","width"],[false,true,true,true,false,false,true,true,false,false,false,false,false,false,true,false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "approxDurationMs":
-				this.value.approxDurationMs = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"approxDurationMs",assigned,this.value.approxDurationMs,pos);
-				break;
-			case "audioChannels":
-				this.value.audioChannels = this.loadObjectField(($_=new JsonParser_$75(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"audioChannels",assigned,this.value.audioChannels,pos);
-				break;
-			case "audioQuality":
-				this.value.audioQuality = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"audioQuality",assigned,this.value.audioQuality,pos);
-				break;
-			case "audioSampleRate":
-				this.value.audioSampleRate = this.loadObjectField(($_=new JsonParser_$75(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"audioSampleRate",assigned,this.value.audioSampleRate,pos);
-				break;
-			case "bitrate":
-				this.value.bitrate = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"bitrate",assigned,this.value.bitrate,pos);
-				break;
-			case "height":
-				this.value.height = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"height",assigned,this.value.height,pos);
-				break;
-			case "indexRange":
-				this.value.indexRange = this.loadObjectField(($_=new JsonParser_$77(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"indexRange",assigned,this.value.indexRange,pos);
-				break;
-			case "initRange":
-				this.value.initRange = this.loadObjectField(($_=new JsonParser_$77(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"initRange",assigned,this.value.initRange,pos);
-				break;
-			case "itag":
-				this.value.itag = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"itag",assigned,this.value.itag,pos);
-				break;
-			case "lastModified":
-				this.value.lastModified = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"lastModified",assigned,this.value.lastModified,pos);
-				break;
-			case "mimeType":
-				this.value.mimeType = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"mimeType",assigned,this.value.mimeType,pos);
-				break;
-			case "projectionType":
-				this.value.projectionType = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"projectionType",assigned,this.value.projectionType,pos);
-				break;
-			case "quality":
-				this.value.quality = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"quality",assigned,this.value.quality,pos);
-				break;
-			case "qualityLabel":
-				this.value.qualityLabel = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"qualityLabel",assigned,this.value.qualityLabel,pos);
-				break;
-			case "signatureCipher":
-				this.value.signatureCipher = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"signatureCipher",assigned,this.value.signatureCipher,pos);
-				break;
-			case "url":
-				this.value.url = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"url",assigned,this.value.url,pos);
-				break;
-			case "width":
-				this.value.width = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"width",assigned,this.value.width,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { approxDurationMs : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), audioChannels : new JsonParser_$75([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), audioQuality : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), audioSampleRate : new JsonParser_$75([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), bitrate : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), height : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), indexRange : new JsonParser_$77([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), initRange : new JsonParser_$77([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), itag : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), lastModified : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), mimeType : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), projectionType : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), quality : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), qualityLabel : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), signatureCipher : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), url : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), width : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$73
-});
-var JsonParser_$75 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$75.__name__ = true;
-JsonParser_$75.__super__ = json2object_reader_BaseParser;
-JsonParser_$75.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Int",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonNumber: function(f,pos,variable) {
-		this.value = this.loadJsonInt(f,pos,variable,this.value);
-	}
-	,__class__: JsonParser_$75
-});
-var JsonParser_$77 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$77.__name__ = true;
-JsonParser_$77.__super__ = json2object_reader_BaseParser;
-JsonParser_$77.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ start : Int, end : Int }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["end","start"],[false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "end":
-				this.value.end = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"end",assigned,this.value.end,pos);
-				break;
-			case "start":
-				this.value.start = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"start",assigned,this.value.start,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { end : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), start : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$77
-});
-var JsonParser_$79 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$79.__name__ = true;
-JsonParser_$79.__super__ = json2object_reader_BaseParser;
-JsonParser_$79.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Float",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonNumber: function(f,pos,variable) {
-		this.value = this.loadJsonFloat(f,pos,variable,this.value);
-	}
-	,__class__: JsonParser_$79
-});
-var JsonParser_$81 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$81.__name__ = true;
-JsonParser_$81.__super__ = json2object_reader_BaseParser;
-JsonParser_$81.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ youtubePlaylistLimit : Int, youtubeApiKey : String, userVideoLimit : Int, totalVideoLimit : Int, templateUrl : String, serverChatHistory : Int, ?salt : Null<String>, requestLeaderOnPause : Bool, port : Int, permissions : Permissions, maxMessageLength : Int, maxLoginLength : Int, localNetworkOnly : Bool, localAdmins : Bool, ?isVerbose : Null<Bool>, filters : Array<Filter>, emotes : Array<Emote>, channelName : String, allowProxyIps : Bool }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["allowProxyIps","channelName","emotes","filters","isVerbose","localAdmins","localNetworkOnly","maxLoginLength","maxMessageLength","permissions","port","requestLeaderOnPause","salt","serverChatHistory","templateUrl","totalVideoLimit","userVideoLimit","youtubeApiKey","youtubePlaylistLimit"],[false,false,false,false,true,false,false,false,false,false,false,false,true,false,false,false,false,false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "allowProxyIps":
-				this.value.allowProxyIps = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"allowProxyIps",assigned,this.value.allowProxyIps,pos);
-				break;
-			case "channelName":
-				this.value.channelName = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"channelName",assigned,this.value.channelName,pos);
-				break;
-			case "emotes":
-				this.value.emotes = this.loadObjectField(($_=new JsonParser_$85(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"emotes",assigned,this.value.emotes,pos);
-				break;
-			case "filters":
-				this.value.filters = this.loadObjectField(($_=new JsonParser_$86(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"filters",assigned,this.value.filters,pos);
-				break;
-			case "isVerbose":
-				this.value.isVerbose = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isVerbose",assigned,this.value.isVerbose,pos);
-				break;
-			case "localAdmins":
-				this.value.localAdmins = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"localAdmins",assigned,this.value.localAdmins,pos);
-				break;
-			case "localNetworkOnly":
-				this.value.localNetworkOnly = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"localNetworkOnly",assigned,this.value.localNetworkOnly,pos);
-				break;
-			case "maxLoginLength":
-				this.value.maxLoginLength = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"maxLoginLength",assigned,this.value.maxLoginLength,pos);
-				break;
-			case "maxMessageLength":
-				this.value.maxMessageLength = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"maxMessageLength",assigned,this.value.maxMessageLength,pos);
-				break;
-			case "permissions":
-				this.value.permissions = this.loadObjectField(($_=new JsonParser_$88(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"permissions",assigned,this.value.permissions,pos);
-				break;
-			case "port":
-				this.value.port = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"port",assigned,this.value.port,pos);
-				break;
-			case "requestLeaderOnPause":
-				this.value.requestLeaderOnPause = this.loadObjectField(($_=new JsonParser_$46(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"requestLeaderOnPause",assigned,this.value.requestLeaderOnPause,pos);
-				break;
-			case "salt":
-				this.value.salt = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"salt",assigned,this.value.salt,pos);
-				break;
-			case "serverChatHistory":
-				this.value.serverChatHistory = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"serverChatHistory",assigned,this.value.serverChatHistory,pos);
-				break;
-			case "templateUrl":
-				this.value.templateUrl = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"templateUrl",assigned,this.value.templateUrl,pos);
-				break;
-			case "totalVideoLimit":
-				this.value.totalVideoLimit = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"totalVideoLimit",assigned,this.value.totalVideoLimit,pos);
-				break;
-			case "userVideoLimit":
-				this.value.userVideoLimit = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"userVideoLimit",assigned,this.value.userVideoLimit,pos);
-				break;
-			case "youtubeApiKey":
-				this.value.youtubeApiKey = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"youtubeApiKey",assigned,this.value.youtubeApiKey,pos);
-				break;
-			case "youtubePlaylistLimit":
-				this.value.youtubePlaylistLimit = this.loadObjectField(($_=new JsonParser_$52(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"youtubePlaylistLimit",assigned,this.value.youtubePlaylistLimit,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { allowProxyIps : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), channelName : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), emotes : new JsonParser_$85([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), filters : new JsonParser_$86([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isVerbose : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), localAdmins : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), localNetworkOnly : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), maxLoginLength : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), maxMessageLength : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), permissions : new JsonParser_$88([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), port : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), requestLeaderOnPause : new JsonParser_$46([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), salt : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), serverChatHistory : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), templateUrl : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), totalVideoLimit : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), userVideoLimit : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), youtubeApiKey : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), youtubePlaylistLimit : new JsonParser_$52([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$81
-});
-var JsonParser_$82 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$82.__name__ = true;
-JsonParser_$82.__super__ = json2object_reader_BaseParser;
-JsonParser_$82.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"Array<Message>",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$84(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
-	}
-	,__class__: JsonParser_$82
-});
-var JsonParser_$84 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$84.__name__ = true;
-JsonParser_$84.__super__ = json2object_reader_BaseParser;
-JsonParser_$84.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ time : String, text : String, name : String }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -2295,13 +1851,13 @@ JsonParser_$84.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "name":
-				this.value.name = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
+				this.value.name = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
 				break;
 			case "text":
-				this.value.text = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"text",assigned,this.value.text,pos);
+				this.value.text = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"text",assigned,this.value.text,pos);
 				break;
 			case "time":
-				this.value.time = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"time",assigned,this.value.time,pos);
+				this.value.time = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"time",assigned,this.value.time,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -2310,19 +1866,88 @@ JsonParser_$84.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { name : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), text : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), time : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { name : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), text : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), time : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$84
+	,__class__: JsonParser_$69
 });
-var JsonParser_$85 = function(errors,putils,errorType) {
+var JsonParser_$7 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$85.__name__ = true;
-JsonParser_$85.__super__ = json2object_reader_BaseParser;
-JsonParser_$85.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$7.__name__ = true;
+JsonParser_$7.__super__ = json2object_reader_BaseParser;
+JsonParser_$7.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ videoList : Array<VideoItem>, uuid : String, playersCacheSupport : Array<PlayerType>, itemPos : Int, isUnknownClient : Bool, isPlaylistOpen : Bool, history : Array<Message>, globalIp : String, config : Config, clients : Array<ClientData>, clientName : String }",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonObject: function(o,pos,variable) {
+		var assigned = new haxe_ds_StringMap();
+		this.objectSetupAssign(assigned,["clientName","clients","config","globalIp","history","isPlaylistOpen","isUnknownClient","itemPos","playersCacheSupport","uuid","videoList"],[false,false,false,false,false,false,false,false,false,false,false]);
+		this.value = this.getAuto();
+		var _g = 0;
+		while(_g < o.length) {
+			var field = o[_g];
+			++_g;
+			switch(field.name) {
+			case "clientName":
+				this.value.clientName = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clientName",assigned,this.value.clientName,pos);
+				break;
+			case "clients":
+				this.value.clients = this.loadObjectField(($_=new JsonParser_$53(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"clients",assigned,this.value.clients,pos);
+				break;
+			case "config":
+				this.value.config = this.loadObjectField(($_=new JsonParser_$65(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"config",assigned,this.value.config,pos);
+				break;
+			case "globalIp":
+				this.value.globalIp = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"globalIp",assigned,this.value.globalIp,pos);
+				break;
+			case "history":
+				this.value.history = this.loadObjectField(($_=new JsonParser_$66(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"history",assigned,this.value.history,pos);
+				break;
+			case "isPlaylistOpen":
+				this.value.isPlaylistOpen = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isPlaylistOpen",assigned,this.value.isPlaylistOpen,pos);
+				break;
+			case "isUnknownClient":
+				this.value.isUnknownClient = this.loadObjectField(($_=new JsonParser_$48(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"isUnknownClient",assigned,this.value.isUnknownClient,pos);
+				break;
+			case "itemPos":
+				this.value.itemPos = this.loadObjectField(($_=new JsonParser_$56(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"itemPos",assigned,this.value.itemPos,pos);
+				break;
+			case "playersCacheSupport":
+				this.value.playersCacheSupport = this.loadObjectField(($_=new JsonParser_$67(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"playersCacheSupport",assigned,this.value.playersCacheSupport,pos);
+				break;
+			case "uuid":
+				this.value.uuid = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"uuid",assigned,this.value.uuid,pos);
+				break;
+			case "videoList":
+				this.value.videoList = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"videoList",assigned,this.value.videoList,pos);
+				break;
+			default:
+				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
+			}
+		}
+		this.objectErrors(assigned,pos);
+	}
+	,getAuto: function() {
+		return { clientName : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), clients : new JsonParser_$53([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), config : new JsonParser_$65([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), globalIp : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), history : new JsonParser_$66([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isPlaylistOpen : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), isUnknownClient : new JsonParser_$48([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), itemPos : new JsonParser_$56([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), playersCacheSupport : new JsonParser_$67([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), uuid : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), videoList : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+	}
+	,__class__: JsonParser_$7
+});
+var JsonParser_$70 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$70.__name__ = true;
+JsonParser_$70.__super__ = json2object_reader_BaseParser;
+JsonParser_$70.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"Array<Emote>",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -2331,19 +1956,19 @@ JsonParser_$85.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.value = null;
 	}
 	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$94(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$79(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
 	}
-	,__class__: JsonParser_$85
+	,__class__: JsonParser_$70
 });
-var JsonParser_$86 = function(errors,putils,errorType) {
+var JsonParser_$71 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$86.__name__ = true;
-JsonParser_$86.__super__ = json2object_reader_BaseParser;
-JsonParser_$86.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$71.__name__ = true;
+JsonParser_$71.__super__ = json2object_reader_BaseParser;
+JsonParser_$71.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"Array<Filter>",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -2352,19 +1977,19 @@ JsonParser_$86.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.value = null;
 	}
 	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$92(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$77(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
 	}
-	,__class__: JsonParser_$86
+	,__class__: JsonParser_$71
 });
-var JsonParser_$88 = function(errors,putils,errorType) {
+var JsonParser_$73 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$88.__name__ = true;
-JsonParser_$88.__super__ = json2object_reader_BaseParser;
-JsonParser_$88.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$73.__name__ = true;
+JsonParser_$73.__super__ = json2object_reader_BaseParser;
+JsonParser_$73.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"{ user : Array<Permission>, leader : Array<Permission>, guest : Array<Permission>, banned : Array<Permission>, admin : Array<Permission> }",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -2382,19 +2007,19 @@ JsonParser_$88.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			++_g;
 			switch(field.name) {
 			case "admin":
-				this.value.admin = this.loadObjectField(($_=new JsonParser_$89(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"admin",assigned,this.value.admin,pos);
+				this.value.admin = this.loadObjectField(($_=new JsonParser_$74(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"admin",assigned,this.value.admin,pos);
 				break;
 			case "banned":
-				this.value.banned = this.loadObjectField(($_=new JsonParser_$89(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"banned",assigned,this.value.banned,pos);
+				this.value.banned = this.loadObjectField(($_=new JsonParser_$74(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"banned",assigned,this.value.banned,pos);
 				break;
 			case "guest":
-				this.value.guest = this.loadObjectField(($_=new JsonParser_$89(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"guest",assigned,this.value.guest,pos);
+				this.value.guest = this.loadObjectField(($_=new JsonParser_$74(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"guest",assigned,this.value.guest,pos);
 				break;
 			case "leader":
-				this.value.leader = this.loadObjectField(($_=new JsonParser_$89(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"leader",assigned,this.value.leader,pos);
+				this.value.leader = this.loadObjectField(($_=new JsonParser_$74(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"leader",assigned,this.value.leader,pos);
 				break;
 			case "user":
-				this.value.user = this.loadObjectField(($_=new JsonParser_$89(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"user",assigned,this.value.user,pos);
+				this.value.user = this.loadObjectField(($_=new JsonParser_$74(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"user",assigned,this.value.user,pos);
 				break;
 			default:
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
@@ -2403,19 +2028,19 @@ JsonParser_$88.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { admin : new JsonParser_$89([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), banned : new JsonParser_$89([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), guest : new JsonParser_$89([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), leader : new JsonParser_$89([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), user : new JsonParser_$89([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { admin : new JsonParser_$74([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), banned : new JsonParser_$74([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), guest : new JsonParser_$74([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), leader : new JsonParser_$74([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), user : new JsonParser_$74([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
-	,__class__: JsonParser_$88
+	,__class__: JsonParser_$73
 });
-var JsonParser_$89 = function(errors,putils,errorType) {
+var JsonParser_$74 = function(errors,putils,errorType) {
 	if(errorType == null) {
 		errorType = 0;
 	}
 	json2object_reader_BaseParser.call(this,errors,putils,errorType);
 };
-JsonParser_$89.__name__ = true;
-JsonParser_$89.__super__ = json2object_reader_BaseParser;
-JsonParser_$89.prototype = $extend(json2object_reader_BaseParser.prototype,{
+JsonParser_$74.__name__ = true;
+JsonParser_$74.__super__ = json2object_reader_BaseParser;
+JsonParser_$74.prototype = $extend(json2object_reader_BaseParser.prototype,{
 	onIncorrectType: function(pos,variable) {
 		this.errors.push(json2object_Error.IncorrectType(variable,"Array<Permission>",pos));
 		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
@@ -2424,9 +2049,121 @@ JsonParser_$89.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.value = null;
 	}
 	,loadJsonArray: function(a,pos,variable) {
-		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$90(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
+		this.value = this.loadJsonArrayValue(a,($_=new JsonParser_$75(this.errors,this.putils,2),$bind($_,$_.loadJson)),variable);
 	}
-	,__class__: JsonParser_$89
+	,__class__: JsonParser_$74
+});
+var JsonParser_$75 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$75.__name__ = true;
+JsonParser_$75.__super__ = json2object_reader_BaseParser;
+JsonParser_$75.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.value = "guest";
+		this.errors.push(json2object_Error.IncorrectType(variable,"Permission",pos));
+		this.objectThrow(pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonString: function(s,pos,variable) {
+		this.value = this.loadString(s,pos,variable,["guest","user","leader","admin","writeChat","addVideo","removeVideo","requestLeader","rewind","clearChat","setLeader","changeOrder","toggleItemType","lockPlaylist","banClient"],"guest");
+	}
+	,__class__: JsonParser_$75
+});
+var JsonParser_$77 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$77.__name__ = true;
+JsonParser_$77.__super__ = json2object_reader_BaseParser;
+JsonParser_$77.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ replace : String, regex : String, name : String, flags : String }",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonObject: function(o,pos,variable) {
+		var assigned = new haxe_ds_StringMap();
+		this.objectSetupAssign(assigned,["flags","name","regex","replace"],[false,false,false,false]);
+		this.value = this.getAuto();
+		var _g = 0;
+		while(_g < o.length) {
+			var field = o[_g];
+			++_g;
+			switch(field.name) {
+			case "flags":
+				this.value.flags = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"flags",assigned,this.value.flags,pos);
+				break;
+			case "name":
+				this.value.name = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
+				break;
+			case "regex":
+				this.value.regex = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"regex",assigned,this.value.regex,pos);
+				break;
+			case "replace":
+				this.value.replace = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"replace",assigned,this.value.replace,pos);
+				break;
+			default:
+				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
+			}
+		}
+		this.objectErrors(assigned,pos);
+	}
+	,getAuto: function() {
+		return { flags : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), name : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), regex : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), replace : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+	}
+	,__class__: JsonParser_$77
+});
+var JsonParser_$79 = function(errors,putils,errorType) {
+	if(errorType == null) {
+		errorType = 0;
+	}
+	json2object_reader_BaseParser.call(this,errors,putils,errorType);
+};
+JsonParser_$79.__name__ = true;
+JsonParser_$79.__super__ = json2object_reader_BaseParser;
+JsonParser_$79.prototype = $extend(json2object_reader_BaseParser.prototype,{
+	onIncorrectType: function(pos,variable) {
+		this.errors.push(json2object_Error.IncorrectType(variable,"{ name : String, image : String }",pos));
+		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
+	}
+	,loadJsonNull: function(pos,variable) {
+		this.value = null;
+	}
+	,loadJsonObject: function(o,pos,variable) {
+		var assigned = new haxe_ds_StringMap();
+		this.objectSetupAssign(assigned,["image","name"],[false,false]);
+		this.value = this.getAuto();
+		var _g = 0;
+		while(_g < o.length) {
+			var field = o[_g];
+			++_g;
+			switch(field.name) {
+			case "image":
+				this.value.image = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"image",assigned,this.value.image,pos);
+				break;
+			case "name":
+				this.value.name = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
+				break;
+			default:
+				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
+			}
+		}
+		this.objectErrors(assigned,pos);
+	}
+	,getAuto: function() {
+		return { image : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), name : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+	}
+	,__class__: JsonParser_$79
 });
 var JsonParser_$9 = function(errors,putils,errorType) {
 	if(errorType == null) {
@@ -2453,7 +2190,7 @@ JsonParser_$9.prototype = $extend(json2object_reader_BaseParser.prototype,{
 			var field = o[_g];
 			++_g;
 			if(field.name == "data") {
-				this.value.data = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"data",assigned,this.value.data,pos);
+				this.value.data = this.loadObjectField(($_=new JsonParser_$47(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"data",assigned,this.value.data,pos);
 			} else {
 				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
 			}
@@ -2461,121 +2198,9 @@ JsonParser_$9.prototype = $extend(json2object_reader_BaseParser.prototype,{
 		this.objectErrors(assigned,pos);
 	}
 	,getAuto: function() {
-		return { data : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
+		return { data : new JsonParser_$47([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
 	}
 	,__class__: JsonParser_$9
-});
-var JsonParser_$90 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$90.__name__ = true;
-JsonParser_$90.__super__ = json2object_reader_BaseParser;
-JsonParser_$90.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.value = "guest";
-		this.errors.push(json2object_Error.IncorrectType(variable,"Permission",pos));
-		this.objectThrow(pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonString: function(s,pos,variable) {
-		this.value = this.loadString(s,pos,variable,["guest","user","leader","admin","writeChat","addVideo","removeVideo","requestLeader","rewind","clearChat","setLeader","changeOrder","toggleItemType","lockPlaylist","banClient"],"guest");
-	}
-	,__class__: JsonParser_$90
-});
-var JsonParser_$92 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$92.__name__ = true;
-JsonParser_$92.__super__ = json2object_reader_BaseParser;
-JsonParser_$92.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ replace : String, regex : String, name : String, flags : String }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["flags","name","regex","replace"],[false,false,false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "flags":
-				this.value.flags = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"flags",assigned,this.value.flags,pos);
-				break;
-			case "name":
-				this.value.name = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
-				break;
-			case "regex":
-				this.value.regex = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"regex",assigned,this.value.regex,pos);
-				break;
-			case "replace":
-				this.value.replace = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"replace",assigned,this.value.replace,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { flags : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), name : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), regex : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), replace : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$92
-});
-var JsonParser_$94 = function(errors,putils,errorType) {
-	if(errorType == null) {
-		errorType = 0;
-	}
-	json2object_reader_BaseParser.call(this,errors,putils,errorType);
-};
-JsonParser_$94.__name__ = true;
-JsonParser_$94.__super__ = json2object_reader_BaseParser;
-JsonParser_$94.prototype = $extend(json2object_reader_BaseParser.prototype,{
-	onIncorrectType: function(pos,variable) {
-		this.errors.push(json2object_Error.IncorrectType(variable,"{ name : String, image : String }",pos));
-		json2object_reader_BaseParser.prototype.onIncorrectType.call(this,pos,variable);
-	}
-	,loadJsonNull: function(pos,variable) {
-		this.value = null;
-	}
-	,loadJsonObject: function(o,pos,variable) {
-		var assigned = new haxe_ds_StringMap();
-		this.objectSetupAssign(assigned,["image","name"],[false,false]);
-		this.value = this.getAuto();
-		var _g = 0;
-		while(_g < o.length) {
-			var field = o[_g];
-			++_g;
-			switch(field.name) {
-			case "image":
-				this.value.image = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"image",assigned,this.value.image,pos);
-				break;
-			case "name":
-				this.value.name = this.loadObjectField(($_=new JsonParser_$44(this.errors,this.putils,1),$bind($_,$_.loadJson)),field,"name",assigned,this.value.name,pos);
-				break;
-			default:
-				this.errors.push(json2object_Error.UnknownVariable(field.name,this.putils.convertPosition(field.namePos)));
-			}
-		}
-		this.objectErrors(assigned,pos);
-	}
-	,getAuto: function() {
-		return { image : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1))), name : new JsonParser_$44([],this.putils,0).loadJson(new hxjsonast_Json(hxjsonast_JsonValue.JNull,new hxjsonast_Position("",0,1)))};
-	}
-	,__class__: JsonParser_$94
 });
 var Lambda = function() { };
 Lambda.__name__ = true;
@@ -2659,7 +2284,7 @@ Lang.init = function(folderPath,callback) {
 };
 Lang.get = function(lang,key) {
 	if(Lang.langs.h[lang] == null) {
-		lang = "en";
+		lang = Lang.ids[0];
 	}
 	var text = Lang.langs.h[lang].h[key];
 	if(text != null) {
@@ -2801,7 +2426,7 @@ StringTools.hex = function(n,digits) {
 var _$Types_VideoItemTools = function() { };
 _$Types_VideoItemTools.__name__ = true;
 _$Types_VideoItemTools.withUrl = function(item,url) {
-	return { url : url, title : item.title, author : item.author, duration : item.duration, subs : item.subs, isTemp : item.isTemp, isIframe : item.isIframe};
+	return { url : url, title : item.title, author : item.author, duration : item.duration, subs : item.subs, voiceOverTrack : item.voiceOverTrack, isTemp : item.isTemp, doCache : item.doCache, playerType : item.playerType};
 };
 var VideoList = function() {
 	this.items = [];
@@ -2821,6 +2446,9 @@ VideoList.prototype = {
 			i = 0;
 		}
 		this.pos = i;
+	}
+	,hasItem: function(i) {
+		return this.items[i] != null;
 	}
 	,exists: function(f) {
 		return Lambda.exists(this.items,f);
@@ -3251,6 +2879,11 @@ haxe_io_Path.__name__ = true;
 haxe_io_Path.withoutExtension = function(path) {
 	var s = new haxe_io_Path(path);
 	s.ext = null;
+	return s.toString();
+};
+haxe_io_Path.withoutDirectory = function(path) {
+	var s = new haxe_io_Path(path);
+	s.dir = null;
 	return s.toString();
 };
 haxe_io_Path.extension = function(path) {
@@ -3873,6 +3506,7 @@ js_Boot.__isNativeObj = function(o) {
 js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
+var js_node_ChildProcess = require("child_process");
 var js_node_Crypto = require("crypto");
 var js_node_Fs = require("fs");
 var js_node_Http = require("http");
@@ -3880,8 +3514,8 @@ var js_node_Https = require("https");
 var js_node_Os = require("os");
 var js_node_Path = require("path");
 var js_node_Readline = require("readline");
+var js_node_buffer_Buffer = require("buffer").Buffer;
 var js_node_url_URL = require("url").URL;
-var js_node_url_URLSearchParams = require("url").URLSearchParams;
 var js_npm_ws_Server = require("ws").Server;
 var json2object_Error = $hxEnums["json2object.Error"] = { __ename__:true,__constructs__:null
 	,IncorrectType: ($_=function(variable,expected,pos) { return {_hx_index:0,variable:variable,expected:expected,pos:pos,__enum__:"json2object.Error",toString:$estr}; },$_._hx_name="IncorrectType",$_.__params__ = ["variable","expected","pos"],$_)
@@ -4045,6 +3679,416 @@ json2object_PositionUtils.prototype = {
 	}
 	,__class__: json2object_PositionUtils
 };
+var server_Cache = function(main,cacheDir) {
+	this.freeSpaceBlock = 10485760;
+	this.cachedFiles = [];
+	this.storageLimit = 3145728 * 1024;
+	this.isYtReady = false;
+	this.notEnoughSpaceErrorText = "Error: Not enough free space on server or file size is out of cache storage limit.";
+	this.main = main;
+	this.cacheDir = cacheDir;
+	server_Utils.ensureDir(cacheDir);
+	this.isYtReady = this.checkYtDeps();
+	if(this.isYtReady) {
+		this.cleanYtInputFiles();
+	}
+};
+server_Cache.__name__ = true;
+server_Cache.prototype = {
+	checkYtDeps: function() {
+		var ytdl;
+		try {
+			ytdl = require("@distube/ytdl-core");
+		} catch( _g ) {
+			return false;
+		}
+		try {
+			js_node_ChildProcess.execSync("ffmpeg -version",{ stdio : "ignore", timeout : 3000});
+			return true;
+		} catch( _g ) {
+			return false;
+		}
+	}
+	,cleanYtInputFiles: function() {
+		var names = js_node_Fs.readdirSync(this.cacheDir);
+		var _g = 0;
+		while(_g < names.length) {
+			var name = names[_g];
+			++_g;
+			if(!StringTools.startsWith(name,"__tmp")) {
+				continue;
+			}
+			this.remove(name);
+		}
+	}
+	,getCachedFiles: function() {
+		return this.cachedFiles;
+	}
+	,setCachedFiles: function(names) {
+		this.cachedFiles.length = 0;
+		var _g = 0;
+		while(_g < names.length) this.cachedFiles.push(names[_g++]);
+		var names = js_node_Fs.readdirSync(this.cacheDir);
+		var _g = 0;
+		while(_g < names.length) {
+			var name = names[_g];
+			++_g;
+			if(StringTools.startsWith(name,".")) {
+				continue;
+			}
+			if(sys_FileSystem.isDirectory("" + this.cacheDir + "/" + name)) {
+				continue;
+			}
+			if(this.cachedFiles.indexOf(name) != -1) {
+				continue;
+			}
+			haxe_Log.trace("Remove non-tracked cache " + name,{ fileName : "src/server/Cache.hx", lineNumber : 70, className : "server.Cache", methodName : "setCachedFiles"});
+			this.remove(name);
+		}
+	}
+	,log: function(client,msg) {
+		this.main.serverMessage(client,msg);
+		haxe_Log.trace(msg,{ fileName : "src/server/Cache.hx", lineNumber : 77, className : "server.Cache", methodName : "log"});
+	}
+	,cacheYoutubeVideo: function(client,url,callback) {
+		var _gthis = this;
+		if(!this.isYtReady) {
+			haxe_Log.trace("Do `npm i @distube/ytdl-core@latest` to use cache feature (you also need to install `ffmpeg` to build mp4 from downloaded audio/video tracks).",{ fileName : "src/server/Cache.hx", lineNumber : 82, className : "server.Cache", methodName : "cacheYoutubeVideo"});
+			return;
+		}
+		var videoId = utils_YoutubeUtils.extractVideoId(url);
+		if(videoId == "") {
+			this.log(client,"Error: youtube video id not found in url: " + url);
+			return;
+		}
+		var outName = videoId + ".mp4";
+		if(this.cachedFiles.indexOf(outName) != -1 && this.isFileExists(outName)) {
+			callback(outName);
+			return;
+		}
+		var inVideoName = "__tmp-video-" + videoId;
+		var inAudioName = "__tmp-audio-" + videoId;
+		if(this.isFileExists(inVideoName)) {
+			this.log(client,"Caching " + outName + " already in progress");
+			return;
+		}
+		var ytdl = require("@distube/ytdl-core");
+		haxe_Log.trace("Caching " + url + " to " + outName + "...",{ fileName : "src/server/Cache.hx", lineNumber : 115, className : "server.Cache", methodName : "cacheYoutubeVideo"});
+		this.main.send(client,{ type : "Progress", progress : { type : "Caching", ratio : 0, data : outName}});
+		var agent = null;
+		var cookiesPath = "" + this.main.userDir + "/cookies.json";
+		if(sys_FileSystem.exists(cookiesPath)) {
+			agent = ytdl.createAgent(JSON.parse(js_node_Fs.readFileSync(cookiesPath,{ encoding : "utf8"})));
+		}
+		var promise = ytdl.getInfo(url,{ agent : agent});
+		promise.then(function(info) {
+			haxe_Log.trace("Get info with " + info.formats.length + " formats",{ fileName : "src/server/Cache.hx", lineNumber : 133, className : "server.Cache", methodName : "cacheYoutubeVideo"});
+			var audioFormat;
+			try {
+				var ytdl1 = ytdl.chooseFormat;
+				var _g = [];
+				var _g1 = 0;
+				var _g2 = info.formats;
+				while(_g1 < _g2.length) {
+					var v = _g2[_g1];
+					++_g1;
+					var tmp = v.audioCodec;
+					if(tmp != null ? StringTools.startsWith(tmp,"mp4a") : null) {
+						_g.push(v);
+					}
+				}
+				audioFormat = ytdl1(_g,{ quality : "highestaudio"});
+			} catch( _g ) {
+				var e = haxe_Exception.caught(_g);
+				_gthis.log(client,"Error: audio format not found");
+				haxe_Log.trace(e,{ fileName : "src/server/Cache.hx", lineNumber : 140, className : "server.Cache", methodName : "cacheYoutubeVideo"});
+				var _g1 = [];
+				var _g2 = 0;
+				var _g3 = info.formats;
+				while(_g2 < _g3.length) {
+					var v = _g3[_g2];
+					++_g2;
+					if(v.hasAudio) {
+						_g1.push(v);
+					}
+				}
+				haxe_Log.trace(_g1,{ fileName : "src/server/Cache.hx", lineNumber : 141, className : "server.Cache", methodName : "cacheYoutubeVideo"});
+				return;
+			}
+			var videoFormat;
+			var tmp = _gthis.getBestYoutubeVideoFormat(info.formats);
+			if(tmp != null) {
+				videoFormat = tmp;
+			} else {
+				_gthis.log(client,"Error: video format not found");
+				var _g = [];
+				var _g1 = 0;
+				var _g2 = info.formats;
+				while(_g1 < _g2.length) {
+					var v = _g2[_g1];
+					++_g1;
+					if(v.hasVideo) {
+						_g.push(v);
+					}
+				}
+				haxe_Log.trace(_g,{ fileName : "src/server/Cache.hx", lineNumber : 146, className : "server.Cache", methodName : "cacheYoutubeVideo"});
+				return;
+			}
+			var dlVideo = ytdl(url,{ format : videoFormat, agent : agent});
+			dlVideo.pipe(js_node_Fs.createWriteStream("" + _gthis.cacheDir + "/" + inVideoName));
+			dlVideo.on("error",function(err) {
+				_gthis.log(client,"Error during video download: " + err);
+				_gthis.remove(inVideoName);
+				_gthis.remove(inAudioName);
+				_gthis.main.send(client,{ type : "Progress", progress : { type : "Canceled", ratio : 1}});
+			});
+			var dlAudio = ytdl(url,{ format : audioFormat, agent : agent});
+			dlAudio.pipe(js_node_Fs.createWriteStream("" + _gthis.cacheDir + "/" + inAudioName));
+			dlAudio.on("error",function(err) {
+				_gthis.log(client,"Error during audio download: " + err);
+				_gthis.remove(inVideoName);
+				_gthis.remove(inAudioName);
+				_gthis.main.send(client,{ type : "Progress", progress : { type : "Canceled", ratio : 1}});
+			});
+			var count = 0;
+			var onComplete = function(type) {
+				count += 1;
+				haxe_Log.trace("" + type + " track downloaded (" + count + "/2)",{ fileName : "src/server/Cache.hx", lineNumber : 175, className : "server.Cache", methodName : "cacheYoutubeVideo"});
+				if(count < 2) {
+					return;
+				}
+				if(!_gthis.isFileExists(inVideoName) || !_gthis.isFileExists(inAudioName)) {
+					_gthis.log(client,"Input files not found for making final video");
+					_gthis.remove(inVideoName);
+					_gthis.remove(inAudioName);
+					_gthis.main.send(client,{ type : "Progress", progress : { type : "Canceled", ratio : 1}});
+					return;
+				}
+				var size = js_node_Fs.statSync("" + _gthis.cacheDir + "/" + inVideoName).size;
+				size += js_node_Fs.statSync("" + _gthis.cacheDir + "/" + inAudioName).size;
+				var hasSpace = _gthis.removeOlderCache(size + _gthis.freeSpaceBlock);
+				if(!hasSpace) {
+					_gthis.remove(inVideoName);
+					_gthis.remove(inAudioName);
+					_gthis.main.send(client,{ type : "Progress", progress : { type : "Canceled", ratio : 1}});
+					_gthis.log(client,_gthis.notEnoughSpaceErrorText);
+					return;
+				}
+				var args = ("-y -i ./" + inVideoName + " -i ./" + inAudioName + " -c copy -map 0:v -map 1:a ./" + outName).split(" ");
+				var $process = js_node_ChildProcess.spawn("ffmpeg",args,{ cwd : _gthis.cacheDir});
+				var outputData = [];
+				$process.stderr.on("data",function(data) {
+					return outputData.push(data);
+				});
+				$process.on("close",function(code) {
+					_gthis.remove(inVideoName);
+					_gthis.remove(inAudioName);
+					if(code != 0) {
+						_gthis.main.send(client,{ type : "Progress", progress : { type : "Canceled", ratio : 1}});
+						var errCodeMsg = "Error: ffmpeg closed with code " + code;
+						var _g = [];
+						var _g1 = 0;
+						var _g2 = _gthis.main.clients;
+						while(_g1 < _g2.length) {
+							var v = _g2[_g1];
+							++_g1;
+							if((v.group & 1 << ClientGroup.Admin._hx_index) != 0) {
+								_g.push(v);
+							}
+						}
+						var admins = _g;
+						var _g = 0;
+						while(_g < admins.length) {
+							var client1 = admins[_g];
+							++_g;
+							_gthis.log(client1,js_node_buffer_Buffer.concat(outputData).toString());
+							_gthis.log(client1,errCodeMsg);
+						}
+						if(admins.indexOf(client) == -1) {
+							_gthis.log(client,errCodeMsg);
+						}
+						return;
+					}
+					_gthis.add(outName);
+					callback(outName);
+				});
+			};
+			dlVideo.on("finish",function() {
+				onComplete("Video");
+			});
+			dlAudio.on("finish",function() {
+				onComplete("Audio");
+			});
+			var isAudioStart = true;
+			dlAudio.on("progress",function(chunkLength,downloaded,contentLength) {
+				if(isAudioStart) {
+					isAudioStart = false;
+					var hasSpace = _gthis.removeOlderCache(contentLength + _gthis.freeSpaceBlock);
+					if(!hasSpace) {
+						dlVideo.destroy();
+						dlAudio.destroy();
+						_gthis.remove(inVideoName);
+						_gthis.remove(inAudioName);
+						_gthis.main.send(client,{ type : "Progress", progress : { type : "Canceled", ratio : 1}});
+						_gthis.main.serverMessage(client,_gthis.notEnoughSpaceErrorText);
+					}
+				}
+			});
+			var isVideoStart = true;
+			dlVideo.on("progress",function(chunkLength,downloaded,contentLength) {
+				if(isVideoStart) {
+					isVideoStart = false;
+					var hasSpace = _gthis.removeOlderCache(contentLength + _gthis.freeSpaceBlock);
+					if(!hasSpace) {
+						dlVideo.destroy();
+						dlAudio.destroy();
+						_gthis.remove(inVideoName);
+						_gthis.remove(inAudioName);
+						_gthis.main.send(client,{ type : "Progress", progress : { type : "Canceled", ratio : 1}});
+						_gthis.main.serverMessage(client,_gthis.notEnoughSpaceErrorText);
+					}
+				}
+				var v = downloaded / contentLength;
+				var ratio = v < 0 ? 0 : v > 1 ? 1 : v;
+				_gthis.main.send(client,{ type : "Progress", progress : { type : "Downloading", ratio : ratio}});
+			});
+		}).catch(function(err) {
+			_gthis.remove(inVideoName);
+			_gthis.remove(inAudioName);
+			_gthis.main.send(client,{ type : "Progress", progress : { type : "Canceled", ratio : 1}});
+			_gthis.log(client,"" + err);
+		});
+	}
+	,setStorageLimit: function(bytes) {
+		var _gthis = this;
+		this.storageLimit = bytes;
+		var a = this.storageLimit;
+		this.storageLimit = a < 0 ? 0 : a;
+		this.getFreeDiskSpace(function(availSpace) {
+			var a = availSpace - _gthis.freeSpaceBlock;
+			var availSpace = a < 0 ? 0 : a;
+			_gthis.removeOlderCache();
+			var freeSpace = _gthis.getFreeSpace();
+			if(availSpace < freeSpace) {
+				var a = _gthis.storageLimit += availSpace - freeSpace;
+				_gthis.storageLimit = a < 0 ? 0 : a;
+				_gthis.removeOlderCache();
+			}
+		});
+	}
+	,getFreeDiskSpace: function(callback) {
+		var _gthis = this;
+		var tmp = js_node_Fs.statfs;
+		if(tmp == null) {
+			haxe_Log.trace("Warning: no fs.statfs support in current nodejs version (needs v18+)",{ fileName : "src/server/Cache.hx", lineNumber : 278, className : "server.Cache", methodName : "getFreeDiskSpace"});
+			callback(this.storageLimit);
+			return;
+		}
+		tmp("/",function(err,stats) {
+			if(err != null) {
+				haxe_Log.trace(err,{ fileName : "src/server/Cache.hx", lineNumber : 284, className : "server.Cache", methodName : "getFreeDiskSpace"});
+				callback(_gthis.storageLimit);
+				return;
+			}
+			callback(stats.bsize * stats.bavail);
+		});
+	}
+	,add: function(name) {
+		if(this.cachedFiles.indexOf(name) == -1) {
+			this.cachedFiles.unshift(name);
+		}
+	}
+	,remove: function(name) {
+		HxOverrides.remove(this.cachedFiles,name);
+		this.removeFile(name);
+	}
+	,removeOlderCache: function(addFileSize) {
+		if(addFileSize == null) {
+			addFileSize = 0;
+		}
+		var space = this.getUsedSpace(addFileSize);
+		while(space > this.storageLimit) {
+			var tmp = this.cachedFiles.pop();
+			if(tmp == null) {
+				break;
+			}
+			this.removeFile(tmp);
+			space = this.getUsedSpace(addFileSize);
+		}
+		return space < this.storageLimit;
+	}
+	,removeFile: function(name) {
+		var path = this.getFilePath(name);
+		if(sys_FileSystem.exists(path)) {
+			js_node_Fs.unlinkSync(path);
+		}
+	}
+	,getFreeFileName: function(fullName) {
+		if(fullName == null) {
+			fullName = "video.mp4";
+		}
+		var baseName = haxe_io_Path.withoutDirectory(haxe_io_Path.withoutExtension(fullName));
+		var ext = haxe_io_Path.extension(fullName);
+		var i = 1;
+		while(true) {
+			var name = "" + baseName + (i == 1 ? "" : "" + i) + "." + ext;
+			if(!this.isFileExists(name)) {
+				return name;
+			}
+			++i;
+		}
+	}
+	,getFilePath: function(name) {
+		return "" + this.cacheDir + "/" + name;
+	}
+	,getFileUrl: function(name) {
+		return "/" + haxe_io_Path.withoutDirectory(this.cacheDir) + "/" + name;
+	}
+	,isFileExists: function(name) {
+		return sys_FileSystem.exists(this.getFilePath(name));
+	}
+	,getFreeSpace: function() {
+		return this.storageLimit - this.getUsedSpace();
+	}
+	,getUsedSpace: function(addFileSize) {
+		if(addFileSize == null) {
+			addFileSize = 0;
+		}
+		var total = addFileSize < 0 ? 0 : addFileSize;
+		var arr = this.cachedFiles;
+		var _g_i = arr.length - 1;
+		while(_g_i > -1) {
+			var name = arr[_g_i--];
+			var path = this.getFilePath(name);
+			if(!sys_FileSystem.exists(path)) {
+				HxOverrides.remove(this.cachedFiles,name);
+				continue;
+			}
+			total += js_node_Fs.statSync(path).size;
+		}
+		return total;
+	}
+	,getBestYoutubeVideoFormat: function(formats) {
+		var qPriority = [1080,720,480,360,240,144];
+		var _g = 0;
+		while(_g < qPriority.length) {
+			var quality = "" + qPriority[_g++] + "p";
+			var _g1 = 0;
+			while(_g1 < formats.length) {
+				var format = formats[_g1];
+				++_g1;
+				if(format.videoCodec == null) {
+					continue;
+				}
+				if(format.qualityLabel == quality) {
+					return format;
+				}
+			}
+		}
+		return null;
+	}
+	,__class__: server_Cache
+};
 var server_ConsoleInput = function(main) {
 	var _g = new haxe_ds_StringMap();
 	_g.h["addAdmin"] = { args : ["name","password"], desc : "Adds channel admin"};
@@ -4200,233 +4244,381 @@ server_ConsoleInput.prototype = {
 	}
 	,__class__: server_ConsoleInput
 };
-var server_HttpServer = function() { };
-server_HttpServer.__name__ = true;
-server_HttpServer.init = function(dir,customDir,allowLocalRequests) {
-	server_HttpServer.dir = dir;
-	if(customDir == null) {
-		return;
+var server__$HttpServer_HttpServerConfig = function(dir,customDir,allowLocalRequests,cache) {
+	this.cache = null;
+	this.allowLocalRequests = false;
+	this.customDir = null;
+	this.dir = dir;
+	if(customDir != null) {
+		this.customDir = customDir;
 	}
-	server_HttpServer.customDir = customDir;
-	server_HttpServer.hasCustomRes = sys_FileSystem.exists(customDir);
-	server_HttpServer.allowLocalRequests = allowLocalRequests;
+	if(allowLocalRequests != null) {
+		this.allowLocalRequests = allowLocalRequests;
+	}
+	if(cache != null) {
+		this.cache = cache;
+	}
 };
-server_HttpServer.serveFiles = function(req,res) {
-	var url;
-	try {
-		url = new js_node_url_URL(server_HttpServer.safeDecodeURI(req.url),"http://localhost");
-	} catch( _g ) {
-		url = new js_node_url_URL("/","http://localhost");
+server__$HttpServer_HttpServerConfig.__name__ = true;
+server__$HttpServer_HttpServerConfig.prototype = {
+	__class__: server__$HttpServer_HttpServerConfig
+};
+var server_HttpServer = function(main,config) {
+	this.ctrlCharacters = new EReg("[\\u0000-\\u001F\\u007F-\\u009F\\u2000-\\u200D\\uFEFF]","g");
+	this.matchVarString = new EReg("\\${([A-z_]+)}","g");
+	this.matchLang = new EReg("^[A-z]+","");
+	this.uploadingFilesLastChunks = new haxe_ds_StringMap();
+	this.uploadingFilesSizes = new haxe_ds_StringMap();
+	this.CHUNK_SIZE = 5242880;
+	this.cache = null;
+	this.allowLocalRequests = false;
+	this.allowedLocalFiles = new haxe_ds_StringMap();
+	this.hasCustomRes = false;
+	this.main = main;
+	this.dir = config.dir;
+	this.customDir = config.customDir;
+	this.allowLocalRequests = config.allowLocalRequests;
+	this.cache = config.cache;
+	if(this.customDir != null) {
+		this.hasCustomRes = sys_FileSystem.exists(this.customDir);
 	}
-	var filePath = server_HttpServer.getPath(server_HttpServer.dir,url);
-	var ext = haxe_io_Path.extension(filePath).toLowerCase();
-	res.setHeader("Accept-Ranges","bytes");
-	res.setHeader("Content-Type",server_HttpServer.getMimeType(ext));
-	if(server_HttpServer.allowLocalRequests && req.socket.remoteAddress == req.socket.localAddress || server_HttpServer.allowedLocalFiles.h[url.pathname]) {
-		if(server_HttpServer.isMediaExtension(ext)) {
-			server_HttpServer.allowedLocalFiles.h[url.pathname] = true;
-			var s = url.pathname;
-			if(server_HttpServer.serveMedia(req,res,decodeURIComponent(s.split("+").join(" ")))) {
+};
+server_HttpServer.__name__ = true;
+server_HttpServer.prototype = {
+	serveFiles: function(req,res) {
+		var _gthis = this;
+		var url;
+		try {
+			url = new js_node_url_URL(this.safeDecodeURI(req.url),"http://localhost");
+		} catch( _g ) {
+			url = new js_node_url_URL("/","http://localhost");
+		}
+		var filePath = this.getPath(this.dir,url);
+		var ext = haxe_io_Path.extension(filePath).toLowerCase();
+		res.setHeader("accept-ranges","bytes");
+		res.setHeader("content-type",this.getMimeType(ext));
+		if(this.cache != null && req.method == "POST") {
+			switch(url.pathname) {
+			case "/upload":
+				this.uploadFile(req,res);
+				break;
+			case "/upload-last-chunk":
+				this.uploadFileLastChunk(req,res);
+				break;
+			}
+			return;
+		}
+		if(this.allowLocalRequests && req.socket.remoteAddress == req.socket.localAddress || this.allowedLocalFiles.h[url.pathname]) {
+			if(this.isMediaExtension(ext)) {
+				this.allowedLocalFiles.h[url.pathname] = true;
+				var s = url.pathname;
+				if(this.serveMedia(req,res,decodeURIComponent(s.split("+").join(" ")))) {
+					return;
+				}
+			}
+		}
+		if(!this.isChildOf(this.dir,filePath)) {
+			res.statusCode = 500;
+			var rel = js_node_Path.relative(this.dir,filePath);
+			res.end("Error getting the file: No access to " + rel + ".");
+			return;
+		}
+		if(url.pathname == "/proxy") {
+			if(!this.proxyUrl(req,res)) {
+				res.end("Proxy error: " + req.url);
+			}
+			return;
+		}
+		if(this.hasCustomRes) {
+			var path = this.getPath(this.customDir,url);
+			if(js_node_Fs.existsSync(path)) {
+				filePath = path;
+			}
+		}
+		if(this.isMediaExtension(ext)) {
+			if(this.serveMedia(req,res,filePath)) {
 				return;
 			}
 		}
-	}
-	if(!server_HttpServer.isChildOf(server_HttpServer.dir,filePath)) {
-		res.statusCode = 500;
-		var rel = js_node_Path.relative(server_HttpServer.dir,filePath);
-		res.end("Error getting the file: No access to " + rel + ".");
-		return;
-	}
-	if(url.pathname == "/proxy") {
-		if(!server_HttpServer.proxyUrl(req,res)) {
-			res.end("Proxy error: " + req.url);
-		}
-		return;
-	}
-	if(server_HttpServer.hasCustomRes) {
-		var path = server_HttpServer.getPath(server_HttpServer.customDir,url);
-		if(js_node_Fs.existsSync(path)) {
-			filePath = path;
-		}
-	}
-	if(server_HttpServer.isMediaExtension(ext)) {
-		if(server_HttpServer.serveMedia(req,res,filePath)) {
-			return;
-		}
-	}
-	js_node_Fs.readFile(filePath,function(err,data) {
-		if(err != null) {
-			server_HttpServer.readFileError(err,res,filePath);
-			return;
-		}
-		if(ext == "html") {
-			data = server_HttpServer.localizeHtml(data.toString(),req.headers["accept-language"]);
-		}
-		res.end(data);
-	});
-};
-server_HttpServer.getPath = function(dir,url) {
-	var filePath = dir + url.pathname;
-	filePath = decodeURIComponent(filePath.split("+").join(" "));
-	if(!sys_FileSystem.isDirectory(filePath)) {
-		return filePath;
-	}
-	return haxe_io_Path.addTrailingSlash(filePath) + "index.html";
-};
-server_HttpServer.readFileError = function(err,res,filePath) {
-	res.setHeader("Content-Type",server_HttpServer.getMimeType("html"));
-	if(err.code == "ENOENT") {
-		res.statusCode = 404;
-		var rel = js_node_Path.relative(server_HttpServer.dir,filePath);
-		res.end("File " + rel + " not found.");
-	} else {
-		res.statusCode = 500;
-		res.end("Error getting the file: " + Std.string(err) + ".");
-	}
-};
-server_HttpServer.serveMedia = function(req,res,filePath) {
-	if(!js_node_Fs.existsSync(filePath)) {
-		return false;
-	}
-	var videoSize = js_node_Fs.statSync(filePath).size;
-	var rangeHeader = req.headers["range"];
-	if(rangeHeader == null) {
-		res.statusCode = 200;
-		res.setHeader("Content-Length","" + videoSize);
-		var videoStream = js_node_Fs.createReadStream(filePath);
-		videoStream.pipe(res);
-		res.on("error",function() {
-			return videoStream.destroy();
+		js_node_Fs.readFile(filePath,function(err,data) {
+			if(err != null) {
+				_gthis.readFileError(err,res,filePath);
+				return;
+			}
+			if(ext == "html") {
+				data = _gthis.localizeHtml(data.toString(),req.headers["accept-language"]);
+			}
+			res.end(data);
 		});
-		res.on("close",function() {
-			return videoStream.destroy();
+	}
+	,uploadFileLastChunk: function(req,res) {
+		var _gthis = this;
+		var name = this.cache.getFreeFileName(req.headers["content-name"]);
+		var filePath = this.cache.getFilePath(name);
+		var body = [];
+		req.on("data",function(chunk) {
+			return body.push(chunk);
 		});
-		return true;
+		req.on("end",function() {
+			var buffer = js_node_buffer_Buffer.concat(body);
+			_gthis.uploadingFilesLastChunks.h[filePath] = buffer;
+			res.writeHead(200,{ "content-type" : _gthis.getMimeType("json")});
+			var json = { info : "File last chunk uploaded", url : _gthis.cache.getFileUrl(name)};
+			res.end(JSON.stringify(json));
+		});
 	}
-	var range = server_HttpServer.parseRangeHeader(rangeHeader,videoSize);
-	var start = range.start;
-	var end = range.end;
-	res.setHeader("Content-Range","bytes " + start + "-" + end + "/" + videoSize);
-	res.setHeader("Content-Length","" + (end - start + 1));
-	res.statusCode = 206;
-	var videoStream1 = js_node_Fs.createReadStream(filePath,{ start : start, end : end});
-	videoStream1.pipe(res);
-	res.on("error",function() {
-		return videoStream1.destroy();
-	});
-	res.on("close",function() {
-		return videoStream1.destroy();
-	});
-	return true;
-};
-server_HttpServer.parseRangeHeader = function(rangeHeader,videoSize) {
-	var ranges = new EReg("[-=]","g").split(rangeHeader);
-	var start = parseFloat(ranges[1]);
-	if(server_Utils.isOutOfRange(start,0,videoSize - 1)) {
-		start = 0;
-	}
-	var end = parseFloat(ranges[2]);
-	if(isNaN(end)) {
-		end = start + server_HttpServer.CHUNK_SIZE;
-	}
-	if(server_Utils.isOutOfRange(end,start,videoSize - 1)) {
-		end = videoSize - 1;
-	}
-	return { start : start, end : end};
-};
-server_HttpServer.isMediaExtension = function(ext) {
-	if(!(ext == "mp4" || ext == "webm" || ext == "mp3")) {
-		return ext == "wav";
-	} else {
-		return true;
-	}
-};
-server_HttpServer.localizeHtml = function(data,lang) {
-	if(lang != null && server_HttpServer.matchLang.match(lang)) {
-		lang = server_HttpServer.matchLang.matched(0);
-	} else {
-		lang = "en";
-	}
-	data = server_HttpServer.matchVarString.map(data,function(regExp) {
-		var key = regExp.matched(1);
-		return Lang.get(lang,key);
-	});
-	return data;
-};
-server_HttpServer.proxyUrl = function(req,res) {
-	var url = StringTools.replace(req.url,"/proxy?url=","");
-	var proxy = server_HttpServer.proxyRequest(url,req,res,function(proxyRes) {
-		var tmp = proxyRes.headers["location"];
+	,uploadFile: function(req,res) {
+		var _gthis = this;
+		var name = this.cache.getFreeFileName(req.headers["content-name"]);
+		var filePath = this.cache.getFilePath(name);
+		var tmp = Std.parseInt(req.headers["content-length"]);
 		if(tmp == null) {
+			return;
+		}
+		if(tmp < this.cache.storageLimit) {
+			this.cache.removeOlderCache(tmp);
+		}
+		if(this.cache.getFreeSpace() < tmp) {
+			res.statusCode = 413;
+			res.end(JSON.stringify({ info : this.cache.notEnoughSpaceErrorText, errorId : "freeSpace"}));
+			var _this = _gthis.uploadingFilesSizes;
+			if(Object.prototype.hasOwnProperty.call(_this.h,filePath)) {
+				delete(_this.h[filePath]);
+			}
+			var _this = _gthis.uploadingFilesLastChunks;
+			if(Object.prototype.hasOwnProperty.call(_this.h,filePath)) {
+				delete(_this.h[filePath]);
+			}
+			this.cache.remove(name);
+			req.destroy();
+			var tmp1 = ClientTools.getByName(this.main.clients,name);
+			if(tmp1 == null) {
+				return;
+			}
+			this.main.serverMessage(tmp1,this.cache.notEnoughSpaceErrorText);
+			return;
+		}
+		var stream = js_node_Fs.createWriteStream(filePath);
+		req.pipe(stream);
+		this.cache.add(name);
+		this.uploadingFilesSizes.h[filePath] = tmp;
+		stream.on("close",function() {
+			res.statusCode = 200;
+			res.end(JSON.stringify({ info : "File write stream closed."}));
+			var _this = _gthis.uploadingFilesSizes;
+			if(Object.prototype.hasOwnProperty.call(_this.h,filePath)) {
+				delete(_this.h[filePath]);
+			}
+			var _this = _gthis.uploadingFilesLastChunks;
+			if(Object.prototype.hasOwnProperty.call(_this.h,filePath)) {
+				delete(_this.h[filePath]);
+			}
+		});
+		stream.on("error",function(err) {
+			haxe_Log.trace(err,{ fileName : "src/server/HttpServer.hx", lineNumber : 196, className : "server.HttpServer", methodName : "uploadFile"});
+			res.statusCode = 500;
+			res.end(JSON.stringify({ info : "File write stream error."}));
+			var _this = _gthis.uploadingFilesSizes;
+			if(Object.prototype.hasOwnProperty.call(_this.h,filePath)) {
+				delete(_this.h[filePath]);
+			}
+			var _this = _gthis.uploadingFilesLastChunks;
+			if(Object.prototype.hasOwnProperty.call(_this.h,filePath)) {
+				delete(_this.h[filePath]);
+			}
+			_gthis.cache.remove(name);
+		});
+		req.on("error",function(err) {
+			haxe_Log.trace("Request Error:",{ fileName : "src/server/HttpServer.hx", lineNumber : 203, className : "server.HttpServer", methodName : "uploadFile", customParams : [err]});
+			stream.destroy();
+			res.statusCode = 500;
+			res.end(JSON.stringify({ info : "File request error."}));
+			var _this = _gthis.uploadingFilesSizes;
+			if(Object.prototype.hasOwnProperty.call(_this.h,filePath)) {
+				delete(_this.h[filePath]);
+			}
+			var _this = _gthis.uploadingFilesLastChunks;
+			if(Object.prototype.hasOwnProperty.call(_this.h,filePath)) {
+				delete(_this.h[filePath]);
+			}
+			_gthis.cache.remove(name);
+		});
+	}
+	,getPath: function(dir,url) {
+		var filePath = dir + url.pathname;
+		filePath = decodeURIComponent(filePath.split("+").join(" "));
+		if(!sys_FileSystem.isDirectory(filePath)) {
+			return filePath;
+		}
+		return haxe_io_Path.addTrailingSlash(filePath) + "index.html";
+	}
+	,readFileError: function(err,res,filePath) {
+		res.setHeader("content-type",this.getMimeType("html"));
+		if(err.code == "ENOENT") {
+			res.statusCode = 404;
+			var rel = js_node_Path.relative(this.dir,filePath);
+			res.end("File " + rel + " not found.");
+		} else {
+			res.statusCode = 500;
+			res.end("Error getting the file: " + Std.string(err) + ".");
+		}
+	}
+	,serveMedia: function(req,res,filePath) {
+		if(!js_node_Fs.existsSync(filePath)) {
 			return false;
 		}
-		var proxy2 = server_HttpServer.proxyRequest(tmp,req,res,function(proxyRes) {
-			return false;
-		});
-		if(proxy2 == null) {
-			res.end("Proxy error: multiple redirects for url " + tmp);
+		var videoSize = js_node_Fs.statSync(filePath).size;
+		if(Object.prototype.hasOwnProperty.call(this.uploadingFilesSizes.h,filePath)) {
+			videoSize = this.uploadingFilesSizes.h[filePath];
+		}
+		var rangeHeader = req.headers["range"];
+		if(rangeHeader == null) {
+			res.statusCode = 200;
+			res.setHeader("content-length","" + videoSize);
+			var videoStream = js_node_Fs.createReadStream(filePath);
+			videoStream.pipe(res);
+			res.on("error",function() {
+				return videoStream.destroy();
+			});
+			res.on("close",function() {
+				return videoStream.destroy();
+			});
 			return true;
 		}
-		req.pipe(proxy2);
-		return true;
-	});
-	if(proxy == null) {
-		return false;
-	}
-	req.pipe(proxy);
-	return true;
-};
-server_HttpServer.proxyRequest = function(url,req,res,cancelProxyRequest) {
-	var url1;
-	try {
-		url1 = new js_node_url_URL(server_HttpServer.safeDecodeURI(url));
-	} catch( _g ) {
-		return null;
-	}
-	if(url1.host == req.headers["host"]) {
-		return null;
-	}
-	var options = { host : url1.hostname, port : Std.parseInt(url1.port), path : url1.pathname + url1.search, method : req.method};
-	req.headers["referer"] = url1.toString();
-	req.headers["host"] = url1.hostname;
-	var request = url1.protocol == "https:" ? js_node_Https.request : js_node_Http.request;
-	var proxy = request(options,function(proxyRes) {
-		if(cancelProxyRequest(proxyRes)) {
-			return;
+		var range = this.parseRangeHeader(rangeHeader,videoSize);
+		var start = range.start;
+		var end = range.end;
+		var contentLength = end - start + 1;
+		res.setHeader("content-range","bytes " + start + "-" + end + "/" + videoSize);
+		res.setHeader("content-length","" + contentLength);
+		res.statusCode = 206;
+		var buffer = this.uploadingFilesLastChunks.h[filePath];
+		if(buffer != null && end == videoSize - 1 && contentLength < buffer.byteLength) {
+			var a = buffer.byteLength - contentLength;
+			res.end(buffer.slice(a < 0 ? 0 : a));
+			return true;
 		}
-		proxyRes.headers["Content-Type"] = "application/octet-stream";
-		res.writeHead(proxyRes.statusCode,proxyRes.headers);
-		proxyRes.pipe(res);
-	});
-	proxy.on("error",function(err) {
-		res.end("Proxy error: " + url1.href);
-	});
-	return proxy;
-};
-server_HttpServer.isChildOf = function(parent,child) {
-	var rel = js_node_Path.relative(parent,child);
-	if(rel.length > 0 && !StringTools.startsWith(rel,"..")) {
-		return !js_node_Path.isAbsolute(rel);
-	} else {
-		return false;
+		var videoStream1 = js_node_Fs.createReadStream(filePath,{ start : start, end : end});
+		videoStream1.pipe(res);
+		res.on("error",function() {
+			return videoStream1.destroy();
+		});
+		res.on("close",function() {
+			return videoStream1.destroy();
+		});
+		return true;
 	}
-};
-server_HttpServer.getMimeType = function(ext) {
-	var tmp = server_HttpServer.mimeTypes.h[ext];
-	if(tmp != null) {
-		return tmp;
-	} else {
-		return "application/octet-stream";
+	,parseRangeHeader: function(rangeHeader,videoSize) {
+		var ranges = new EReg("[-=]","g").split(rangeHeader);
+		var start = Std.parseInt(ranges[1]);
+		if(server_Utils.isOutOfRange(start,0,videoSize - 1)) {
+			start = 0;
+		}
+		var end = Std.parseInt(ranges[2]);
+		if(end == null) {
+			end = start + this.CHUNK_SIZE;
+		}
+		if(server_Utils.isOutOfRange(end,start,videoSize - 1)) {
+			end = videoSize - 1;
+		}
+		return { start : start, end : end};
 	}
-};
-server_HttpServer.safeDecodeURI = function(data) {
-	try {
-		data = decodeURI(data);
-	} catch( _g ) {
-		data = "";
+	,isMediaExtension: function(ext) {
+		if(!(ext == "mp4" || ext == "webm" || ext == "mp3")) {
+			return ext == "wav";
+		} else {
+			return true;
+		}
 	}
-	data = data.replace(server_HttpServer.ctrlCharacters.r,"");
-	return data;
+	,localizeHtml: function(data,lang) {
+		if(lang != null && this.matchLang.match(lang)) {
+			lang = this.matchLang.matched(0);
+		} else {
+			lang = "en";
+		}
+		data = this.matchVarString.map(data,function(regExp) {
+			var key = regExp.matched(1);
+			return Lang.get(lang,key);
+		});
+		return data;
+	}
+	,proxyUrl: function(req,res) {
+		var _gthis = this;
+		var url = StringTools.replace(req.url,"/proxy?url=","");
+		var proxy = this.proxyRequest(url,req,res,function(proxyRes) {
+			var tmp = proxyRes.headers["location"];
+			if(tmp == null) {
+				return false;
+			}
+			var proxy2 = _gthis.proxyRequest(tmp,req,res,function(proxyRes) {
+				return false;
+			});
+			if(proxy2 == null) {
+				res.end("Proxy error: multiple redirects for url " + tmp);
+				return true;
+			}
+			req.pipe(proxy2);
+			return true;
+		});
+		if(proxy == null) {
+			return false;
+		}
+		req.pipe(proxy);
+		return true;
+	}
+	,proxyRequest: function(url,req,res,cancelProxyRequest) {
+		var url1;
+		try {
+			url1 = new js_node_url_URL(this.safeDecodeURI(url));
+		} catch( _g ) {
+			return null;
+		}
+		if(url1.host == req.headers["host"]) {
+			return null;
+		}
+		var options = { host : url1.hostname, port : Std.parseInt(url1.port), path : url1.pathname + url1.search, method : req.method};
+		req.headers["referer"] = url1.toString();
+		req.headers["host"] = url1.hostname;
+		var request = url1.protocol == "https:" ? js_node_Https.request : js_node_Http.request;
+		var proxy = request(options,function(proxyRes) {
+			if(cancelProxyRequest(proxyRes)) {
+				return;
+			}
+			proxyRes.headers["content-type"] = "application/octet-stream";
+			res.writeHead(proxyRes.statusCode,proxyRes.headers);
+			proxyRes.pipe(res);
+		});
+		proxy.on("error",function(err) {
+			res.end("Proxy error: " + url1.href);
+		});
+		return proxy;
+	}
+	,isChildOf: function(parent,child) {
+		var rel = js_node_Path.relative(parent,child);
+		if(rel.length > 0 && !StringTools.startsWith(rel,"..")) {
+			return !js_node_Path.isAbsolute(rel);
+		} else {
+			return false;
+		}
+	}
+	,getMimeType: function(ext) {
+		var tmp = server_HttpServer.mimeTypes.h[ext];
+		if(tmp != null) {
+			return tmp;
+		} else {
+			return "application/octet-stream";
+		}
+	}
+	,safeDecodeURI: function(data) {
+		try {
+			data = decodeURI(data);
+		} catch( _g ) {
+			data = "";
+		}
+		data = data.replace(this.ctrlCharacters.r,"");
+		return data;
+	}
+	,__class__: server_HttpServer
 };
 var server_Logger = function(folder,maxCount,verbose) {
 	this.matchFileFormat = new EReg("[0-9_-]+\\.json$","");
@@ -4462,28 +4654,22 @@ server_Logger.prototype = {
 			return;
 		}
 		server_Utils.ensureDir(this.folder);
-		this.removeOldestLog(this.folder);
+		this.removeOldestLog();
 		var name = DateTools.format(new Date(),"%Y-%m-%d_%H_%M_%S");
-		js_node_Fs.writeFileSync("" + this.folder + "/" + name + ".json",JSON.stringify(this.getLogs(),$bind(this,this.filterNulls),"\t"));
+		js_node_Fs.writeFileSync("" + this.folder + "/" + name + ".json",server_Main.jsonStringify(this.getLogs(),"\t"));
 	}
 	,getLogs: function() {
 		return this.logs;
 	}
-	,filterNulls: function(key,value) {
-		if(value == null) {
-			return undefined;
-		}
-		return value;
-	}
-	,removeOldestLog: function(folder) {
+	,removeOldestLog: function() {
 		var _gthis = this;
-		var _this = js_node_Fs.readdirSync(folder);
+		var _this = js_node_Fs.readdirSync(this.folder);
 		var _g = [];
 		var _g1 = 0;
 		while(_g1 < _this.length) {
 			var v = _this[_g1];
 			++_g1;
-			if(sys_FileSystem.isDirectory("" + folder + "/" + v) ? false : StringTools.startsWith(v,".") ? false : StringTools.endsWith(v,".json")) {
+			if(sys_FileSystem.isDirectory("" + _gthis.folder + "/" + v) ? false : StringTools.startsWith(v,".") ? false : StringTools.endsWith(v,".json")) {
 				_g.push(v);
 			}
 		}
@@ -4507,7 +4693,7 @@ server_Logger.prototype = {
 		if(fileName == null) {
 			return;
 		}
-		js_node_Fs.unlinkSync("" + folder + "/" + fileName);
+		js_node_Fs.unlinkSync("" + this.folder + "/" + fileName);
 	}
 	,extractFileDate: function(name) {
 		name = haxe_io_Path.withoutExtension(name);
@@ -4525,6 +4711,7 @@ var server_Main = function(opts) {
 	this.matchGuestName = new EReg("guest [0-9]+","");
 	this.matchHtmlChars = new EReg("[&^<>'\"]","");
 	this.isHeroku = false;
+	this.isServerPause = false;
 	this.flashbacks = [];
 	this.messages = [];
 	this.videoTimer = new server_VideoTimer();
@@ -4532,13 +4719,16 @@ var server_Main = function(opts) {
 	this.wsEventParser = new JsonParser_$1();
 	this.freeIds = [];
 	this.clients = [];
+	this.playersCacheSupport = [];
 	this.rootDir = "" + __dirname + "/..";
 	var _gthis = this;
 	this.isNoState = !opts.loadState;
 	var args = server_Utils.parseArgs(process.argv.slice(2),false);
 	this.verbose = Object.prototype.hasOwnProperty.call(args.h,"verbose");
-	this.statePath = "" + this.rootDir + "/user/state.json";
-	this.logsDir = "" + this.rootDir + "/user/logs";
+	this.userDir = "" + this.rootDir + "/user";
+	this.statePath = "" + this.userDir + "/state.json";
+	this.logsDir = "" + this.userDir + "/logs";
+	this.cacheDir = "" + this.userDir + "/res/cache";
 	process.on("SIGINT",$bind(this,this.exit));
 	process.on("SIGUSR1",$bind(this,this.exit));
 	process.on("SIGUSR2",$bind(this,this.exit));
@@ -4554,9 +4744,14 @@ var server_Main = function(opts) {
 	this.logger = new server_Logger(this.logsDir,10,this.verbose);
 	this.consoleInput = new server_ConsoleInput(this);
 	this.consoleInput.initConsoleInput();
+	this.cache = new server_Cache(this,this.cacheDir);
+	if(this.cache.isYtReady) {
+		this.playersCacheSupport.push("YoutubeType");
+	}
 	this.initIntergationHandlers();
 	this.loadState();
 	this.config = this.loadUserConfig();
+	this.cache.setStorageLimit(this.config.cacheStorageLimitGiB * 1024 * 1024 * 1024);
 	this.userList = this.loadUsers();
 	this.config.isVerbose = this.verbose;
 	this.config.salt = this.generateConfigSalt();
@@ -4583,7 +4778,7 @@ var server_Main = function(opts) {
 	preparePort = function() {
 		server_Utils.isPortFree(_gthis.port,function(isFree) {
 			if(!isFree && attempts > 0) {
-				haxe_Log.trace("Warning: port " + _gthis.port + " is already in use. Changed to " + (_gthis.port + 1),{ fileName : "src/server/Main.hx", lineNumber : 124, className : "server.Main", methodName : "new"});
+				haxe_Log.trace("Warning: port " + _gthis.port + " is already in use. Changed to " + (_gthis.port + 1),{ fileName : "src/server/Main.hx", lineNumber : 137, className : "server.Main", methodName : "new"});
 				attempts -= 1;
 				_gthis.port++;
 				preparePort();
@@ -4598,23 +4793,35 @@ server_Main.__name__ = true;
 server_Main.main = function() {
 	new server_Main({ loadState : true});
 };
+server_Main.jsonStringify = function(data,space) {
+	return JSON.stringify(data,server_Main.jsonFilterNulls,space);
+};
+server_Main.jsonFilterNulls = function(key,value) {
+	if(value == null) {
+		return undefined;
+	}
+	return value;
+};
 server_Main.prototype = {
 	runServer: function() {
 		var _gthis = this;
-		haxe_Log.trace("Local: http://" + this.localIp + ":" + this.port,{ fileName : "src/server/Main.hx", lineNumber : 137, className : "server.Main", methodName : "runServer"});
+		haxe_Log.trace("Local: http://" + this.localIp + ":" + this.port,{ fileName : "src/server/Main.hx", lineNumber : 150, className : "server.Main", methodName : "runServer"});
 		if(this.config.localNetworkOnly) {
-			haxe_Log.trace("Global network is disabled in config",{ fileName : "src/server/Main.hx", lineNumber : 139, className : "server.Main", methodName : "runServer"});
+			haxe_Log.trace("Global network is disabled in config",{ fileName : "src/server/Main.hx", lineNumber : 152, className : "server.Main", methodName : "runServer"});
 		} else if(!this.isNoState) {
 			server_Utils.getGlobalIp(function(ip) {
+				if(ip.indexOf(":") != -1) {
+					ip = "[" + ip + "]";
+				}
 				_gthis.globalIp = ip;
-				haxe_Log.trace("Global: http://" + _gthis.globalIp + ":" + _gthis.port,{ fileName : "src/server/Main.hx", lineNumber : 143, className : "server.Main", methodName : "runServer"});
+				haxe_Log.trace("Global: http://" + _gthis.globalIp + ":" + _gthis.port,{ fileName : "src/server/Main.hx", lineNumber : 158, className : "server.Main", methodName : "runServer"});
 			});
 		}
 		var dir = "" + this.rootDir + "/res";
-		server_HttpServer.init(dir,"" + this.rootDir + "/user/res",this.config.localAdmins);
+		var httpServer = new server_HttpServer(this,new server__$HttpServer_HttpServerConfig(dir,"" + this.userDir + "/res",this.config.localAdmins,this.cache));
 		Lang.init("" + dir + "/langs");
 		var server = js_node_Http.createServer(function(req,res) {
-			server_HttpServer.serveFiles(req,res);
+			httpServer.serveFiles(req,res);
 		});
 		this.wss = new js_npm_ws_Server({ server : server});
 		this.wss.on("connection",$bind(this,this.onConnect));
@@ -4681,7 +4888,7 @@ server_Main.prototype = {
 		if(this.isNoState) {
 			return config;
 		}
-		var customPath = "" + this.rootDir + "/user/config.json";
+		var customPath = "" + this.userDir + "/config.json";
 		if(!sys_FileSystem.exists(customPath)) {
 			return config;
 		}
@@ -4692,7 +4899,7 @@ server_Main.prototype = {
 			var field = _g1[_g];
 			++_g;
 			if(Reflect.field(config,field) == null) {
-				haxe_Log.trace("Warning: config field \"" + field + "\" is unknown",{ fileName : "src/server/Main.hx", lineNumber : 212, className : "server.Main", methodName : "getUserConfig"});
+				haxe_Log.trace("Warning: config field \"" + field + "\" is unknown",{ fileName : "src/server/Main.hx", lineNumber : 232, className : "server.Main", methodName : "getUserConfig"});
 			}
 			config[field] = Reflect.field(customConfig,field);
 		}
@@ -4703,21 +4910,21 @@ server_Main.prototype = {
 			var emote = _g1[_g];
 			++_g;
 			if(emoteCopies_h[emote.name]) {
-				haxe_Log.trace("Warning: emote name \"" + emote.name + "\" has copy",{ fileName : "src/server/Main.hx", lineNumber : 218, className : "server.Main", methodName : "getUserConfig"});
+				haxe_Log.trace("Warning: emote name \"" + emote.name + "\" has copy",{ fileName : "src/server/Main.hx", lineNumber : 238, className : "server.Main", methodName : "getUserConfig"});
 			}
 			emoteCopies_h[emote.name] = true;
 			if(!this.verbose) {
 				continue;
 			}
 			if(emoteCopies_h[emote.image]) {
-				haxe_Log.trace("Warning: emote url of name \"" + emote.name + "\" has copy",{ fileName : "src/server/Main.hx", lineNumber : 222, className : "server.Main", methodName : "getUserConfig"});
+				haxe_Log.trace("Warning: emote url of name \"" + emote.name + "\" has copy",{ fileName : "src/server/Main.hx", lineNumber : 242, className : "server.Main", methodName : "getUserConfig"});
 			}
 			emoteCopies_h[emote.image] = true;
 		}
 		return config;
 	}
 	,loadUsers: function() {
-		var customPath = "" + this.rootDir + "/user/users.json";
+		var customPath = "" + this.userDir + "/users.json";
 		if(this.isNoState || !sys_FileSystem.exists(customPath)) {
 			return { admins : [], bans : []};
 		}
@@ -4734,8 +4941,7 @@ server_Main.prototype = {
 		return users;
 	}
 	,writeUsers: function(users) {
-		var folder = "" + this.rootDir + "/user";
-		server_Utils.ensureDir(folder);
+		server_Utils.ensureDir(this.userDir);
 		var users1 = users.admins;
 		var _g = [];
 		var _g1 = 0;
@@ -4745,16 +4951,16 @@ server_Main.prototype = {
 			++_g1;
 			_g.push({ ip : field.ip, toDate : HxOverrides.dateStr(field.toDate)});
 		}
-		js_node_Fs.writeFileSync("" + folder + "/users.json",JSON.stringify({ admins : users1, bans : _g, salt : users.salt},null,"\t"));
+		js_node_Fs.writeFileSync("" + this.userDir + "/users.json",JSON.stringify({ admins : users1, bans : _g, salt : users.salt},null,"\t"));
 	}
 	,saveState: function() {
-		haxe_Log.trace("Saving state...",{ fileName : "src/server/Main.hx", lineNumber : 261, className : "server.Main", methodName : "saveState"});
+		haxe_Log.trace("Saving state...",{ fileName : "src/server/Main.hx", lineNumber : 280, className : "server.Main", methodName : "saveState"});
 		var json = JSON.stringify(this.getCurrentState(),null,"\t");
 		js_node_Fs.writeFileSync(this.statePath,json);
 		this.writeUsers(this.userList);
 	}
 	,getCurrentState: function() {
-		return { videoList : this.videoList.items, isPlaylistOpen : this.videoList.isOpen, itemPos : this.videoList.pos, messages : this.messages, timer : { time : this.videoTimer.getTime(), paused : this.videoTimer.isPaused()}, flashbacks : this.flashbacks};
+		return { videoList : this.videoList.items, isPlaylistOpen : this.videoList.isOpen, itemPos : this.videoList.pos, messages : this.messages, timer : { time : this.videoTimer.getTime(), paused : this.videoTimer.isPaused()}, flashbacks : this.flashbacks, cachedFiles : this.cache.getCachedFiles()};
 	}
 	,loadState: function() {
 		if(this.isNoState) {
@@ -4763,8 +4969,10 @@ server_Main.prototype = {
 		if(!sys_FileSystem.exists(this.statePath)) {
 			return;
 		}
-		haxe_Log.trace("Loading state...",{ fileName : "src/server/Main.hx", lineNumber : 284, className : "server.Main", methodName : "loadState"});
+		haxe_Log.trace("Loading state...",{ fileName : "src/server/Main.hx", lineNumber : 304, className : "server.Main", methodName : "loadState"});
 		var state = JSON.parse(js_node_Fs.readFileSync(this.statePath,{ encoding : "utf8"}));
+		state.flashbacks = state.flashbacks != null ? state.flashbacks : [];
+		state.cachedFiles = state.cachedFiles != null ? state.cachedFiles : [];
 		this.videoList.setItems(state.videoList);
 		this.videoList.isOpen = state.isPlaylistOpen;
 		this.videoList.setPos(state.itemPos);
@@ -4774,16 +4982,17 @@ server_Main.prototype = {
 		while(_g < _g1.length) this.messages.push(_g1[_g++]);
 		this.flashbacks.length = 0;
 		var _g = 0;
-		var tmp = state.flashbacks;
-		var _g1 = tmp != null ? tmp : [];
+		var _g1 = state.flashbacks;
 		while(_g < _g1.length) this.flashbacks.push(_g1[_g++]);
+		this.cache.setCachedFiles(state.cachedFiles);
 		this.videoTimer.start();
 		this.videoTimer.setTime(state.timer.time);
 		this.videoTimer.pause();
 	}
 	,logError: function(type,data) {
-		haxe_Log.trace(type,{ fileName : "src/server/Main.hx", lineNumber : 302, className : "server.Main", methodName : "logError", customParams : [data]});
-		var crashesFolder = "" + this.rootDir + "/user/crashes";
+		this.cache.removeOlderCache(1048576);
+		haxe_Log.trace(type,{ fileName : "src/server/Main.hx", lineNumber : 328, className : "server.Main", methodName : "logError", customParams : [data]});
+		var crashesFolder = "" + this.userDir + "/crashes";
 		server_Utils.ensureDir(crashesFolder);
 		var name = DateTools.format(new Date(),"%Y-%m-%d_%H_%M_%S") + "-" + type;
 		js_node_Fs.writeFileSync("" + crashesFolder + "/" + name + ".json",JSON.stringify(data,null,"\t"));
@@ -4800,7 +5009,7 @@ server_Main.prototype = {
 				if(_gthis.clients.length == 0) {
 					return;
 				}
-				haxe_Log.trace("Ping " + url,{ fileName : "src/server/Main.hx", lineNumber : 319, className : "server.Main", methodName : "initIntergationHandlers"});
+				haxe_Log.trace("Ping " + url,{ fileName : "src/server/Main.hx", lineNumber : 345, className : "server.Main", methodName : "initIntergationHandlers"});
 				js_node_Http.get(url,null,function(r) {
 				});
 			};
@@ -4820,13 +5029,13 @@ server_Main.prototype = {
 		password += this.config.salt;
 		var hash = haxe_crypto_Sha256.encode(password);
 		this.userList.admins.push({ name : name, hash : hash});
-		haxe_Log.trace("Admin " + name + " added.",{ fileName : "src/server/Main.hx", lineNumber : 342, className : "server.Main", methodName : "addAdmin"});
+		haxe_Log.trace("Admin " + name + " added.",{ fileName : "src/server/Main.hx", lineNumber : 368, className : "server.Main", methodName : "addAdmin"});
 	}
 	,removeAdmin: function(name) {
 		HxOverrides.remove(this.userList.admins,Lambda.find(this.userList.admins,function(item) {
 			return item.name == name;
 		}));
-		haxe_Log.trace("Admin " + name + " removed.",{ fileName : "src/server/Main.hx", lineNumber : 349, className : "server.Main", methodName : "removeAdmin"});
+		haxe_Log.trace("Admin " + name + " removed.",{ fileName : "src/server/Main.hx", lineNumber : 375, className : "server.Main", methodName : "removeAdmin"});
 	}
 	,replayLog: function(events) {
 		var _gthis = this;
@@ -4893,7 +5102,7 @@ server_Main.prototype = {
 		var ip = this.clientIp(req);
 		var id = this.freeIds.length > 0 ? this.freeIds.shift() : this.clients.length;
 		var name = "Guest " + (id + 1);
-		haxe_Log.trace(HxOverrides.dateStr(new Date()),{ fileName : "src/server/Main.hx", lineNumber : 408, className : "server.Main", methodName : "onConnect", customParams : ["" + name + " connected (" + ip + ")"]});
+		haxe_Log.trace(HxOverrides.dateStr(new Date()),{ fileName : "src/server/Main.hx", lineNumber : 434, className : "server.Main", methodName : "onConnect", customParams : ["" + name + " connected (" + ip + ")"]});
 		var isAdmin = this.config.localAdmins && req.socket.localAddress == ip;
 		var client = new Client(ws,req,id,name,0);
 		client.uuid = uuid;
@@ -4907,7 +5116,7 @@ server_Main.prototype = {
 			var obj = _gthis.wsEventParser.fromJson(data.toString());
 			if(_gthis.wsEventParser.errors.length > 0 || _gthis.noTypeObj(obj)) {
 				var errors = "" + ("Wrong request for type \"" + obj.type + "\":") + "\n" + json2object_ErrorUtils.convertErrorArray(_gthis.wsEventParser.errors);
-				haxe_Log.trace(errors,{ fileName : "src/server/Main.hx", lineNumber : 425, className : "server.Main", methodName : "onConnect"});
+				haxe_Log.trace(errors,{ fileName : "src/server/Main.hx", lineNumber : 451, className : "server.Main", methodName : "onConnect"});
 				_gthis.serverMessage(client,errors);
 				return;
 			}
@@ -4974,11 +5183,26 @@ server_Main.prototype = {
 				this.serverMessage(client,"videoAlreadyExistsError");
 				return;
 			}
-			data.addVideo.item = item;
-			this.videoList.addItem(item,data.addVideo.atEnd);
-			this.broadcast(data);
-			if(this.videoList.items.length == 1) {
-				this.restartWaitTimer();
+			if(!item.doCache) {
+				data.addVideo.item = item;
+				_gthis.videoList.addItem(item,data.addVideo.atEnd);
+				_gthis.broadcast(data);
+				if(_gthis.videoList.items.length == 1) {
+					_gthis.restartWaitTimer();
+				}
+			} else {
+				this.cache.cacheYoutubeVideo(client,item.url,function(name) {
+					item = _$Types_VideoItemTools.withUrl(item,_gthis.cache.getFileUrl(name));
+					if(item.duration > 1) {
+						item.duration -= 1;
+					}
+					data.addVideo.item = item;
+					_gthis.videoList.addItem(item,data.addVideo.atEnd);
+					_gthis.broadcast(data);
+					if(_gthis.videoList.items.length == 1) {
+						_gthis.restartWaitTimer();
+					}
+				});
 			}
 			break;
 		case "BanClient":
@@ -5046,25 +5270,28 @@ server_Main.prototype = {
 				tmp.stop();
 			}
 			if(this.clients.length == 1 && this.videoList.items.length > 0) {
-				if(this.videoTimer.isPaused()) {
-					this.videoTimer.play();
+				if(!this.isServerPause) {
+					if(this.videoTimer.isPaused()) {
+						this.videoTimer.play();
+					}
 				}
 			}
 			this.checkBan(client);
-			this.send(client,{ type : "Connected", connected : { uuid : client.uuid, config : this.config, history : this.messages, isUnknownClient : true, clientName : client.name, clients : this.clientList(), videoList : this.videoList.items, isPlaylistOpen : this.videoList.isOpen, itemPos : this.videoList.pos, globalIp : this.globalIp}});
+			this.send(client,{ type : "Connected", connected : { uuid : client.uuid, config : this.config, history : this.messages, isUnknownClient : true, clientName : client.name, clients : this.clientList(), videoList : this.videoList.items, isPlaylistOpen : this.videoList.isOpen, itemPos : this.videoList.pos, globalIp : this.globalIp, playersCacheSupport : this.playersCacheSupport}});
 			this.sendClientListExcept(client);
 			break;
 		case "Disconnected":
 			if(!internal) {
 				return;
 			}
-			haxe_Log.trace(HxOverrides.dateStr(new Date()),{ fileName : "src/server/Main.hx", lineNumber : 487, className : "server.Main", methodName : "onMessage", customParams : ["Client " + client.name + " disconnected"]});
+			haxe_Log.trace(HxOverrides.dateStr(new Date()),{ fileName : "src/server/Main.hx", lineNumber : 516, className : "server.Main", methodName : "onMessage", customParams : ["Client " + client.name + " disconnected"]});
 			server_Utils.sortedPush(this.freeIds,client.id);
 			HxOverrides.remove(this.clients,client);
 			this.sendClientList();
 			if((client.group & 4) != 0) {
-				if(this.videoTimer.isPaused()) {
-					this.videoTimer.play();
+				if(this.videoList.items.length > 0) {
+					this.videoTimer.pause();
+					this.isServerPause = true;
 				}
 			}
 			if(this.clients.length == 0) {
@@ -5106,7 +5333,8 @@ server_Main.prototype = {
 				var client1 = _this[i];
 				result[i] = { name : client1.name, id : client1.id, ip : _gthis.clientIp(client1.req), isBanned : (client1.group & 1) != 0, isAdmin : (client1.group & 8) != 0, isLeader : (client1.group & 4) != 0, isUser : (client1.group & 2) != 0};
 			}
-			var json = JSON.stringify({ state : data1, clients : result, logs : this.logger.getLogs()},($_=this.logger,$bind($_,$_.filterNulls)),"\t");
+			var json = server_Main.jsonStringify({ state : data1, clients : result, logs : this.logger.getLogs()},"\t");
+			this.send(client,{ type : "ServerMessage", serverMessage : { textId : "Free space: " + tools_MathTools.toFixed(this.cache.getFreeSpace() / 1024) + "KiB"}});
 			this.send(client,{ type : "Dump", dump : { data : json}});
 			break;
 		case "Flashback":
@@ -5140,6 +5368,9 @@ server_Main.prototype = {
 			if(this.videoTimer.isPaused()) {
 				obj.getTime.paused = true;
 			}
+			if(this.isServerPause) {
+				obj.getTime.pausedByServer = true;
+			}
 			if(this.videoTimer.getRate() != 1) {
 				if(!ClientTools.hasLeader(this.clients)) {
 					this.videoTimer.setRate(1);
@@ -5148,12 +5379,6 @@ server_Main.prototype = {
 				}
 			}
 			this.send(client,obj);
-			break;
-		case "GetYoutubeVideoInfo":
-			var url = data.getYoutubeVideoInfo.url;
-			server_YoutubeFallback.getInfo(url,function(info) {
-				_gthis.send(client,{ type : data.type, getYoutubeVideoInfo : { url : url, response : info}});
-			});
 			break;
 		case "KickClient":
 			if(!this.checkPermission(client,"banClient")) {
@@ -5199,7 +5424,7 @@ server_Main.prototype = {
 				this.send(client,{ type : "LoginError"});
 				return;
 			}
-			haxe_Log.trace(HxOverrides.dateStr(new Date()),{ fileName : "src/server/Main.hx", lineNumber : 575, className : "server.Main", methodName : "onMessage", customParams : ["Client " + client.name + " logged as " + name]});
+			haxe_Log.trace(HxOverrides.dateStr(new Date()),{ fileName : "src/server/Main.hx", lineNumber : 607, className : "server.Main", methodName : "onMessage", customParams : ["Client " + client.name + " logged as " + name]});
 			client.name = name;
 			client.setGroupFlag(ClientGroup.User,true);
 			this.checkBan(client);
@@ -5212,7 +5437,7 @@ server_Main.prototype = {
 			var oldName = client.name;
 			client.name = "Guest " + (this.clients.indexOf(client) + 1);
 			client.setGroupFlag(ClientGroup.User,false);
-			haxe_Log.trace(HxOverrides.dateStr(new Date()),{ fileName : "src/server/Main.hx", lineNumber : 596, className : "server.Main", methodName : "onMessage", customParams : ["Client " + oldName + " logout to " + client.name]});
+			haxe_Log.trace(HxOverrides.dateStr(new Date()),{ fileName : "src/server/Main.hx", lineNumber : 628, className : "server.Main", methodName : "onMessage", customParams : ["Client " + oldName + " logout to " + client.name]});
 			this.send(client,{ type : data.type, logout : { oldClientName : oldName, clientName : client.name, clients : this.clientList()}});
 			this.sendClientListExcept(client);
 			break;
@@ -5266,6 +5491,7 @@ server_Main.prototype = {
 				this.saveFlashbackTime(_this.items[_this.pos]);
 			}
 			this.videoTimer.setTime(data.play.time);
+			this.isServerPause = false;
 			this.videoTimer.play();
 			this.broadcast({ type : data.type, play : data.play});
 			break;
@@ -5273,14 +5499,20 @@ server_Main.prototype = {
 			if(!this.checkPermission(client,"changeOrder")) {
 				return;
 			}
+			var pos = data.playItem.pos;
+			if(!this.videoList.hasItem(pos)) {
+				return;
+			}
 			if(this.videoTimer.getTime() > 30) {
 				var _this = this.videoList;
 				this.saveFlashbackTime(_this.items[_this.pos]);
 			}
-			this.videoList.setPos(data.playItem.pos);
+			this.videoList.setPos(pos);
 			data.playItem.pos = this.videoList.pos;
 			this.restartWaitTimer();
 			this.broadcast(data);
+			break;
+		case "Progress":
 			break;
 		case "RemoveVideo":
 			if(this.isPlaylistLockedFor(client)) {
@@ -5292,25 +5524,23 @@ server_Main.prototype = {
 			if(this.videoList.items.length == 0) {
 				return;
 			}
-			var url1 = data.removeVideo.url;
+			var url = data.removeVideo.url;
 			var index = this.videoList.findIndex(function(item) {
-				return item.url == url1;
+				return item.url == url;
 			});
 			if(index == -1) {
 				return;
 			}
 			var _this = this.videoList;
-			var isCurrent = _this.items[_this.pos].url == url1;
+			var isCurrent = _this.items[_this.pos].url == url;
 			if(isCurrent && this.videoTimer.getTime() > 30) {
 				var _this = this.videoList;
 				this.saveFlashbackTime(_this.items[_this.pos]);
 			}
 			this.videoList.removeItem(index);
+			this.broadcast(data);
 			if(isCurrent && this.videoList.items.length > 0) {
-				this.broadcast(data);
 				this.restartWaitTimer();
-			} else {
-				this.broadcast(data);
 			}
 			break;
 		case "Rewind":
@@ -5342,6 +5572,7 @@ server_Main.prototype = {
 					return;
 				}
 			}
+			this.isServerPause = false;
 			ClientTools.setLeader(this.clients,clientName);
 			this.broadcast({ type : "SetLeader", setLeader : { clientName : clientName}});
 			if(this.videoList.items.length == 0) {
@@ -5363,6 +5594,9 @@ server_Main.prototype = {
 				return;
 			}
 			var pos = data.setNextItem.pos;
+			if(!this.videoList.hasItem(pos)) {
+				return;
+			}
 			if(pos == this.videoList.pos || pos == this.videoList.pos + 1) {
 				return;
 			}
@@ -5419,7 +5653,11 @@ server_Main.prototype = {
 			if(!this.checkPermission(client,"toggleItemType")) {
 				return;
 			}
-			this.videoList.toggleItemType(data.toggleItemType.pos);
+			var pos = data.toggleItemType.pos;
+			if(!this.videoList.hasItem(pos)) {
+				return;
+			}
+			this.videoList.toggleItemType(pos);
 			this.broadcast(data);
 			break;
 		case "TogglePlaylistLock":
@@ -5436,6 +5674,9 @@ server_Main.prototype = {
 			this.broadcast({ type : "UpdatePlaylist", updatePlaylist : { videoList : this.videoList.items}});
 			break;
 		case "VideoLoaded":
+			if(this.isServerPause) {
+				return;
+			}
 			this.prepareVideoPlayback();
 			break;
 		}
@@ -5457,16 +5698,16 @@ server_Main.prototype = {
 		this.send(client,{ type : "ServerMessage", serverMessage : { textId : textId}});
 	}
 	,send: function(client,data) {
-		client.ws.send(JSON.stringify(data),null);
+		client.ws.send(server_Main.jsonStringify(data),null);
 	}
 	,broadcast: function(data) {
-		var json = JSON.stringify(data);
+		var json = server_Main.jsonStringify(data);
 		var _g = 0;
 		var _g1 = this.clients;
 		while(_g < _g1.length) _g1[_g++].ws.send(json,null);
 	}
 	,broadcastExcept: function(skipped,data) {
-		var json = JSON.stringify(data);
+		var json = server_Main.jsonStringify(data);
 		var _g = 0;
 		var _g1 = this.clients;
 		while(_g < _g1.length) {
@@ -5515,11 +5756,10 @@ server_Main.prototype = {
 		}
 		var ip = this.clientIp(client.req);
 		var currentTime = new Date().getTime();
-		var _g = 0;
-		var _g1 = this.userList.bans;
-		while(_g < _g1.length) {
-			var ban = _g1[_g];
-			++_g;
+		var arr = this.userList.bans;
+		var _g_i = arr.length - 1;
+		while(_g_i > -1) {
+			var ban = arr[_g_i--];
 			if(ban.ip != ip) {
 				continue;
 			}
@@ -5527,7 +5767,7 @@ server_Main.prototype = {
 			client.setGroupFlag(ClientGroup.Banned,!isOutdated);
 			if(isOutdated) {
 				HxOverrides.remove(this.userList.bans,ban);
-				haxe_Log.trace("" + client.name + " ban removed",{ fileName : "src/server/Main.hx", lineNumber : 1008, className : "server.Main", methodName : "checkBan"});
+				haxe_Log.trace("" + client.name + " ban removed",{ fileName : "src/server/Main.hx", lineNumber : 1063, className : "server.Main", methodName : "checkBan"});
 				this.sendClientList();
 			}
 			break;
@@ -5580,6 +5820,7 @@ server_Main.prototype = {
 		}
 		this.loadedClientsCount = 0;
 		this.broadcast({ type : "VideoLoaded"});
+		this.isServerPause = false;
 		this.videoTimer.start();
 	}
 	,saveFlashbackTime: function(item) {
@@ -5704,7 +5945,7 @@ server_Utils.getGlobalIp = function(callback) {
 		r.on("data",function(chunk) {
 			data_b += Std.string(chunk);
 		});
-		r.on("end",function(_) {
+		r.on("end",function() {
 			callback(data_b);
 		});
 	}).on("error",onError).on("timeout",onError);
@@ -5728,7 +5969,7 @@ server_Utils.getLocalIp = function() {
 	return "127.0.0.1";
 };
 server_Utils.isOutOfRange = function(value,min,max) {
-	if(!(value == null || isNaN(value) || value < min)) {
+	if(!(value == null || value < min)) {
 		return value > max;
 	} else {
 		return true;
@@ -5765,6 +6006,12 @@ server_VideoTimer.prototype = {
 		this.pauseStartTime = 0;
 	}
 	,pause: function() {
+		if(this.isPaused()) {
+			return;
+		}
+		this.updatePauseTime();
+	}
+	,updatePauseTime: function() {
 		this.startTime += this.rateTime() - this.rateTime() * this.rate;
 		var hrtime = process.hrtime();
 		this.pauseStartTime = hrtime[0] + hrtime[1] / 1e9;
@@ -5792,7 +6039,7 @@ server_VideoTimer.prototype = {
 		var hrtime = process.hrtime();
 		this.rateStartTime = hrtime[0] + hrtime[1] / 1e9;
 		if(this.isPaused()) {
-			this.pause();
+			this.updatePauseTime();
 		}
 	}
 	,isPaused: function() {
@@ -5828,166 +6075,6 @@ server_VideoTimer.prototype = {
 		return hrtime[0] + hrtime[1] / 1e9 - this.rateStartTime - this.pauseTime();
 	}
 	,__class__: server_VideoTimer
-};
-var server_YoutubeFallback = function() { };
-server_YoutubeFallback.__name__ = true;
-server_YoutubeFallback.httpsGet = function(url,options,callback) {
-	var request = js_node_Https.get(url,options,function(res) {
-		var data = "";
-		res.on("data",function(chunk) {
-			data += chunk.toString();
-			return data;
-		});
-		res.on("end",function() {
-			callback(res.statusCode,data);
-		});
-	});
-	request.on("error",function(err) {
-		haxe_Log.trace(url,{ fileName : "src/server/YoutubeFallback.hx", lineNumber : 24, className : "server.YoutubeFallback", methodName : "httpsGet"});
-		haxe_Log.trace("request error: ",{ fileName : "src/server/YoutubeFallback.hx", lineNumber : 25, className : "server.YoutubeFallback", methodName : "httpsGet", customParams : [err]});
-	});
-};
-server_YoutubeFallback.resolvePlayerResponse = function(watchHtml) {
-	if(watchHtml == null) {
-		return "";
-	}
-	var resReg = new EReg("ytInitialPlayerResponse = (.*)}}};","");
-	if(resReg.match(watchHtml)) {
-		return resReg.matched(1) + "}}}";
-	} else {
-		return "";
-	}
-};
-server_YoutubeFallback.resoleM3U8Link = function(watchHtml) {
-	if(watchHtml == null) {
-		return null;
-	}
-	var hlsReg = new EReg("hlsManifestUrl\":\"(.*/file/index\\.m3u8)","");
-	if(hlsReg.match(watchHtml)) {
-		return hlsReg.matched(1);
-	} else {
-		return null;
-	}
-};
-server_YoutubeFallback.buildDecoder = function(watchHtml,callback) {
-	if(watchHtml == null) {
-		callback(null);
-		return;
-	}
-	var jsFileUrlReg = new EReg("/s/player/[A-Za-z0-9]+/[A-Za-z0-9_.]+/[A-Za-z0-9_]+/base\\.js","");
-	if(!jsFileUrlReg.match(watchHtml)) {
-		callback(null);
-		return;
-	}
-	var url = "https://www.youtube.com" + jsFileUrlReg.matched(0);
-	server_YoutubeFallback.httpsGet(url,{ },function(status,jsFileContent) {
-		var funcReg = new EReg("function.*\\.split\\(\"\"\\).*\\.join\\(\"\"\\)}","");
-		if(!funcReg.match(jsFileContent)) {
-			callback(null);
-			return;
-		}
-		var decodeFunction = funcReg.matched(0);
-		var varNameReg = new EReg("\\.split\\(\"\"\\);([a-zA-Z0-9]+)\\.","i");
-		if(!varNameReg.match(decodeFunction)) {
-			callback(null);
-			return;
-		}
-		var varStartIndex = jsFileContent.indexOf("var " + varNameReg.matched(1) + "={");
-		if(varStartIndex < 0) {
-			callback(null);
-			return;
-		}
-		var varEndIndex = jsFileContent.indexOf("}};",varStartIndex);
-		if(varEndIndex < 0) {
-			callback(null);
-			return;
-		}
-		var varDeclares = jsFileContent.substring(varStartIndex,varEndIndex + 3);
-		if(varDeclares.length == 0) {
-			callback(null);
-			return;
-		}
-		callback(function(signatureCipher) {
-			var params = new js_node_url_URLSearchParams(signatureCipher);
-			var obj = Object.fromEntries(params);
-			var signature = obj.s;
-			var tmp = obj.sp;
-			var signatureParam = tmp != null ? tmp : "signature";
-			var url = obj.url;
-			var decodedSignature = new Function("\n\t\t\t\t\t\"use strict\";\n\t\t\t\t\t" + varDeclares + "\n\t\t\t\t\treturn (" + decodeFunction + ")(\"" + signature + "\");\n\t\t\t\t").call(null);
-			return "" + url + "&" + signatureParam + "=" + encodeURIComponent(decodedSignature);
-		});
-	});
-};
-server_YoutubeFallback.getInfo = function(url,callback) {
-	var videoId = utils_YoutubeUtils.extractVideoId(url);
-	if(videoId.length == 0) {
-		haxe_Log.trace("youtube videoId is not found",{ fileName : "src/server/YoutubeFallback.hx", lineNumber : 85, className : "server.YoutubeFallback", methodName : "getInfo"});
-		callback(null);
-		return;
-	}
-	server_YoutubeFallback.httpsGet("https://www.youtube.com/watch?v=" + videoId,{ },function(status,data) {
-		if(status != 200 || data.length == 0) {
-			haxe_Log.trace("Cannot get youtube video response",{ fileName : "src/server/YoutubeFallback.hx", lineNumber : 92, className : "server.YoutubeFallback", methodName : "getInfo"});
-			callback(null);
-			return;
-		}
-		var parsedResponse = JSON.parse(server_YoutubeFallback.resolvePlayerResponse(data));
-		var tmp = parsedResponse.streamingData;
-		var streamingData = tmp != null ? tmp : { };
-		streamingData.formats = streamingData.formats != null ? streamingData.formats : [];
-		streamingData.adaptiveFormats = streamingData.adaptiveFormats != null ? streamingData.adaptiveFormats : [];
-		var formats = streamingData.formats.concat(streamingData.adaptiveFormats);
-		var promises = [];
-		if(Lambda.exists(formats,function(it) {
-			return it.signatureCipher != null;
-		})) {
-			var promise = new Promise(function(resolve,reject) {
-				server_YoutubeFallback.buildDecoder(data,function(decoder) {
-					if(decoder != null) {
-						var result = new Array(formats.length);
-						var _g = 0;
-						var _g1 = formats.length;
-						while(_g < _g1) {
-							var i = _g++;
-							var item = formats[i];
-							var formats1;
-							if(item.url != null || item.signatureCipher == null) {
-								formats1 = item;
-							} else {
-								item.url = decoder(item.signatureCipher);
-								item.signatureCipher = null;
-								formats1 = item;
-							}
-							result[i] = formats1;
-						}
-						formats = result;
-					}
-					resolve(null);
-				});
-			});
-			promises.push(promise);
-		}
-		Promise.all(promises).then(function(_) {
-			var tmp = parsedResponse.videoDetails;
-			var result = tmp != null ? tmp : { };
-			var _g = [];
-			var _g1 = 0;
-			var _g2 = formats;
-			while(_g1 < _g2.length) {
-				var v = _g2[_g1];
-				++_g1;
-				if(v.url != null) {
-					_g.push(v);
-				}
-			}
-			var result1 = { videoDetails : result, formats : _g};
-			if(result1.videoDetails.isLiveContent) {
-				result1.liveData = { manifestUrl : server_YoutubeFallback.resoleM3U8Link(data)};
-			}
-			callback(result1);
-		});
-	});
 };
 var sys_FileSystem = function() { };
 sys_FileSystem.__name__ = true;
@@ -6026,6 +6113,18 @@ sys_FileSystem.createDirectory = function(path) {
 			}
 		}
 	}
+};
+var tools_MathTools = function() { };
+tools_MathTools.__name__ = true;
+tools_MathTools.toFixed = function(v,digits) {
+	if(digits == null) {
+		digits = 2;
+	}
+	if(digits > 8) {
+		throw haxe_Exception.thrown("digits is " + digits + ", but cannot be bigger than 8 (for value " + v + ")");
+	}
+	var ratio = Math.pow(10,digits);
+	return (v * ratio | 0) / ratio;
 };
 var utils_YoutubeUtils = function() { };
 utils_YoutubeUtils.__name__ = true;
@@ -6095,13 +6194,6 @@ server_HttpServer.mimeTypes = (function($this) {
 	$r = _g;
 	return $r;
 }(this));
-server_HttpServer.hasCustomRes = false;
-server_HttpServer.allowedLocalFiles = new haxe_ds_StringMap();
-server_HttpServer.allowLocalRequests = false;
-server_HttpServer.CHUNK_SIZE = 5242880;
-server_HttpServer.matchLang = new EReg("^[A-z]+","");
-server_HttpServer.matchVarString = new EReg("\\${([A-z_]+)}","g");
-server_HttpServer.ctrlCharacters = new EReg("[\\u0000-\\u001F\\u007F-\\u009F\\u2000-\\u200D\\uFEFF]","g");
 utils_YoutubeUtils.matchId = new EReg("youtube\\.com.*v=([A-z0-9_-]+)","");
 utils_YoutubeUtils.matchShort = new EReg("youtu\\.be/([A-z0-9_-]+)","");
 utils_YoutubeUtils.matchShorts = new EReg("youtube\\.com/shorts/([A-z0-9_-]+)","");

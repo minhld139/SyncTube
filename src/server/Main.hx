@@ -5,6 +5,7 @@ import Types.Config;
 import Types.FlashbackItem;
 import Types.Message;
 import Types.Permission;
+import Types.PlayerType;
 import Types.UserList;
 import Types.VideoItem;
 import Types.WsEvent;
@@ -24,8 +25,6 @@ import json2object.JsonParser;
 import sys.FileSystem;
 import sys.io.File;
 
-using ClientTools;
-
 private typedef MainOptions = {
 	loadState:Bool
 }
@@ -39,6 +38,7 @@ class Main {
 
 	final rootDir = '$__dirname/..';
 
+	public final userDir:String;
 	public final logsDir:String;
 	public final config:Config;
 
@@ -48,12 +48,17 @@ class Main {
 	var wss:WSServer;
 	final localIp:String;
 	var globalIp:String;
+	final playersCacheSupport:Array<PlayerType> = [];
 	var port:Int;
 	final userList:UserList;
-	final clients:Array<Client> = [];
+
+	public final clients:Array<Client> = [];
+
 	final freeIds:Array<Int> = [];
 	final wsEventParser = new JsonParser<WsEvent>();
 	final consoleInput:ConsoleInput;
+	final cache:Cache;
+	final cacheDir:String;
 	final videoList = new VideoList();
 	final videoTimer = new VideoTimer();
 	final messages:Array<Message> = [];
@@ -67,6 +72,7 @@ class Main {
 		to stopped server time.
 	**/
 	var emptyRoomCallbackTimer:Null<Timer>;
+	var isServerPause = false;
 
 	static function main():Void {
 		new Main({
@@ -78,8 +84,11 @@ class Main {
 		isNoState = !opts.loadState;
 		final args = Utils.parseArgs(Sys.args(), false);
 		verbose = args.exists("verbose");
-		statePath = '$rootDir/user/state.json';
-		logsDir = '$rootDir/user/logs';
+		userDir = '$rootDir/user';
+		statePath = '$userDir/state.json';
+		logsDir = '$userDir/logs';
+		cacheDir = '$userDir/res/cache';
+
 		// process.on("exit", exit);
 		process.on("SIGINT", exit); // ctrl+c
 		process.on("SIGUSR1", exit); // kill pid
@@ -96,12 +105,16 @@ class Main {
 			logError("unhandledRejection", reason);
 			exit();
 		});
+
 		logger = new Logger(logsDir, 10, verbose);
 		consoleInput = new ConsoleInput(this);
 		consoleInput.initConsoleInput();
+		cache = new Cache(this, cacheDir);
+		if (cache.isYtReady) playersCacheSupport.push(YoutubeType);
 		initIntergationHandlers();
 		loadState();
 		config = loadUserConfig();
+		cache.setStorageLimit(cast config.cacheStorageLimitGiB * 1024 * 1024 * 1024);
 		userList = loadUsers();
 		config.isVerbose = verbose;
 		config.salt = generateConfigSalt();
@@ -139,17 +152,24 @@ class Main {
 			trace("Global network is disabled in config");
 		} else {
 			if (!isNoState) Utils.getGlobalIp(ip -> {
+				final isIp6 = ip.contains(":");
+				if (isIp6) ip = '[$ip]';
 				globalIp = ip;
 				trace('Global: http://$globalIp:$port');
 			});
 		}
 
 		final dir = '$rootDir/res';
-		HttpServer.init(dir, '$rootDir/user/res', config.localAdmins);
+		final httpServer = new HttpServer(this, {
+			dir: dir,
+			customDir: '$userDir/res',
+			allowLocalRequests: config.localAdmins,
+			cache: cache,
+		});
 		Lang.init('$dir/langs');
 
 		final server = Http.createServer((req, res) -> {
-			HttpServer.serveFiles(req, res);
+			httpServer.serveFiles(req, res);
 		});
 		wss = new WSServer({server: server});
 		wss.on("connection", onConnect);
@@ -204,7 +224,7 @@ class Main {
 	function getUserConfig():Config {
 		final config:Config = Json.parse(File.getContent('$rootDir/default-config.json'));
 		if (isNoState) return config;
-		final customPath = '$rootDir/user/config.json';
+		final customPath = '$userDir/config.json';
 		if (!FileSystem.exists(customPath)) return config;
 		final customConfig:Config = Json.parse(File.getContent(customPath));
 		for (field in Reflect.fields(customConfig)) {
@@ -227,7 +247,7 @@ class Main {
 	}
 
 	function loadUsers():UserList {
-		final customPath = '$rootDir/user/users.json';
+		final customPath = '$userDir/users.json';
 		if (isNoState || !FileSystem.exists(customPath)) return {
 			admins: [],
 			bans: []
@@ -242,8 +262,7 @@ class Main {
 	}
 
 	function writeUsers(users:UserList):Void {
-		final folder = '$rootDir/user';
-		Utils.ensureDir(folder);
+		Utils.ensureDir(userDir);
 		final data:UserList = {
 			admins: users.admins,
 			bans: [
@@ -254,7 +273,7 @@ class Main {
 			],
 			salt: users.salt
 		}
-		File.saveContent('$folder/users.json', Json.stringify(data, "\t"));
+		File.saveContent('$userDir/users.json', Json.stringify(data, "\t"));
 	}
 
 	function saveState():Void {
@@ -274,7 +293,8 @@ class Main {
 				time: videoTimer.getTime(),
 				paused: videoTimer.isPaused()
 			},
-			flashbacks: flashbacks
+			flashbacks: flashbacks,
+			cachedFiles: cache.getCachedFiles()
 		}
 	}
 
@@ -283,6 +303,9 @@ class Main {
 		if (!FileSystem.exists(statePath)) return;
 		trace("Loading state...");
 		final state:ServerState = Json.parse(File.getContent(statePath));
+		state.flashbacks ??= [];
+		state.cachedFiles ??= [];
+
 		videoList.setItems(state.videoList);
 		videoList.isOpen = state.isPlaylistOpen;
 		videoList.setPos(state.itemPos);
@@ -291,7 +314,9 @@ class Main {
 		for (message in state.messages) messages.push(message);
 
 		flashbacks.resize(0);
-		for (flashback in state.flashbacks ?? []) flashbacks.push(flashback);
+		for (flashback in state.flashbacks) flashbacks.push(flashback);
+
+		cache.setCachedFiles(state.cachedFiles);
 
 		videoTimer.start();
 		videoTimer.setTime(state.timer.time);
@@ -299,8 +324,9 @@ class Main {
 	}
 
 	function logError(type:String, data:Dynamic):Void {
+		cache.removeOlderCache(1024 * 1024);
 		trace(type, data);
-		final crashesFolder = '$rootDir/user/crashes';
+		final crashesFolder = '$userDir/crashes';
 		Utils.ensureDir(crashesFolder);
 		final name = DateTools.format(Date.now(), "%Y-%m-%d_%H_%M_%S") + "-" + type;
 		File.saveContent('$crashesFolder/$name.json', Json.stringify(data, "\t"));
@@ -314,7 +340,7 @@ class Main {
 		if (isHeroku && process.env["APP_URL"] != null) {
 			var url = process.env["APP_URL"];
 			if (!url.startsWith("http")) url = 'http://$url';
-			new Timer(10 * 60 * 1000).run = function() {
+			new Timer(10 * 60 * 1000).run = () -> {
 				if (clients.length == 0) return;
 				trace('Ping $url');
 				Http.get(url, r -> {});
@@ -461,7 +487,9 @@ class Main {
 				if (!internal) return;
 				emptyRoomCallbackTimer?.stop();
 				if (clients.length == 1 && videoList.length > 0) {
-					if (videoTimer.isPaused()) videoTimer.play();
+					if (!isServerPause) {
+						if (videoTimer.isPaused()) videoTimer.play();
+					}
 				}
 
 				checkBan(client);
@@ -477,7 +505,8 @@ class Main {
 						videoList: videoList.getItems(),
 						isPlaylistOpen: videoList.isOpen,
 						itemPos: videoList.pos,
-						globalIp: globalIp
+						globalIp: globalIp,
+						playersCacheSupport: playersCacheSupport,
 					}
 				});
 				sendClientListExcept(client);
@@ -489,7 +518,10 @@ class Main {
 				clients.remove(client);
 				sendClientList();
 				if (client.isLeader) {
-					if (videoTimer.isPaused()) videoTimer.play();
+					if (videoList.length > 0) {
+						videoTimer.pause();
+						isServerPause = true;
+					}
 				}
 				if (clients.length == 0) {
 					emptyRoomCallbackTimer?.stop();
@@ -621,17 +653,7 @@ class Main {
 				broadcast(data);
 
 			case ServerMessage:
-			case GetYoutubeVideoInfo:
-				final url = data.getYoutubeVideoInfo.url;
-				YoutubeFallback.getInfo(url, info -> {
-					send(client, {
-						type: data.type,
-						getYoutubeVideoInfo: {
-							url: url,
-							response: info
-						}
-					});
-				});
+			case Progress:
 			case AddVideo:
 				if (isPlaylistLockedFor(client)) return;
 				if (!checkPermission(client, AddVideoPerm)) return;
@@ -658,14 +680,27 @@ class Main {
 					serverMessage(client, "videoAlreadyExistsError");
 					return;
 				}
-				data.addVideo.item = item;
-				videoList.addItem(item, data.addVideo.atEnd);
-				broadcast(data);
-				// Initial timer start if VideoLoaded is not happen
-				if (videoList.length == 1) restartWaitTimer();
+
+				inline function addVideo():Void {
+					data.addVideo.item = item;
+					videoList.addItem(item, data.addVideo.atEnd);
+					broadcast(data);
+					// Initial timer start if VideoLoaded is not happen
+					if (videoList.length == 1) restartWaitTimer();
+				}
+				if (!item.doCache) {
+					addVideo();
+				} else {
+					cache.cacheYoutubeVideo(client, item.url, (name) -> {
+						item = item.withUrl(cache.getFileUrl(name));
+						if (item.duration > 1) item.duration -= 1;
+						addVideo();
+					});
+				}
 
 			case VideoLoaded:
 				// Called if client loads next video and can play it
+				if (isServerPause) return;
 				prepareVideoPlayback();
 
 			case RemoveVideo:
@@ -681,12 +716,8 @@ class Main {
 					saveFlashbackTime(videoList.currentItem);
 				}
 				videoList.removeItem(index);
-				if (isCurrent && videoList.length > 0) {
-					broadcast(data);
-					restartWaitTimer();
-				} else {
-					broadcast(data);
-				}
+				broadcast(data);
+				if (isCurrent && videoList.length > 0) restartWaitTimer();
 
 			case SkipVideo:
 				if (!checkPermission(client, RemoveVideoPerm)) return;
@@ -712,6 +743,7 @@ class Main {
 					saveFlashbackTime(videoList.currentItem);
 				}
 				videoTimer.setTime(data.play.time);
+				isServerPause = false;
 				videoTimer.play();
 				broadcast({
 					type: data.type,
@@ -742,6 +774,7 @@ class Main {
 					}
 				};
 				if (videoTimer.isPaused()) obj.getTime.paused = true;
+				if (isServerPause) obj.getTime.pausedByServer = true;
 				if (videoTimer.getRate() != 1) {
 					if (!clients.hasLeader()) videoTimer.setRate(1);
 					else obj.getTime.rate = videoTimer.getRate();
@@ -799,6 +832,7 @@ class Main {
 				} else if (!client.isLeader && clientName != "") {
 					if (!checkPermission(client, SetLeaderPerm)) return;
 				}
+				isServerPause = false;
 				clients.setLeader(clientName);
 				broadcast({
 					type: SetLeader,
@@ -820,10 +854,12 @@ class Main {
 
 			case PlayItem:
 				if (!checkPermission(client, ChangeOrderPerm)) return;
+				final pos = data.playItem.pos;
+				if (!videoList.hasItem(pos)) return;
 				if (videoTimer.getTime() > FLASHBACK_DIST) {
 					saveFlashbackTime(videoList.currentItem);
 				}
-				videoList.setPos(data.playItem.pos);
+				videoList.setPos(pos);
 				data.playItem.pos = videoList.pos;
 				restartWaitTimer();
 				broadcast(data);
@@ -832,6 +868,7 @@ class Main {
 				if (isPlaylistLockedFor(client)) return;
 				if (!checkPermission(client, ChangeOrderPerm)) return;
 				final pos = data.setNextItem.pos;
+				if (!videoList.hasItem(pos)) return;
 				if (pos == videoList.pos || pos == videoList.pos + 1) return;
 				videoList.setNextItem(pos);
 				broadcast(data);
@@ -840,6 +877,7 @@ class Main {
 				if (isPlaylistLockedFor(client)) return;
 				if (!checkPermission(client, ToggleItemTypePerm)) return;
 				final pos = data.toggleItemType.pos;
+				if (!videoList.hasItem(pos)) return;
 				videoList.toggleItemType(pos);
 				broadcast(data);
 
@@ -903,7 +941,13 @@ class Main {
 					}),
 					logs: logger.getLogs()
 				}
-				final json = Json.stringify(data, logger.filterNulls, "\t");
+				final json = jsonStringify(data, "\t");
+				send(client, {
+					type: ServerMessage,
+					serverMessage: {
+						textId: "Free space: " + (cache.getFreeSpace() / 1024).toFixed() + "KiB"
+					}
+				});
 				send(client, {
 					type: Dump,
 					dump: {
@@ -937,7 +981,7 @@ class Main {
 		});
 	}
 
-	function serverMessage(client:Client, textId:String):Void {
+	public function serverMessage(client:Client, textId:String):Void {
 		send(client, {
 			type: ServerMessage,
 			serverMessage: {
@@ -946,22 +990,33 @@ class Main {
 		});
 	}
 
-	function send(client:Client, data:WsEvent):Void {
-		client.ws.send(Json.stringify(data), null);
+	public function send(client:Client, data:WsEvent):Void {
+		client.ws.send(jsonStringify(data), null);
 	}
 
-	function broadcast(data:WsEvent):Void {
-		final json = Json.stringify(data);
+	public function broadcast(data:WsEvent):Void {
+		final json = jsonStringify(data);
 		for (client in clients)
 			client.ws.send(json, null);
 	}
 
-	function broadcastExcept(skipped:Client, data:WsEvent):Void {
-		final json = Json.stringify(data);
+	public function broadcastExcept(skipped:Client, data:WsEvent):Void {
+		final json = jsonStringify(data);
 		for (client in clients) {
 			if (client == skipped) continue;
 			client.ws.send(json, null);
 		}
+	}
+
+	public static function jsonStringify(data:Any, ?space:String):String {
+		return Json.stringify(data, jsonFilterNulls, space);
+	}
+
+	static function jsonFilterNulls(key:Any, value:Any):Any {
+		#if js
+		if (value == null) return js.Lib.undefined;
+		#end
+		return value;
 	}
 
 	function skipVideo(data:WsEvent):Void {
@@ -999,7 +1054,7 @@ class Main {
 		}
 		final ip = clientIp(client.req);
 		final currentTime = Date.now().getTime();
-		for (ban in userList.bans) {
+		for (ban in userList.bans.reversed()) {
 			if (ban.ip != ip) continue;
 			final isOutdated = ban.toDate.getTime() < currentTime;
 			client.isBanned = !isOutdated;
@@ -1044,6 +1099,7 @@ class Main {
 		waitVideoStart?.stop();
 		loadedClientsCount = 0;
 		broadcast({type: VideoLoaded});
+		isServerPause = false;
 		videoTimer.start();
 	}
 

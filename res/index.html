@@ -4,13 +4,16 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
   <title>SyncTube</title>
-  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link id="usertheme" href="css/des.css" rel="stylesheet">
   <link id="customcss" href="css/custom.css" rel="stylesheet">
-  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.0.0/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule="" src="https://cdn.jsdelivr.net/npm/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule="" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
 </head>
 
 <body style="grid-template-columns: 1fr 4px 300px;">
@@ -18,10 +21,10 @@
   <main id="video">
     <!-- Player -->
     <section id="player">
-      <div id="ytapiplayer" class="embed-responsive embed-responsive-16by9"></div>
+      <div id="ytapiplayer" class="embed-responsive"></div>
       <!-- Video info -->
-      <div class="info">
-        <header id="header">
+      <div class="info video-info">
+        <header>
           <h2 id="currenttitle">${nothingPlaying}</h2>
         </header>
         <!-- Video controls -->
@@ -44,7 +47,7 @@
     <!-- Playlist -->
     <section id="playlist">
       <!-- Playlist info -->
-      <div class="info">
+      <div class="info playlist-info">
         <header>
           <h3>${playlist}</h3>
           <button id="lockplaylist" title="${playlistOpen}">
@@ -88,7 +91,12 @@
             <button id="insert_template" title="${addTemplateUrl}">
               <div>&gt;</div>
             </button>
-            <input id="mediaurl" type="text" placeholder="${addVideoFromUrl}">
+            <div class="mediaurl-wrap">
+              <input id="mediaurl" type="text" placeholder="${addVideoFromUrl}">
+              <button id="mediaurl-upload">
+                <ion-icon name="cloud-upload"></ion-icon>
+              </button>
+            </div>
           </div>
           <div id="mediatitleblock" class="display-flex" style="display: none;">
             <input id="mediatitle" type="text" placeholder="${optionalTitle}">
@@ -96,24 +104,33 @@
           <div id="subsurlblock" class="display-flex" style="display: none;">
             <input id="subsurl" type="text" placeholder="${subtitlesUrlOptional}">
           </div>
-          <div>
-            <label>
-              <input class="add-temp" type="checkbox" checked="checked">${addAsTemporary}
+          <div id="voiceoverblock" class="display-flex" style="display: none;">
+            <input id="voiceoverurl" type="text" placeholder="${voiceOverAudioTrackUrlOptional}">
+          </div>
+          <div class="checkbox-row">
+            <label class="checkbox-row-item">
+              <input id="add-temp" class="add-temp" type="checkbox" checked>${addAsTemporary}
             </label>
+            <label class="checkbox-row-item">
+              <input id="cache-on-server" type="checkbox">${cacheOnServer}
+            </label>
+          </div>
+          <div class="queue-buttons">
             <button id="queue_next">${queueNext}</button>
             <button id="queue_end">${queueLast}</button>
           </div>
         </div>
       </div>
+      <!-- Add iframe -->
       <div class="collapsible collapse" id="customembed" aria-expanded="false">
         <div class="collapse-list">
           <input id="customembed-title" type="text" placeholder="${optionalTitle}">
           <textarea id="customembed-content" rows="5"
-            placeholder="${pasteEmbedCodeAndClick} '${queueNext}' ${or} '${queueLast}'. &#10;${acceptableEmbedCodesAre} &lt;iframe&gt; ${or} &lt;object&gt;. &#10;${customEmbedsCannotBeSynchronized}."></textarea>
-          <div>
-            <label>
-              <input class="add-temp" type="checkbox" checked="checked">${addAsTemporary}
-            </label>
+            placeholder="${pasteEmbedCodeAndClick}. &#10;${acceptableEmbedCodesAre} &lt;iframe&gt; ${or} &lt;object&gt;. &#10;${customEmbedsCannotBeSynchronized}."></textarea>
+          <label class="checkbox-row-item">
+            <input id="add-temp-embed" class="add-temp" type="checkbox" checked>${addAsTemporary}
+          </label>
+          <div class="queue-buttons">
             <button id="ce_queue_next">${queueNext}</button>
             <button id="ce_queue_end">${queueLast}</button>
           </div>
@@ -142,6 +159,7 @@
       <button id="userlisttoggle" title="${toggleUserList}">
         <ion-icon name="chevron-down"></ion-icon>
         <span id="usercount">${connection}...</span>
+        <ion-icon id="pause-indicator-portrait" name="play" style="display: none;"></ion-icon>
       </button>
       <span>
         <button id="leader_btn" class="unselectable" title="${leaderDesc}">${leader}</button>
@@ -184,10 +202,11 @@
       </div>
     </ul>
     <!-- Messages -->
-    <div id="messagebuffer"></div>
+    <div id="messagebuffer" style="flex-direction: column-reverse;"></div>
     <div id="chat-inputs-wrapper">
+      <div id="dynamic-chin" class="collapsed" style="display: none;"></div>
       <button id="scroll-to-chat-end" style="display: none; opacity: 0;" class="active">
-        <ion-icon name="arrow-down" role="img" class="md hydrated" aria-label="arrow down"></ion-icon>
+        <ion-icon name="arrow-down" role="img" class="md hydrated"></ion-icon>
       </button>
       <!-- Message input -->
       <div id="chatbox">
@@ -196,7 +215,7 @@
           <ion-icon name="happy"></ion-icon>
         </button>
       </div>
-      <div id="smiles-wrap" class="collapsible">
+      <div id="smiles-wrap" class="collapsible" style="display: none;">
         <div id="smiles-list"></div>
       </div>
       <!-- Guest login -->
@@ -216,7 +235,7 @@
     </div>
   </aside>
 
-  <script src="https://cdn.jsdelivr.net/npm/split-grid@1.0.9/dist/split-grid.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/split-grid@1.0.11/dist/split-grid.min.js"></script>
   <script src="client.js"></script>
   <script src="js/custom.js"></script>
 </body>

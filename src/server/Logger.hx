@@ -38,23 +38,16 @@ class Logger {
 	public function saveLog():Void {
 		if (logs.length == 0) return;
 		Utils.ensureDir(folder);
-		removeOldestLog(folder);
+		removeOldestLog();
 		final name = DateTools.format(Date.now(), "%Y-%m-%d_%H_%M_%S");
-		File.saveContent('$folder/$name.json', Json.stringify(getLogs(), filterNulls, "\t"));
+		File.saveContent('$folder/$name.json', Main.jsonStringify(getLogs(), "\t"));
 	}
 
 	public function getLogs():Array<ServerEvent> {
 		return logs;
 	}
 
-	public function filterNulls(key:Any, value:Any):Any {
-		#if js
-		if (value == null) return js.Lib.undefined;
-		#end
-		return value;
-	}
-
-	function removeOldestLog(folder:String):Void {
+	public function removeOldestLog():Void {
 		final names = FileSystem.readDirectory(folder).filter(name -> {
 			if (FileSystem.isDirectory('$folder/$name')) return false;
 			if (name.startsWith(".")) return false;

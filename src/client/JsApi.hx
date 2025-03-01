@@ -8,7 +8,7 @@ import js.Browser.window;
 import js.Syntax;
 
 private typedef VideoChangeFunc = (item:VideoItem) -> Void;
-private typedef OnceEventFunc = (event:WsEvent) -> Void;
+private typedef EventCallback = (event:WsEvent) -> Void;
 
 class JsApi {
 	static var main:Main;
@@ -16,7 +16,8 @@ class JsApi {
 	static final subtitleFormats = [];
 	static final videoChange:Array<VideoChangeFunc> = [];
 	static final videoRemove:Array<VideoChangeFunc> = [];
-	static final onceListeners:Array<{type:WsEventType, func:OnceEventFunc}> = [];
+	static final onListeners:Array<{type:WsEventType, callback:EventCallback}> = [];
+	static final onceListeners:Array<{type:WsEventType, callback:EventCallback}> = [];
 
 	public static function init(main:Main, player:Player):Void {
 		JsApi.main = main;
@@ -72,8 +73,9 @@ class JsApi {
 	}
 
 	@:expose
-	static function addVideoItem(url:String, atEnd:Bool, isTemp:Bool, ?callback:() -> Void):Void {
-		main.addVideo(url, atEnd, isTemp, callback);
+	static function addVideoItem(url:String, atEnd:Bool, isTemp:Bool, ?callback:() ->
+		Void, doCache = false):Void {
+		main.addVideo(url, atEnd, isTemp, doCache, callback);
 	}
 
 	@:expose
@@ -146,52 +148,62 @@ class JsApi {
 	 * `});`
 	 */
 	@:expose
-	public static function once(type:WsEventType, func:OnceEventFunc):Void {
-		onceListeners.push({type: type, func: func});
+	public static function once(type:WsEventType, callback:EventCallback):Void {
+		onceListeners.unshift({type: type, callback: callback});
 	}
 
-	public static function fireOnceEvent(event:WsEvent):Void {
-		var i = 0;
-		while (i < onceListeners.length) {
-			final listener = onceListeners[i];
-			if (listener.type == event.type) {
-				listener.func(event);
-				onceListeners.remove(listener);
-				continue;
-			}
-			i++;
+	public static function on(type:WsEventType, callback:EventCallback):Void {
+		onListeners.unshift({type: type, callback: callback});
+	}
+
+	public static function off(type:WsEventType, callback:EventCallback):Void {
+		final listener = onListeners.find(item -> {
+			return item.type == type && item.callback == callback;
+		});
+		onListeners.remove(listener);
+	}
+
+	public static function fireEvents(event:WsEvent):Void {
+		for (listener in onListeners.reversed()) {
+			if (listener.type != event.type) continue;
+			listener.callback(event);
+		}
+		for (listener in onceListeners.reversed()) {
+			if (listener.type != event.type) continue;
+			listener.callback(event);
+			onceListeners.remove(listener);
 		}
 	}
 
 	@:expose
-	static function notifyOnVideoChange(func:VideoChangeFunc):Void {
-		videoChange.push(func);
+	static function notifyOnVideoChange(callback:VideoChangeFunc):Void {
+		videoChange.push(callback);
 	}
 
 	@:expose
-	static function removeFromVideoChange(func:VideoChangeFunc):Void {
-		videoChange.remove(func);
+	static function removeFromVideoChange(callback:VideoChangeFunc):Void {
+		videoChange.remove(callback);
 	}
 
 	public static function fireVideoChangeEvents(item:VideoItem):Void {
-		for (func in videoChange) {
-			func(item);
+		for (callback in videoChange) {
+			callback(item);
 		}
 	}
 
 	@:expose
-	static function notifyOnVideoRemove(func:VideoChangeFunc):Void {
-		videoRemove.push(func);
+	static function notifyOnVideoRemove(callback:VideoChangeFunc):Void {
+		videoRemove.push(callback);
 	}
 
 	@:expose
-	static function removeFromVideoRemove(func:VideoChangeFunc):Void {
-		videoRemove.remove(func);
+	static function removeFromVideoRemove(callback:VideoChangeFunc):Void {
+		videoRemove.remove(callback);
 	}
 
 	public static function fireVideoRemoveEvents(item:VideoItem):Void {
-		for (func in videoRemove) {
-			func(item);
+		for (callback in videoRemove) {
+			callback(item);
 		}
 	}
 }

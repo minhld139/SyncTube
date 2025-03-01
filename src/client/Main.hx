@@ -2,7 +2,9 @@ package client;
 
 import Client.ClientData;
 import Types.Config;
+import Types.GetTimeEvent;
 import Types.Permission;
+import Types.PlayerType;
 import Types.VideoData;
 import Types.VideoDataRequest;
 import Types.WsEvent;
@@ -18,22 +20,34 @@ import js.html.Event;
 import js.html.InputElement;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
+import js.html.TransitionEvent;
 import js.html.URL;
 import js.html.VideoElement;
 import js.html.WebSocket;
 
-using ClientTools;
-
 class Main {
-	static inline var SETTINGS_VERSION = 4;
+	public static var instance(default, null):Main;
+	static inline var SETTINGS_VERSION = 5;
 
 	public final settings:ClientSettings;
 	public var isSyncActive = true;
 	public var forceSyncNextTick = false;
-	public var isVideoEnabled = true;
+	public var isVideoEnabled(default, null) = true;
 	public final host:String;
 	public var globalIp(default, null) = "";
-	public var isPlaylistOpen = true;
+	public var isPlaylistOpen(default, null) = true;
+	public var playersCacheSupport(default, null):Array<PlayerType> = [];
+	public var showingServerPause(default, null) = false;
+	/** How much time passed since lastState.time update **/
+	public var timeFromLastState(default, null) = 0.0;
+	public final lastState:GetTimeEvent = {
+		time: 0,
+		rate: 1.0,
+		paused: false,
+		pausedByServer: false
+	};
+
+	var lastStateTimeStamp = 0.0;
 
 	final clients:Array<Client> = [];
 	var pageTitle = document.title;
@@ -48,9 +62,11 @@ class Main {
 	final player:Player;
 	var onTimeGet:Timer;
 	var onBlinkTab:Null<Timer>;
+	var gotFirstPageInteraction = false;
+	var msgBuf = getEl("#messagebuffer");
 
 	static function main():Void {
-		new Main();
+		instance = new Main();
 	}
 
 	function new() {
@@ -73,7 +89,8 @@ class Main {
 			latestLinks: [],
 			latestSubs: [],
 			hotkeysEnabled: true,
-			showHintList: true
+			showHintList: true,
+			checkboxes: [],
 		}
 		Settings.init(defaults, settingsPatcher);
 		settings = Settings.read();
@@ -94,6 +111,17 @@ class Main {
 			openWebSocket();
 		});
 		JsApi.init(this, player);
+
+		document.addEventListener("click", onFirstInteraction);
+	}
+
+	function onFirstInteraction():Void {
+		if (gotFirstPageInteraction) return;
+		if (!player.isVideoLoaded()) return;
+		gotFirstPageInteraction = true;
+		player.unmute();
+		if (!hasLeader() && !showingServerPause && !player.inUserInteraction) player.play();
+		document.removeEventListener("click", onFirstInteraction);
 	}
 
 	function settingsPatcher(data:Any, version:Int):Any {
@@ -107,6 +135,9 @@ class Main {
 			case 3:
 				final data:ClientSettings = data;
 				data.showHintList = true;
+			case 4:
+				final data:ClientSettings = data;
+				data.checkboxes = [];
 			case SETTINGS_VERSION, _:
 				throw 'skipped version $version';
 		}
@@ -158,14 +189,14 @@ class Main {
 	function initListeners():Void {
 		Buttons.init(this);
 
-		final leaderBtn = ge("#leader_btn");
+		final leaderBtn = getEl("#leader_btn");
 		leaderBtn.onclick = toggleLeader;
 		leaderBtn.oncontextmenu = (e:MouseEvent) -> {
 			toggleLeaderAndPause();
 			e.preventDefault();
 		}
 
-		final voteSkip = ge("#voteskip");
+		final voteSkip = getEl("#voteskip");
 		voteSkip.onclick = e -> {
 			if (Utils.isTouch() && !window.confirm(Lang.get("skipItemConfirm"))) return;
 			if (player.isListEmpty()) return;
@@ -179,29 +210,29 @@ class Main {
 			});
 		}
 
-		ge("#queue_next").onclick = e -> addVideoUrl(false);
-		ge("#queue_end").onclick = e -> addVideoUrl(true);
-		new InputWithHistory(cast ge("#mediaurl"), settings.latestLinks, 10, value -> {
+		getEl("#queue_next").onclick = e -> addVideoUrl(false);
+		getEl("#queue_end").onclick = e -> addVideoUrl(true);
+		new InputWithHistory(getEl("#mediaurl"), settings.latestLinks, 10, value -> {
 			addVideoUrl(true);
 			return false;
 		});
-		ge("#mediatitle").onkeydown = (e:KeyboardEvent) -> {
+		getEl("#mediatitle").onkeydown = (e:KeyboardEvent) -> {
 			if (e.keyCode == KeyCode.Return) addVideoUrl(true);
 		}
-		new InputWithHistory(cast ge("#subsurl"), settings.latestSubs, 10, value -> {
+		new InputWithHistory(getEl("#subsurl"), settings.latestSubs, 10, value -> {
 			addVideoUrl(true);
 			return false;
 		});
 
-		ge("#ce_queue_next").onclick = e -> addIframe(false);
-		ge("#ce_queue_end").onclick = e -> addIframe(true);
-		ge("#customembed-title").onkeydown = (e:KeyboardEvent) -> {
+		getEl("#ce_queue_next").onclick = e -> addIframe(false);
+		getEl("#ce_queue_end").onclick = e -> addIframe(true);
+		getEl("#customembed-title").onkeydown = (e:KeyboardEvent) -> {
 			if (e.keyCode == KeyCode.Return) {
 				addIframe(true);
 				e.preventDefault();
 			}
 		}
-		ge("#customembed-content").onkeydown = ge("#customembed-title").onkeydown;
+		getEl("#customembed-content").onkeydown = getEl("#customembed-title").onkeydown;
 	}
 
 	public inline function isUser():Bool {
@@ -224,29 +255,32 @@ class Main {
 		return personal.hasPermission(permission, config.permissions);
 	}
 
-	final mask = ~/\${([0-9]+)-([0-9]+)}/g;
+	public final urlMask = ~/\${([0-9]+)-([0-9]+)}/g;
 
 	function handleUrlMasks(links:Array<String>):Void {
 		for (link in links) {
-			if (!mask.match(link)) continue;
-			final start = Std.parseInt(mask.matched(1));
-			var end = Std.parseInt(mask.matched(2));
+			if (!urlMask.match(link)) continue;
+			final start = Std.parseInt(urlMask.matched(1));
+			var end = Std.parseInt(urlMask.matched(2));
 			if (Math.abs(start - end) > 100) continue;
 			final step = end > start ? -1 : 1;
 			final i = links.indexOf(link);
 			links.remove(link);
 			while (end != start + step) {
-				links.insert(i, mask.replace(link, '$end'));
+				links.insert(i, urlMask.replace(link, '$end'));
 				end += step;
 			}
 		}
 	}
 
 	function addVideoUrl(atEnd:Bool):Void {
-		final mediaUrl:InputElement = cast ge("#mediaurl");
-		final subsUrl:InputElement = cast ge("#subsurl");
-		final checkbox:InputElement = cast ge("#addfromurl").querySelector(".add-temp");
-		final isTemp = checkbox.checked;
+		final mediaUrl:InputElement = getEl("#mediaurl");
+		final subsUrl:InputElement = getEl("#subsurl");
+		final checkboxTemp:InputElement = getEl("#addfromurl .add-temp");
+		final isTemp = checkboxTemp.checked;
+		final checkboxCache:InputElement = getEl("#cache-on-server");
+		final doCache = checkboxCache.checked
+			&& checkboxCache.parentElement.style.display != "none";
 		final url = mediaUrl.value;
 		final subs = subsUrl.value;
 		if (url.length == 0) return;
@@ -261,17 +295,15 @@ class Main {
 		handleUrlMasks(links);
 		// if videos added as next, we need to load them in reverse order
 		if (!atEnd) sortItemsForQueueNext(links);
-		addVideoArray(links, atEnd, isTemp);
+		addVideoArray(links, atEnd, isTemp, doCache);
 	}
 
-	public function isRawPlayerLink(url:String):Bool {
-		return player.isRawPlayerLink(url);
+	public function getLinkPlayerType(url:String):PlayerType {
+		return player.getLinkPlayerType(url);
 	}
 
-	public function isSingleVideoLink(url:String):Bool {
-		if (~/, ?(https?)/g.match(url)) return false;
-		if (mask.match(url)) return false;
-		return true;
+	public function isSingleVideoUrl(url:String):Bool {
+		return player.isSingleVideoUrl(url);
 	}
 
 	public function sortItemsForQueueNext<T>(items:Array<T>):Void {
@@ -283,20 +315,24 @@ class Main {
 		if (first != null) items.unshift(first);
 	}
 
-	function addVideoArray(links:Array<String>, atEnd:Bool, isTemp:Bool):Void {
+	function addVideoArray(links:Array<String>, atEnd:Bool, isTemp:Bool, doCache:Bool):Void {
 		if (links.length == 0) return;
 		final link = links.shift();
-		addVideo(link, atEnd, isTemp, () -> addVideoArray(links, atEnd, isTemp));
+		addVideo(link, atEnd, isTemp, doCache, () ->
+			addVideoArray(links, atEnd, isTemp, doCache));
 	}
 
-	public function addVideo(url:String, atEnd:Bool, isTemp:Bool, ?callback:() -> Void):Void {
+	public function addVideo(url:String, atEnd:Bool, isTemp:Bool, doCache:Bool, ?callback:() -> Void):Void {
 		final protocol = Browser.location.protocol;
 		if (url.startsWith("/")) {
 			final host = Browser.location.hostname;
 			final port = Browser.location.port;
-			url = '$protocol//$host:$port$url';
+			final colonPort = port.length > 0 ? ':$port' : port;
+			url = '$protocol//$host$colonPort$url';
 		}
-		if (!url.startsWith("http")) url = '$protocol//$url';
+		if (!url.startsWith("pt:")) {
+			if (!url.startsWith("http")) url = '$protocol//$url';
+		}
 
 		final obj:VideoDataRequest = {
 			url: url,
@@ -318,8 +354,10 @@ class Main {
 						author: personal.name,
 						duration: data.duration,
 						isTemp: isTemp,
+						doCache: doCache,
 						subs: data.subs,
-						isIframe: data.isIframe == true
+						voiceOverTrack: data.voiceOverTrack,
+						playerType: data.playerType
 					},
 					atEnd: atEnd
 				}
@@ -329,14 +367,14 @@ class Main {
 	}
 
 	function addIframe(atEnd:Bool):Void {
-		final iframeCode:InputElement = cast ge("#customembed-content");
+		final iframeCode:InputElement = getEl("#customembed-content");
 		final iframe = iframeCode.value;
 		if (iframe.length == 0) return;
 		iframeCode.value = "";
-		final mediaTitle:InputElement = cast ge("#customembed-title");
+		final mediaTitle:InputElement = getEl("#customembed-title");
 		final title = mediaTitle.value;
 		mediaTitle.value = "";
-		final checkbox:InputElement = cast ge("#customembed").querySelector(".add-temp");
+		final checkbox:InputElement = getEl("#customembed .add-temp");
 		final isTemp = checkbox.checked;
 		final obj:VideoDataRequest = {
 			url: iframe,
@@ -359,7 +397,8 @@ class Main {
 						author: personal.name,
 						duration: data.duration,
 						isTemp: isTemp,
-						isIframe: true
+						doCache: false,
+						playerType: IframeType
 					},
 					atEnd: atEnd
 				}
@@ -419,7 +458,7 @@ class Main {
 			final t = t.charAt(0).toLowerCase() + t.substr(1);
 			trace('Event: ${data.type}', Reflect.field(data, t));
 		}
-		JsApi.fireOnceEvent(data);
+		JsApi.fireEvents(data);
 		switch (data.type) {
 			case Connected:
 				onConnected(data);
@@ -471,11 +510,18 @@ class Main {
 				}
 				serverMessage(text);
 
+			case Progress:
+				onProgressEvent(data);
+
 			case AddVideo:
 				player.addVideoItem(data.addVideo.item, data.addVideo.atEnd);
 				if (player.itemsLength() == 1) player.setVideo(0);
 
 			case VideoLoaded:
+				lastState.paused = false;
+				lastState.pausedByServer = false;
+				lastState.time = 0;
+				updateLastStateTime();
 				player.setTime(0);
 				player.play();
 				// try to sync leader after with GetTime events
@@ -490,13 +536,21 @@ class Main {
 				if (player.isListEmpty()) player.pause();
 
 			case Pause:
-				player.setPauseIndicator(false);
+				lastState.time = data.pause.time;
+				lastState.paused = true;
+				updateLastStateTime();
+				player.setPauseIndicator(lastState.paused);
+				updateUserList();
 				if (isLeader()) return;
 				player.pause();
 				player.setTime(data.pause.time);
 
 			case Play:
-				player.setPauseIndicator(true);
+				lastState.time = data.play.time;
+				lastState.paused = false;
+				updateLastStateTime();
+				player.setPauseIndicator(lastState.paused);
+				updateUserList();
 				if (isLeader()) return;
 				final synchThreshold = settings.synchThreshold;
 				final newTime = data.play.time;
@@ -508,7 +562,24 @@ class Main {
 
 			case GetTime:
 				data.getTime.paused ??= false;
+				data.getTime.pausedByServer ??= false;
 				data.getTime.rate ??= 1;
+
+				final isPauseChanged = lastState.paused != data.getTime.paused;
+				lastState.time = data.getTime.time;
+				lastState.paused = data.getTime.paused;
+				lastState.pausedByServer = data.getTime.pausedByServer;
+				lastState.rate = data.getTime.rate;
+				updateLastStateTime();
+
+				if (isPauseChanged) updateUserList();
+
+				final pausedByServer = data.getTime.pausedByServer;
+				if (pausedByServer) {
+					showServerUnpause();
+				} else if (showingServerPause) {
+					hideDynamicChin();
+				}
 
 				if (player.getPlaybackRate() != data.getTime.rate) {
 					player.setPlaybackRate(data.getTime.rate);
@@ -526,15 +597,20 @@ class Main {
 				}
 				if (player.isVideoLoaded()) forceSyncNextTick = false;
 				if (player.getDuration() <= player.getTime() + synchThreshold) return;
-				if (!data.getTime.paused) player.play();
-				else player.pause();
-				player.setPauseIndicator(!data.getTime.paused);
+				if (player.isPaused()) {
+					if (!data.getTime.paused) player.play();
+				} else {
+					if (data.getTime.paused) player.pause();
+				}
+				player.setPauseIndicator(data.getTime.paused);
 				if (Math.abs(time - newTime) < synchThreshold) return;
 				// +0.5s for buffering
 				if (!data.getTime.paused) player.setTime(newTime + 0.5);
 				else player.setTime(newTime);
 
 			case SetTime:
+				lastState.time = data.setTime.time;
+				updateLastStateTime();
 				final synchThreshold = settings.synchThreshold;
 				final newTime = data.setTime.time;
 				final time = player.getTime();
@@ -546,6 +622,8 @@ class Main {
 				player.setPlaybackRate(data.setRate.rate);
 
 			case Rewind:
+				lastState.time = data.rewind.time;
+				updateLastStateTime();
 				player.setTime(data.rewind.time + 0.5);
 
 			case Flashback: // server-only
@@ -580,10 +658,39 @@ class Main {
 
 			case Dump:
 				Utils.saveFile("dump.json", ApplicationJson, data.dump.data);
-
-			case GetYoutubeVideoInfo:
-				// handled by event listeners like `JsApi.once`
 		}
+	}
+
+	public function onProgressEvent(data:WsEvent):Void {
+		final data = data.progress;
+		final text = switch data.type {
+			case Caching:
+				final caching = Lang.get("caching");
+				final name = data.data;
+				'$caching $name';
+			case Downloading: Lang.get("downloading");
+			case Uploading: Lang.get("uploading");
+			case Canceled:
+				hideDynamicChin();
+				return;
+		}
+		final percent = (data.ratio * 100).toFixed(1);
+		var text = '$text...';
+		if (percent > 0) text += ' $percent%';
+		showProgressInfo(text);
+		if (data.ratio == 1) {
+			Timer.delay(() -> {
+				hideDynamicChin();
+			}, 500);
+		}
+	}
+
+	function updateLastStateTime():Void {
+		if (lastStateTimeStamp == 0) {
+			lastStateTimeStamp = Timer.stamp();
+		}
+		timeFromLastState = Timer.stamp() - lastStateTimeStamp;
+		lastStateTimeStamp = Timer.stamp();
 	}
 
 	function onConnected(data:WsEvent):Void {
@@ -593,6 +700,7 @@ class Main {
 		Settings.write(settings);
 
 		globalIp = connected.globalIp;
+		playersCacheSupport = connected.playersCacheSupport;
 		setConfig(connected.config);
 		if (connected.isUnknownClient) {
 			updateClients(connected.clients);
@@ -601,7 +709,7 @@ class Main {
 		} else {
 			onLogin(connected.clients, connected.clientName);
 		}
-		final guestName:InputElement = cast ge("#guestname");
+		final guestName:InputElement = getEl("#guestname");
 		var name = settings.name;
 		if (name.length == 0) name = guestName.value;
 		final hash = settings.hash;
@@ -645,33 +753,30 @@ class Main {
 
 		serverMessage(text, false, false);
 
-		ge("#addVideosHintButton").onclick = e -> {
-			final addBtn = ge("#showmediaurl");
+		getEl("#addVideosHintButton").onclick = e -> {
+			final addBtn = getEl("#showmediaurl");
 			addBtn.scrollIntoView();
 			Timer.delay(() -> {
-				if (!ge("#addfromurl").classList.contains("collapse")) {
-					ge("#mediaurl").focus();
+				if (!getEl("#addfromurl").classList.contains("collapse")) {
+					getEl("#mediaurl").focus();
 					return;
 				}
 				addBtn.onclick();
 			}, 300);
 		}
-		ge("#requestLeaderHintButton").onclick = (e:MouseEvent) -> {
+		getEl("#requestLeaderHintButton").onclick = (e:MouseEvent) -> {
 			window.scrollTo(0, 0);
-			if (Utils.isTouch()) {
-				ge("#leader_btn").classList.add("hint");
-				Timer.delay(() -> ge("#leader_btn").classList.remove("hint"), 1000);
-			}
+			if (Utils.isTouch()) blinkLeaderButton();
 		}
-		ge("#requestLeaderHintButton").onpointerenter = e -> {
+		getEl("#requestLeaderHintButton").onpointerenter = e -> {
 			if (Utils.isTouch()) return;
-			ge("#leader_btn").classList.add("hint");
+			getEl("#leader_btn").classList.add("hint");
 		}
-		ge("#requestLeaderHintButton").onpointerleave = e -> {
-			ge("#leader_btn").classList.remove("hint");
+		getEl("#requestLeaderHintButton").onpointerleave = e -> {
+			getEl("#leader_btn").classList.remove("hint");
 		}
 		if (Utils.isAndroid()) {
-			ge("#openInApp").onclick = e -> {
+			getEl("#openInApp").onclick = e -> {
 				var isRedirected = false;
 				window.addEventListener("blur", e -> isRedirected = true, {once: true});
 				window.setTimeout(function() {
@@ -682,22 +787,27 @@ class Main {
 				return false;
 			}
 		}
-		ge("#hideHintList").onclick = e -> {
-			ge("#hideHintList").parentElement.remove();
+		getEl("#hideHintList").onclick = e -> {
+			getEl("#hideHintList").parentElement.remove();
 			settings.showHintList = false;
 			Settings.write(settings);
 		}
 	}
 
+	public function blinkLeaderButton():Void {
+		getEl("#leader_btn").classList.add("hint");
+		Timer.delay(() -> getEl("#leader_btn").classList.remove("hint"), 500);
+	}
+
 	function onUserGroupChanged():Void {
-		final button:ButtonElement = cast ge("#queue_next");
+		final button:ButtonElement = getEl("#queue_next");
 		if (personal.hasPermission(ChangeOrderPerm, config.permissions)) {
 			button.disabled = false;
 		} else {
 			button.disabled = true;
 		}
-		final adminMenu = ge("#adminMenu");
-		if (isAdmin()) adminMenu.style.display = "block";
+		final adminMenu = getEl("#adminMenu");
+		if (isAdmin()) adminMenu.style.display = "";
 		else adminMenu.style.display = "none";
 	}
 
@@ -716,7 +826,7 @@ class Main {
 	public function userLogin(name:String, password:String):Void {
 		if (config.salt == null) return;
 		if (password.length == 0) return;
-		if (name.length == 0) return;
+		if (name.length == 0) name = settings.name;
 		final hash = Sha256.encode(password + config.salt);
 		loginRequest(name, hash);
 		settings.hash = hash;
@@ -735,11 +845,14 @@ class Main {
 
 	function setConfig(config:Config):Void {
 		this.config = config;
-		if (Utils.isTouch()) config.requestLeaderOnPause = false;
+		if (Utils.isTouch()) {
+			config.requestLeaderOnPause = false;
+			config.unpauseWithoutLeader = false;
+		}
 		pageTitle = config.channelName;
-		final login:InputElement = cast ge("#guestname");
+		final login:InputElement = getEl("#guestname");
 		login.maxLength = config.maxLoginLength;
-		final form:InputElement = cast ge("#chatline");
+		final form:InputElement = getEl("#chatline");
 		form.maxLength = config.maxMessageLength;
 
 		filters.resize(0);
@@ -757,14 +870,14 @@ class Main {
 				replace: '$1<$tag class="channel-emote" src="${emote.image}" title="${emote.name}"/>'
 			});
 		}
-		ge("#smilesbtn").classList.remove("active");
-		final smilesWrap = ge("#smiles-wrap");
+		getEl("#smilesbtn").classList.remove("active");
+		final smilesWrap = getEl("#smiles-wrap");
 		smilesWrap.style.display = "none";
-		final smilesList = ge("#smiles-list");
+		final smilesList = getEl("#smiles-list");
 		smilesList.onclick = (e:MouseEvent) -> {
 			final el:Element = cast e.target;
 			if (el == smilesList) return;
-			final form:InputElement = cast ge("#chatline");
+			final form:InputElement = getEl("#chatline");
 			form.value += ' ${el.title}';
 			form.focus();
 		}
@@ -789,25 +902,25 @@ class Main {
 	}
 
 	function showGuestLoginPanel():Void {
-		ge("#guestlogin").style.display = "flex";
-		ge("#guestpassword").style.display = "none";
-		ge("#chatbox").style.display = "none";
-		ge("#exitBtn").textContent = Lang.get("login");
+		getEl("#guestlogin").style.display = "";
+		getEl("#guestpassword").style.display = "none";
+		getEl("#chatbox").style.display = "none";
+		getEl("#exitBtn").textContent = Lang.get("login");
 	}
 
 	function hideGuestLoginPanel():Void {
-		ge("#guestlogin").style.display = "none";
-		ge("#guestpassword").style.display = "none";
-		ge("#chatbox").style.display = "flex";
-		ge("#exitBtn").textContent = Lang.get("exit");
+		getEl("#guestlogin").style.display = "none";
+		getEl("#guestpassword").style.display = "none";
+		getEl("#chatbox").style.display = "";
+		getEl("#exitBtn").textContent = Lang.get("exit");
 	}
 
 	function showGuestPasswordPanel():Void {
-		ge("#guestlogin").style.display = "none";
-		ge("#chatbox").style.display = "none";
-		ge("#guestpassword").style.display = "flex";
-		(cast ge("#guestpass") : InputElement).type = "password";
-		ge("#guestpass_icon").setAttribute("name", "eye");
+		getEl("#guestlogin").style.display = "none";
+		getEl("#chatbox").style.display = "none";
+		getEl("#guestpassword").style.display = "";
+		(getEl("#guestpass") : InputElement).type = "password";
+		getEl("#guestpass_icon").setAttribute("name", "eye");
 	}
 
 	function updateClients(newClients:Array<ClientData>):Void {
@@ -824,35 +937,32 @@ class Main {
 	}
 
 	function chatMessageConnected():Void {
-		final msgBuf = ge("#messagebuffer");
 		if (isLastMessageConnectionStatus()) {
 			msgBuf.removeChild(msgBuf.lastChild);
 		}
 		final div = document.createDivElement();
 		div.className = "server-msg-reconnect";
 		div.textContent = Lang.get("msgConnected");
-		msgBuf.appendChild(div);
+		addMessageDiv(div);
 		scrollChatToEnd();
 	}
 
 	function chatMessageDisconnected():Void {
-		final msgBuf = ge("#messagebuffer");
 		if (isLastMessageConnectionStatus()) {
 			msgBuf.removeChild(msgBuf.lastChild);
 		}
 		final div = document.createDivElement();
 		div.className = "server-msg-disconnect";
 		div.textContent = Lang.get("msgDisconnected");
-		msgBuf.appendChild(div);
+		addMessageDiv(div);
 		scrollChatToEnd();
 	}
 
 	function isLastMessageConnectionStatus():Bool {
-		final msgBuf = ge("#messagebuffer");
 		return msgBuf.lastElementChild?.className.startsWith("server-msg");
 	}
 
-	public static function serverMessage(text:String, isText = true, withTimestamp = true):Void {
+	public function serverMessage(text:String, isText = true, withTimestamp = true):Element {
 		final div = document.createDivElement();
 		final time = Date.now().toString().split(" ")[1];
 		div.className = "server-whisper";
@@ -863,12 +973,12 @@ class Main {
 		final textDiv = div.querySelector(".server-whisper");
 		if (isText) textDiv.textContent = text;
 		else textDiv.innerHTML = text;
-		final msgBuf = ge("#messagebuffer");
-		msgBuf.appendChild(div);
-		msgBuf.scrollTop = msgBuf.scrollHeight;
+		addMessageDiv(div);
+		scrollChatToEnd();
+		return div;
 	}
 
-	public static function serverHtmlMessage(el:Element):Void {
+	public function serverHtmlMessage(el:Element):Void {
 		final div = document.createDivElement();
 		final time = Date.now().toString().split(" ")[1];
 		div.className = "server-whisper";
@@ -877,25 +987,25 @@ class Main {
 			<span class="timestamp">$time</span>
 		</div>';
 		div.querySelector(".server-whisper").appendChild(el);
-		final msgBuf = ge("#messagebuffer");
-		msgBuf.appendChild(div);
-		msgBuf.scrollTop = msgBuf.scrollHeight;
+		addMessageDiv(div);
+		scrollChatToEnd();
 	}
 
 	function updateUserList():Void {
-		final userCount = ge("#usercount");
+		final userCount = getEl("#usercount");
 		userCount.textContent = clients.length + " " + Lang.get("online");
 		document.title = getPageTitle();
 
 		final list = new StringBuf();
 		for (client in clients) {
 			list.add('<div class="userlist_item">');
-			if (client.isLeader) list.add('<ion-icon name="play"></ion-icon>');
+			final iconName = lastState.paused ? "pause" : "play";
+			if (client.isLeader) list.add('<ion-icon name="$iconName"></ion-icon>');
 			var klass = client.isBanned ? "userlist_banned" : "";
 			if (client.isAdmin) klass += " userlist_owner";
 			list.add('<span class="$klass">${client.name}</span></div>');
 		}
-		final userlist = ge("#userlist");
+		final userlist = getEl("#userlist");
 		userlist.innerHTML = list.toString();
 	}
 
@@ -904,7 +1014,7 @@ class Main {
 	}
 
 	function clearChat():Void {
-		ge("#messagebuffer").textContent = "";
+		msgBuf.textContent = "";
 	}
 
 	function getLocalDateFromUtc(utcDate:String):String {
@@ -914,7 +1024,6 @@ class Main {
 	}
 
 	function addMessage(name:String, text:String, ?date:String):Void {
-		final msgBuf = ge("#messagebuffer");
 		final userDiv = document.createDivElement();
 		userDiv.className = 'chat-msg-$name';
 
@@ -941,10 +1050,9 @@ class Main {
 			text = filter.regex.replace(text, filter.replace);
 		}
 		textDiv.innerHTML = text;
-		final isInChatEnd = msgBuf.scrollTop
-			+ msgBuf.clientHeight >= msgBuf.scrollHeight - 50;
+		final inChatEnd = isInChatEnd();
 
-		if (isInChatEnd) { // scroll chat to end after images loaded
+		if (inChatEnd) { // scroll chat to end after images loaded
 			for (img in textDiv.getElementsByTagName("img")) {
 				img.onload = onChatImageLoaded;
 			}
@@ -957,13 +1065,14 @@ class Main {
 		headDiv.appendChild(nameDiv);
 		headDiv.appendChild(tstamp);
 		userDiv.appendChild(textDiv);
-		msgBuf.appendChild(userDiv);
-		if (isInChatEnd) {
+		addMessageDiv(userDiv);
+
+		if (inChatEnd) {
 			while (msgBuf.children.length > 200) {
 				msgBuf.removeChild(msgBuf.firstChild);
 			}
 		}
-		if (isInChatEnd || name == personal.name) {
+		if (inChatEnd || name == personal.name) {
 			scrollChatToEnd();
 		} else {
 			showScrollToChatEndBtn();
@@ -971,16 +1080,108 @@ class Main {
 		if (onBlinkTab == null) blinkTabWithTitle('*${Lang.get("chat")}*');
 	}
 
-	function showScrollToChatEndBtn() {
-		final btn = ge("#scroll-to-chat-end");
-		btn.style.display = "block";
+	function addMessageDiv(userDiv:Element):Void {
+		if (isMessageBufferReversed()) msgBuf.prepend(userDiv);
+		else msgBuf.appendChild(userDiv);
+	}
+
+	public function showScrollToChatEndBtn():Void {
+		final btn = getEl("#scroll-to-chat-end");
+		btn.style.display = "";
 		Timer.delay(() -> btn.style.opacity = "1", 0);
+	}
+
+	public function hideScrollToChatEndBtn():Void {
+		final btn = getEl("#scroll-to-chat-end");
+		if (btn.style.opacity == "0") return;
+		btn.style.opacity = "0";
+		btn.addEventListener("transitionend", e -> {
+			btn.style.display = "none";
+		}, {once: true});
+	}
+
+	public function showProgressInfo(text:String):Void {
+		final chin = getEl("#dynamic-chin");
+		var div = chin.querySelector("#progress-info");
+		if (div == null) {
+			div = document.createDivElement();
+			div.id = "progress-info";
+			chin.prepend(div);
+		}
+		div.textContent = text;
+		showDynamicChin();
+	}
+
+	public function showServerUnpause():Void {
+		if (showingServerPause) return;
+		showingServerPause = true;
+		final chin = getEl("#dynamic-chin");
+		chin.innerHTML = "";
+
+		final div = document.createDivElement();
+		div.className = "server-whisper";
+		div.textContent = Lang.get("leaderDisconnectedServerOnPause");
+		chin.appendChild(div);
+		final btn = document.createButtonElement();
+		btn.id = "unpause-server";
+		btn.textContent = Lang.get("unpause");
+		chin.appendChild(btn);
+		btn.onclick = () -> {
+			hideDynamicChin();
+			send({
+				type: SetLeader,
+				setLeader: {
+					clientName: personal.name
+				}
+			});
+			JsApi.once(SetLeader, event -> removeLeader());
+		}
+
+		showDynamicChin();
+	}
+
+	function showDynamicChin():Void {
+		final chin = getEl("#dynamic-chin");
+		if (chin.style.display == "") return;
+		chin.style.display = "";
+		chin.style.transition = "none";
+		chin.classList.remove("collapsed");
+		final h = chin.clientHeight;
+		chin.classList.add("collapsed");
+		Timer.delay(() -> {
+			chin.style.transition = "";
+			chin.classList.remove("collapsed");
+			chin.style.height = '${h}px';
+		}, 0);
+		function onTransitionEnd(e:TransitionEvent):Void {
+			if (e.propertyName != "height") return;
+			chin.style.height = "";
+			chin.removeEventListener("transitionend", onTransitionEnd);
+		}
+		chin.addEventListener("transitionend", onTransitionEnd);
+	}
+
+	public function hideDynamicChin():Void {
+		showingServerPause = false;
+		final chin = getEl("#dynamic-chin");
+		final h = chin.clientHeight;
+		chin.style.height = '${h}px';
+		Timer.delay(() -> {
+			chin.style.height = "";
+			chin.classList.add("collapsed");
+		}, 0);
+		function onTransitionEnd(e:TransitionEvent):Void {
+			if (e.propertyName != "height") return;
+			chin.style.display = "none";
+			chin.removeEventListener("transitionend", onTransitionEnd);
+		}
+		chin.addEventListener("transitionend", onTransitionEnd);
 	}
 
 	function onChatImageLoaded(e:Event):Void {
 		scrollChatToEnd();
 		(cast e.target : Element).onload = null;
-		final btn = ge("#scroll-to-chat-end");
+		final btn = getEl("#scroll-to-chat-end");
 		btn.style.opacity = "0";
 		btn.style.display = "none";
 	}
@@ -1001,9 +1202,27 @@ class Main {
 		el.onloadedmetadata = null;
 	}
 
+	public function isMessageBufferReversed():Bool {
+		return msgBuf.style.flexDirection == "column-reverse";
+	}
+
+	public function isInChatEnd(ignoreOffset = 50):Bool {
+		final isReverse = isMessageBufferReversed();
+		var scrollTop = msgBuf.scrollTop;
+		// zero to negative in column-reverse
+		if (isReverse) scrollTop = -scrollTop;
+		if (isReverse) return scrollTop <= ignoreOffset;
+		return scrollTop + msgBuf.clientHeight >= msgBuf.scrollHeight - ignoreOffset;
+	}
+
 	public function scrollChatToEnd():Void {
-		final msgBuf = ge("#messagebuffer");
-		msgBuf.scrollTop = msgBuf.scrollHeight;
+		final isReverse = isMessageBufferReversed();
+		if (isReverse) {
+			if (Utils.isMacSafari) msgBuf.scrollTop = -1;
+			msgBuf.scrollTop = 0;
+		} else {
+			msgBuf.scrollTop = msgBuf.scrollHeight;
+		}
 	}
 
 	/* Returns `true` if text should not be sent to chat */
@@ -1060,6 +1279,21 @@ class Main {
 			case "ad":
 				player.skipAd();
 				return false;
+			case "volume":
+				var v = Std.parseFloat(args[0]);
+				if (Math.isNaN(v)) v = 1;
+				v = v.clamp(0, 3);
+				final wasNotFull = player.getVolume() < 1;
+				player.setVolume(v.clamp(0, 1));
+
+				if (player.getPlayerType() != RawType) return true;
+				if (wasNotFull && v > 1) {
+					serverMessage("Volume was not maxed yet to be boosted, you can send command again.");
+					return true;
+				}
+				final rawPlayer = @:privateAccess player.rawPlayer;
+				rawPlayer.boostVolume(v);
+				return true;
 			case "dump":
 				send({type: Dump});
 				return true;
@@ -1128,13 +1362,13 @@ class Main {
 	}
 
 	function setLeaderButton(flag:Bool):Void {
-		final leaderBtn = ge("#leader_btn");
+		final leaderBtn = getEl("#leader_btn");
 		leaderBtn.classList.toggle("success-bg", flag);
 	}
 
 	function setPlaylistLock(isOpen:Bool):Void {
 		isPlaylistOpen = isOpen;
-		final lockPlaylist = ge("#lockplaylist");
+		final lockPlaylist = getEl("#lockplaylist");
 		final icon = lockPlaylist.firstElementChild;
 		if (isOpen) {
 			lockPlaylist.title = Lang.get("playlistOpen");
@@ -1169,6 +1403,15 @@ class Main {
 		});
 	}
 
+	public function removeLeader():Void {
+		send({
+			type: SetLeader,
+			setLeader: {
+				clientName: ""
+			}
+		});
+	}
+
 	public function toggleLeaderAndPause():Void {
 		if (!isLeader()) {
 			JsApi.once(SetLeader, event -> {
@@ -1187,6 +1430,10 @@ class Main {
 		return config.requestLeaderOnPause;
 	}
 
+	public function hasUnpauseWithoutLeader():Bool {
+		return config.unpauseWithoutLeader;
+	}
+
 	public function getTemplateUrl():String {
 		return config.templateUrl;
 	}
@@ -1199,6 +1446,15 @@ class Main {
 		return config.youtubePlaylistLimit;
 	}
 
+	public function isAutoplayAllowed():Bool {
+		final navigator:{
+			getAutoplayPolicy:(type:String) -> Bool
+		} = cast Browser.navigator;
+		if (navigator.getAutoplayPolicy != null) return
+			navigator.getAutoplayPolicy("mediaelement");
+		return gotFirstPageInteraction;
+	}
+
 	public function isVerbose():Bool {
 		return config.isVerbose;
 	}
@@ -1207,7 +1463,8 @@ class Main {
 		return ~/([.*+?^${}()|[\]\\])/g.replace(regex, "\\$1");
 	}
 
-	public static inline function ge(id:String):Element {
-		return document.querySelector(id);
+	@:generic
+	public static inline function getEl<T:Element>(id:String):T {
+		return cast document.querySelector(id);
 	}
 }
