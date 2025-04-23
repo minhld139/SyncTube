@@ -27,7 +27,8 @@ import js.html.WebSocket;
 
 class Main {
 	public static var instance(default, null):Main;
-	static inline var SETTINGS_VERSION = 5;
+	static inline var SETTINGS_VERSION = 6;
+	static inline var MAX_CHAT_MESSAGES = 200;
 
 	public final settings:ClientSettings;
 	public var isSyncActive = true;
@@ -64,12 +65,15 @@ class Main {
 	var onBlinkTab:Null<Timer>;
 	var gotFirstPageInteraction = false;
 	var msgBuf = getEl("#messagebuffer");
+	var isPageUnloading = false;
+	var isPageVisible = true;
 
 	static function main():Void {
-		instance = new Main();
+		new Main();
 	}
 
 	function new() {
+		instance = this;
 		haxe.Log.trace = Utils.nativeTrace;
 		player = new Player(this);
 		host = Browser.location.hostname;
@@ -80,8 +84,6 @@ class Main {
 			uuid: null,
 			name: "",
 			hash: "",
-			isExtendedPlayer: false,
-			playerSize: 1,
 			chatSize: 300,
 			synchThreshold: 2,
 			isSwapped: false,
@@ -91,6 +93,7 @@ class Main {
 			hotkeysEnabled: true,
 			showHintList: true,
 			checkboxes: [],
+			checkedCache: [],
 		}
 		Settings.init(defaults, settingsPatcher);
 		settings = Settings.read();
@@ -113,6 +116,12 @@ class Main {
 		JsApi.init(this, player);
 
 		document.addEventListener("click", onFirstInteraction);
+		window.addEventListener("beforeunload", () -> isPageUnloading = true);
+		window.addEventListener("blur", () -> isPageVisible = false);
+		window.addEventListener("focus", () -> isPageVisible = true);
+		document.addEventListener("visibilitychange", () -> {
+			isPageVisible = document.visibilityState == VISIBLE;
+		});
 	}
 
 	function onFirstInteraction():Void {
@@ -138,6 +147,16 @@ class Main {
 			case 4:
 				final data:ClientSettings = data;
 				data.checkboxes = [];
+			case 5:
+				final data:ClientSettings = data;
+				data.checkedCache = [];
+				Reflect.deleteField(data, "playerSize");
+				Reflect.deleteField(data, "isExtendedPlayer");
+				final oldCheck = data.checkboxes.find(item -> item.id == "cache-on-server");
+				if (oldCheck != null) {
+					data.checkboxes.remove(oldCheck);
+					data.checkedCache.push(YoutubeType);
+				}
 			case SETTINGS_VERSION, _:
 				throw 'skipped version $version';
 		}
@@ -304,6 +323,14 @@ class Main {
 
 	public function isSingleVideoUrl(url:String):Bool {
 		return player.isSingleVideoUrl(url);
+	}
+
+	public function isExternalVideoUrl(url:String):Bool {
+		url = url.ltrim();
+		if (url.startsWith("/")) return false;
+		final host = Browser.location.hostname;
+		if (url.contains(host)) return false;
+		return true;
 	}
 
 	public function sortItemsForQueueNext<T>(items:Array<T>):Void {
@@ -505,6 +532,15 @@ class Main {
 				final text = switch (id) {
 					case "usernameError":
 						Lang.get(id).replace("$MAX", '${config.maxLoginLength}');
+					case id if (id.startsWith("accessError")):
+						final args = id.split("|");
+						final err = Lang.get(args[0]);
+						if (args[1] == null) {
+							'$err.';
+						} else {
+							final permErr = Lang.get("noPermission").replace("$PERMISSION", args[1]);
+							'$err: $permErr';
+						}
 					default:
 						Lang.get(id);
 				}
@@ -938,7 +974,7 @@ class Main {
 
 	function chatMessageConnected():Void {
 		if (isLastMessageConnectionStatus()) {
-			msgBuf.removeChild(msgBuf.lastChild);
+			msgBuf.removeChild(getLastMessageDiv());
 		}
 		final div = document.createDivElement();
 		div.className = "server-msg-reconnect";
@@ -949,7 +985,7 @@ class Main {
 
 	function chatMessageDisconnected():Void {
 		if (isLastMessageConnectionStatus()) {
-			msgBuf.removeChild(msgBuf.lastChild);
+			msgBuf.removeChild(getLastMessageDiv());
 		}
 		final div = document.createDivElement();
 		div.className = "server-msg-disconnect";
@@ -959,7 +995,7 @@ class Main {
 	}
 
 	function isLastMessageConnectionStatus():Bool {
-		return msgBuf.lastElementChild?.className.startsWith("server-msg");
+		return getLastMessageDiv()?.className.startsWith("server-msg");
 	}
 
 	public function serverMessage(text:String, isText = true, withTimestamp = true):Element {
@@ -1068,8 +1104,8 @@ class Main {
 		addMessageDiv(userDiv);
 
 		if (inChatEnd) {
-			while (msgBuf.children.length > 200) {
-				msgBuf.removeChild(msgBuf.firstChild);
+			while (msgBuf.children.length > MAX_CHAT_MESSAGES) {
+				msgBuf.removeChild(getFirstMessageDiv());
 			}
 		}
 		if (inChatEnd || name == personal.name) {
@@ -1078,6 +1114,14 @@ class Main {
 			showScrollToChatEndBtn();
 		}
 		if (onBlinkTab == null) blinkTabWithTitle('*${Lang.get("chat")}*');
+	}
+
+	function getFirstMessageDiv():Null<Element> {
+		return isMessageBufferReversed() ? msgBuf.lastElementChild : msgBuf.firstElementChild;
+	}
+
+	function getLastMessageDiv():Null<Element> {
+		return isMessageBufferReversed() ? msgBuf.firstElementChild : msgBuf.lastElementChild;
 	}
 
 	function addMessageDiv(userDiv:Element):Void {
@@ -1427,11 +1471,13 @@ class Main {
 	}
 
 	public function hasLeaderOnPauseRequest():Bool {
-		return config.requestLeaderOnPause;
+		final hasAccess = isPageVisible && !isPageUnloading;
+		return config.requestLeaderOnPause && hasAccess;
 	}
 
 	public function hasUnpauseWithoutLeader():Bool {
-		return config.unpauseWithoutLeader;
+		final hasAccess = isPageVisible && !isPageUnloading;
+		return config.unpauseWithoutLeader && hasAccess;
 	}
 
 	public function getTemplateUrl():String {

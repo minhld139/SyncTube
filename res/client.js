@@ -242,6 +242,17 @@ Lambda.find = function(it,f) {
 	}
 	return null;
 };
+Lambda.findIndex = function(it,f) {
+	var i = 0;
+	var v = $getIterator(it);
+	while(v.hasNext()) {
+		if(f(v.next())) {
+			return i;
+		}
+		++i;
+	}
+	return -1;
+};
 var Lang = function() { };
 Lang.__name__ = true;
 Lang.request = function(path,callback) {
@@ -326,6 +337,13 @@ Reflect.fields = function(o) {
 		}
 	}
 	return a;
+};
+Reflect.deleteField = function(o,field) {
+	if(!Object.prototype.hasOwnProperty.call(o,field)) {
+		return false;
+	}
+	delete(o[field]);
+	return true;
 };
 Reflect.copy = function(o) {
 	if(o == null) {
@@ -499,16 +517,7 @@ VideoList.prototype = {
 		this.pos = i;
 	}
 	,findIndex: function(f) {
-		var i = 0;
-		var _g = 0;
-		var _g1 = this.items;
-		while(_g < _g1.length) {
-			if(f(_g1[_g++])) {
-				return i;
-			}
-			++i;
-		}
-		return -1;
+		return Lambda.findIndex(this.items,f);
 	}
 	,addItem: function(item,atEnd) {
 		if(atEnd) {
@@ -768,6 +777,7 @@ client_Buttons.init = function(main) {
 		}
 	};
 	var mediaUrl = window.document.querySelector("#mediaurl");
+	var checkboxCache = window.document.querySelector("#cache-on-server");
 	mediaUrl.oninput = function() {
 		var url = mediaUrl.value;
 		var playerType = main.getLinkPlayerType(url);
@@ -777,8 +787,9 @@ client_Buttons.init = function(main) {
 		window.document.querySelector("#subsurlblock").style.display = isSingleRawVideo ? "" : "none";
 		var tmp = url.length > 0 && isSingle;
 		window.document.querySelector("#voiceoverblock").style.display = tmp ? "" : "none";
-		var tmp = isSingle && main.playersCacheSupport.indexOf(playerType) != -1 ? "" : "none";
-		window.document.querySelector("#cache-on-server").parentElement.style.display = tmp;
+		var isExternal = main.isExternalVideoUrl(url);
+		checkboxCache.parentElement.style.display = isSingle && isExternal && main.playersCacheSupport.indexOf(playerType) != -1 ? "" : "none";
+		checkboxCache.checked = client_Buttons.settings.checkedCache.indexOf(playerType) != -1;
 		var panel = window.document.querySelector("#addfromurl");
 		var oldH = panel.style.height;
 		panel.style.height = "";
@@ -789,18 +800,34 @@ client_Buttons.init = function(main) {
 		},0);
 	};
 	mediaUrl.onfocus = mediaUrl.oninput;
+	checkboxCache.addEventListener("change",function() {
+		var url = mediaUrl.value;
+		var playerType = main.getLinkPlayerType(url);
+		var checked = checkboxCache.checked;
+		HxOverrides.remove(client_Buttons.settings.checkedCache,playerType);
+		if(checked) {
+			client_Buttons.settings.checkedCache.push(playerType);
+		}
+		client_Settings.write(client_Buttons.settings);
+	});
 	window.document.querySelector("#insert_template").onclick = function(e) {
 		mediaUrl.value = main.getTemplateUrl();
 		mediaUrl.focus();
 	};
 	window.document.querySelector("#mediaurl-upload").onclick = function(e) {
 		client_Utils.browseFile(function(buffer,name) {
-			if(name == null || name.length == 0) {
+			if(name == null) {
+				name = "";
+			}
+			var _this_r = new RegExp("[?#%/\\\\]","g".split("u").join(""));
+			name = StringTools.trim(name.replace(_this_r,""));
+			if(name.length == 0) {
 				name = "video";
 			}
+			name = window.encodeURIComponent(name);
 			var a = buffer.byteLength - 5242880;
 			var lastChunk = buffer.slice(a < 0 ? 0 : a);
-			var chunkReq = window.fetch("/upload-last-chunk",{ method : "POST", headers : { "content-name" : name, "client-name" : main.personal.name}, body : lastChunk});
+			var chunkReq = window.fetch("/upload-last-chunk",{ method : "POST", headers : { "content-name" : name}, body : lastChunk});
 			chunkReq.then(function(e) {
 				return e.json().then(function(data) {
 					if(data.errorId != null) {
@@ -813,7 +840,6 @@ client_Buttons.init = function(main) {
 			var request = new XMLHttpRequest();
 			request.open("POST","/upload",true);
 			request.setRequestHeader("content-name",name);
-			request.setRequestHeader("client-name",main.personal.name);
 			request.upload.onprogress = function(event) {
 				var ratio = 0.0;
 				if(event.lengthComputable) {
@@ -827,7 +853,7 @@ client_Buttons.init = function(main) {
 				try {
 					data = JSON.parse(request.responseText);
 				} catch( _g ) {
-					haxe_Log.trace(haxe_Exception.caught(_g),{ fileName : "src/client/Buttons.hx", lineNumber : 299, className : "client.Buttons", methodName : "init"});
+					haxe_Log.trace(haxe_Exception.caught(_g),{ fileName : "src/client/Buttons.hx", lineNumber : 316, className : "client.Buttons", methodName : "init"});
 					return;
 				}
 				if(data.errorId == null) {
@@ -1065,7 +1091,7 @@ client_Buttons.initChatInputs = function(main) {
 		}
 		return true;
 	});
-	var checkboxes = [window.document.querySelector("#add-temp"),window.document.querySelector("#cache-on-server")];
+	var checkboxes = [window.document.querySelector("#add-temp")];
 	var _g = 0;
 	while(_g < checkboxes.length) {
 		var checkbox = [checkboxes[_g]];
@@ -1134,7 +1160,7 @@ client_InputWithHistory.prototype = {
 		var key = e.keyCode;
 		switch(key) {
 		case 13:
-			var value = this.element.value;
+			var value = StringTools.trim(this.element.value);
 			if(value.length == 0) {
 				return;
 			}
@@ -1321,6 +1347,8 @@ client_JsApi.fireVideoRemoveEvents = function(item) {
 var client_Main = function() {
 	this.matchSimpleDate = new EReg("^-?([0-9]+d)?([0-9]+h)?([0-9]+m)?([0-9]+s?)?$","");
 	this.urlMask = new EReg("\\${([0-9]+)-([0-9]+)}","g");
+	this.isPageVisible = true;
+	this.isPageUnloading = false;
 	this.msgBuf = window.document.querySelector("#messagebuffer");
 	this.gotFirstPageInteraction = false;
 	this.disabledReconnection = false;
@@ -1341,13 +1369,14 @@ var client_Main = function() {
 	this.forceSyncNextTick = false;
 	this.isSyncActive = true;
 	var _gthis = this;
+	client_Main.instance = this;
 	haxe_Log.trace = client_Utils.nativeTrace;
 	this.player = new client_Player(this);
 	this.host = $global.location.hostname;
 	if(this.host == "") {
 		this.host = "localhost";
 	}
-	client_Settings.init({ version : 5, uuid : null, name : "", hash : "", isExtendedPlayer : false, playerSize : 1, chatSize : 300, synchThreshold : 2, isSwapped : false, isUserListHidden : true, latestLinks : [], latestSubs : [], hotkeysEnabled : true, showHintList : true, checkboxes : []},$bind(this,this.settingsPatcher));
+	client_Settings.init({ version : 6, uuid : null, name : "", hash : "", chatSize : 300, synchThreshold : 2, isSwapped : false, isUserListHidden : true, latestLinks : [], latestSubs : [], hotkeysEnabled : true, showHintList : true, checkboxes : [], checkedCache : []},$bind(this,this.settingsPatcher));
 	this.settings = client_Settings.read();
 	this.initListeners();
 	this.onTimeGet = new haxe_Timer(this.settings.synchThreshold * 1000);
@@ -1366,10 +1395,22 @@ var client_Main = function() {
 	});
 	client_JsApi.init(this,this.player);
 	window.document.addEventListener("click",$bind(this,this.onFirstInteraction));
+	window.addEventListener("beforeunload",function() {
+		return _gthis.isPageUnloading = true;
+	});
+	window.addEventListener("blur",function() {
+		return _gthis.isPageVisible = false;
+	});
+	window.addEventListener("focus",function() {
+		return _gthis.isPageVisible = true;
+	});
+	window.document.addEventListener("visibilitychange",function() {
+		return _gthis.isPageVisible = window.document.visibilityState == "visible";
+	});
 };
 client_Main.__name__ = true;
 client_Main.main = function() {
-	client_Main.instance = new client_Main();
+	new client_Main();
 };
 client_Main.prototype = {
 	onFirstInteraction: function() {
@@ -1401,6 +1442,19 @@ client_Main.prototype = {
 			data.checkboxes = [];
 			break;
 		case 5:
+			var data1 = data;
+			data1.checkedCache = [];
+			Reflect.deleteField(data1,"playerSize");
+			Reflect.deleteField(data1,"isExtendedPlayer");
+			var oldCheck = Lambda.find(data1.checkboxes,function(item) {
+				return item.id == "cache-on-server";
+			});
+			if(oldCheck != null) {
+				HxOverrides.remove(data1.checkboxes,oldCheck);
+				data1.checkedCache.push("YoutubeType");
+			}
+			break;
+		case 6:
 			throw haxe_Exception.thrown("skipped version " + version);
 		default:
 			throw haxe_Exception.thrown("skipped version " + version);
@@ -1568,6 +1622,17 @@ client_Main.prototype = {
 	,isSingleVideoUrl: function(url) {
 		return this.player.isSingleVideoUrl(url);
 	}
+	,isExternalVideoUrl: function(url) {
+		url = StringTools.ltrim(url);
+		if(StringTools.startsWith(url,"/")) {
+			return false;
+		}
+		var host = $global.location.hostname;
+		if(url.indexOf(host) != -1) {
+			return false;
+		}
+		return true;
+	}
 	,sortItemsForQueueNext: function(items) {
 		if(items.length == 0) {
 			return;
@@ -1679,7 +1744,7 @@ client_Main.prototype = {
 		var data = JSON.parse(e.data);
 		if(this.config != null && this.config.isVerbose) {
 			var t = data.type;
-			haxe_Log.trace("Event: " + data.type,{ fileName : "src/client/Main.hx", lineNumber : 459, className : "client.Main", methodName : "onMessage", customParams : [Reflect.field(data,t.charAt(0).toLowerCase() + HxOverrides.substr(t,1,null))]});
+			haxe_Log.trace("Event: " + data.type,{ fileName : "src/client/Main.hx", lineNumber : 486, className : "client.Main", methodName : "onMessage", customParams : [Reflect.field(data,t.charAt(0).toLowerCase() + HxOverrides.substr(t,1,null))]});
 		}
 		client_JsApi.fireEvents(data);
 		switch(data.type) {
@@ -1842,7 +1907,17 @@ client_Main.prototype = {
 			break;
 		case "ServerMessage":
 			var id = data.serverMessage.textId;
-			this.serverMessage(id == "usernameError" ? StringTools.replace(Lang.get(id),"$MAX","" + this.config.maxLoginLength) : Lang.get(id));
+			var text;
+			if(id == "usernameError") {
+				text = StringTools.replace(Lang.get(id),"$MAX","" + this.config.maxLoginLength);
+			} else if(StringTools.startsWith(id,"accessError")) {
+				var args = id.split("|");
+				var err = Lang.get(args[0]);
+				text = args[1] == null ? "" + err + "." : "" + err + ": " + StringTools.replace(Lang.get("noPermission"),"$PERMISSION",args[1]);
+			} else {
+				text = Lang.get(id);
+			}
+			this.serverMessage(text);
 			break;
 		case "SetLeader":
 			ClientTools.setLeader(this.clients,data.setLeader.clientName);
@@ -2196,7 +2271,7 @@ client_Main.prototype = {
 	}
 	,chatMessageConnected: function() {
 		if(this.isLastMessageConnectionStatus()) {
-			this.msgBuf.removeChild(this.msgBuf.lastChild);
+			this.msgBuf.removeChild(this.getLastMessageDiv());
 		}
 		var div = window.document.createElement("div");
 		div.className = "server-msg-reconnect";
@@ -2206,7 +2281,7 @@ client_Main.prototype = {
 	}
 	,chatMessageDisconnected: function() {
 		if(this.isLastMessageConnectionStatus()) {
-			this.msgBuf.removeChild(this.msgBuf.lastChild);
+			this.msgBuf.removeChild(this.getLastMessageDiv());
 		}
 		var div = window.document.createElement("div");
 		div.className = "server-msg-disconnect";
@@ -2215,7 +2290,7 @@ client_Main.prototype = {
 		this.scrollChatToEnd();
 	}
 	,isLastMessageConnectionStatus: function() {
-		var tmp = this.msgBuf.lastElementChild;
+		var tmp = this.getLastMessageDiv();
 		if(tmp != null) {
 			return StringTools.startsWith(tmp.className,"server-msg");
 		} else {
@@ -2318,7 +2393,7 @@ client_Main.prototype = {
 		userDiv.appendChild(textDiv);
 		this.addMessageDiv(userDiv);
 		if(inChatEnd) {
-			while(this.msgBuf.children.length > 200) this.msgBuf.removeChild(this.msgBuf.firstChild);
+			while(this.msgBuf.children.length > 200) this.msgBuf.removeChild(this.getFirstMessageDiv());
 		}
 		if(inChatEnd || name == this.personal.name) {
 			this.scrollChatToEnd();
@@ -2327,6 +2402,20 @@ client_Main.prototype = {
 		}
 		if(this.onBlinkTab == null) {
 			this.blinkTabWithTitle("*" + Lang.get("chat") + "*");
+		}
+	}
+	,getFirstMessageDiv: function() {
+		if(this.isMessageBufferReversed()) {
+			return this.msgBuf.lastElementChild;
+		} else {
+			return this.msgBuf.firstElementChild;
+		}
+	}
+	,getLastMessageDiv: function() {
+		if(this.isMessageBufferReversed()) {
+			return this.msgBuf.firstElementChild;
+		} else {
+			return this.msgBuf.lastElementChild;
 		}
 	}
 	,addMessageDiv: function(userDiv) {
@@ -2658,10 +2747,18 @@ client_Main.prototype = {
 		return ClientTools.hasLeader(this.clients);
 	}
 	,hasLeaderOnPauseRequest: function() {
-		return this.config.requestLeaderOnPause;
+		if(this.config.requestLeaderOnPause) {
+			return this.isPageVisible && !this.isPageUnloading;
+		} else {
+			return false;
+		}
 	}
 	,hasUnpauseWithoutLeader: function() {
-		return this.config.unpauseWithoutLeader;
+		if(this.config.unpauseWithoutLeader) {
+			return this.isPageVisible && !this.isPageUnloading;
+		} else {
+			return false;
+		}
 	}
 	,getTemplateUrl: function() {
 		return this.config.templateUrl;
@@ -2707,7 +2804,7 @@ var client_Player = function(main) {
 	this.rawPlayer = new client_players_Raw(main,this);
 	this.initItemButtons();
 	var resizeObserver = client_Utils.createResizeObserver(function(entries) {
-		if(_gthis.isLoaded) {
+		if(_gthis.isLoaded || _gthis.videoList.items.length == 0) {
 			return;
 		}
 		client_Buttons.onViewportResize();
@@ -2716,7 +2813,7 @@ var client_Player = function(main) {
 		resizeObserver.observe(this.playerEl);
 	} else {
 		new haxe_Timer(50).run = function() {
-			if(_gthis.isLoaded) {
+			if(_gthis.isLoaded || _gthis.videoList.items.length == 0) {
 				return;
 			}
 			client_Buttons.onViewportResize();
@@ -2947,6 +3044,9 @@ client_Player.prototype = {
 		if(!this.isLoaded) {
 			return;
 		}
+		if(!this.isSyncActive()) {
+			return;
+		}
 		if(this.videoList.items.length == 0) {
 			return;
 		}
@@ -2981,6 +3081,9 @@ client_Player.prototype = {
 			tmp.pause();
 		}
 		if(!this.isLoaded) {
+			return;
+		}
+		if(!this.isSyncActive()) {
 			return;
 		}
 		var _this = this.videoList;
@@ -3242,8 +3345,19 @@ client_Player.prototype = {
 		}
 		return this.player.isVideoLoaded();
 	}
-	,play: function() {
+	,isSyncActive: function() {
 		if(!this.main.isSyncActive) {
+			return false;
+		}
+		var _this = this.videoList;
+		var tmp = _this.items[_this.pos];
+		if(tmp == null) {
+			return false;
+		}
+		return tmp.playerType != "IframeType";
+	}
+	,play: function() {
+		if(!this.isSyncActive()) {
 			return;
 		}
 		if(this.player == null) {
@@ -3265,7 +3379,7 @@ client_Player.prototype = {
 		}
 	}
 	,pause: function() {
-		if(!this.main.isSyncActive) {
+		if(!this.isSyncActive()) {
 			return;
 		}
 		if(this.player == null) {
@@ -3293,7 +3407,7 @@ client_Player.prototype = {
 		if(isLocal == null) {
 			isLocal = true;
 		}
-		if(!this.main.isSyncActive) {
+		if(!this.isSyncActive()) {
 			return;
 		}
 		if(this.player == null) {
@@ -3321,7 +3435,7 @@ client_Player.prototype = {
 		if(isLocal == null) {
 			isLocal = true;
 		}
-		if(!this.main.isSyncActive) {
+		if(!this.isSyncActive()) {
 			return;
 		}
 		if(this.player == null) {
@@ -3371,7 +3485,7 @@ client_Player.prototype = {
 			}
 		};
 		http.onError = function(msg) {
-			haxe_Log.trace(msg,{ fileName : "src/client/Player.hx", lineNumber : 666, className : "client.Player", methodName : "skipAd"});
+			haxe_Log.trace(msg,{ fileName : "src/client/Player.hx", lineNumber : 674, className : "client.Player", methodName : "skipAd"});
 		};
 		http.request();
 	}
@@ -3660,7 +3774,11 @@ client_Utils.saveFile = function(name,mime,data) {
 	URL.revokeObjectURL(url);
 };
 client_Utils.createResizeObserver = function(callback) {
-	return null;
+	var $window = window;
+	if($window.ResizeObserver == null) {
+		return null;
+	}
+	return new ResizeObserver(callback);
 };
 client_Utils.createAudioContext = function() {
 	var w = window;
@@ -3691,7 +3809,7 @@ client_players_Iframe.prototype = {
 		var iframe = window.document.createElement("div");
 		iframe.innerHTML = StringTools.trim(data.url);
 		if(this.isValidIframe(iframe)) {
-			callback({ duration : 356400});
+			callback({ duration : 356400, title : "Iframe media"});
 		} else {
 			callback({ duration : 0});
 		}
@@ -3709,13 +3827,22 @@ client_players_Iframe.prototype = {
 	,loadVideo: function(item) {
 		this.removeVideo();
 		this.video = window.document.createElement("div");
-		this.video.innerHTML = item.url;
+		var data = item.url;
+		if(data.indexOf("player.twitch.tv") != -1) {
+			var hostname = $global.location.hostname;
+			data = StringTools.replace(data,"parent=www.example.com","parent=" + hostname);
+			if(!new EReg("[A-z]","").match(hostname)) {
+				client_Main.instance.serverMessage("Twitch player blocks access from ips, please use SyncTube from any domain for it.\nYou can register some on <a href=\"https://nya.pub\" target=\"_blank\">nya.pub</a>.",false);
+			}
+		}
+		this.video.innerHTML = data;
 		if(!this.isValidIframe(this.video)) {
 			this.video = null;
 			return;
 		}
 		if(this.video.firstChild.nodeName == "IFRAME") {
 			this.video.setAttribute("sandbox","allow-scripts");
+			this.video.classList.add("videoplayerIframeParent");
 		}
 		this.video.firstElementChild.id = "videoplayer";
 		this.playerEl.appendChild(this.video);
@@ -3785,7 +3912,12 @@ client_players_Raw.prototype = {
 		var url = data.url;
 		var title = StringTools.trim(this.titleInput.value);
 		if(title.length == 0) {
-			var decodedUrl = decodeURIComponent(url.split("+").join(" "));
+			var decodedUrl;
+			try {
+				decodedUrl = decodeURIComponent(url.split("+").join(" "));
+			} catch( _g ) {
+				decodedUrl = url;
+			}
 			if(this.matchName.match(HxOverrides.substr(decodedUrl,decodedUrl.lastIndexOf("/") + 1,null))) {
 				title = this.matchName.matched(1);
 			} else {
@@ -4841,6 +4973,7 @@ client_players_Youtube.prototype = {
 			return;
 		}
 		var video = window.document.createElement("div");
+		video.id = "temp-videoplayer" + window.document.getElementsByClassName("temp-videoplayer").length;
 		video.className = "temp-videoplayer";
 		this.playerEl.prepend(video);
 		var tempYoutube = null;
@@ -4848,10 +4981,10 @@ client_players_Youtube.prototype = {
 			if(_gthis.playerEl.contains(video)) {
 				_gthis.playerEl.removeChild(video);
 			}
-			callback({ duration : tempYoutube.getDuration()});
+			callback({ title : "YouTube video", duration : tempYoutube.getDuration()});
 			tempYoutube.destroy();
 		}, onError : function(e) {
-			haxe_Log.trace("Error " + e.data,{ fileName : "src/client/players/Youtube.hx", lineNumber : 197, className : "client.players.Youtube", methodName : "getRemoteDataFallback"});
+			haxe_Log.trace("Error " + e.data,{ fileName : "src/client/players/Youtube.hx", lineNumber : 200, className : "client.players.Youtube", methodName : "getRemoteDataFallback"});
 			if(_gthis.playerEl.contains(video)) {
 				_gthis.playerEl.removeChild(video);
 			}
@@ -4905,7 +5038,7 @@ client_players_Youtube.prototype = {
 		}, onPlaybackRateChange : function(e) {
 			_gthis.player.onRateChange();
 		}, onError : function(e) {
-			haxe_Log.trace("Error " + e.data,{ fileName : "src/client/players/Youtube.hx", lineNumber : 256, className : "client.players.Youtube", methodName : "loadVideo"});
+			haxe_Log.trace("Error " + e.data,{ fileName : "src/client/players/Youtube.hx", lineNumber : 259, className : "client.players.Youtube", methodName : "loadVideo"});
 		}}});
 	}
 	,removeVideo: function() {

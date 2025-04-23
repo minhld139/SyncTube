@@ -1,7 +1,6 @@
 package server;
 
 import Types.UploadResponse;
-import haxe.Json;
 import haxe.io.Path;
 import js.node.Buffer;
 import js.node.Fs.Fs;
@@ -12,6 +11,9 @@ import js.node.http.ClientRequest;
 import js.node.http.IncomingMessage;
 import js.node.http.ServerResponse;
 import js.node.url.URL;
+import json2object.ErrorUtils;
+import json2object.JsonParser;
+import server.cache.Cache;
 import sys.FileSystem;
 
 @:structInit
@@ -20,6 +22,12 @@ private class HttpServerConfig {
 	public final customDir:String = null;
 	public final allowLocalRequests = false;
 	public final cache:Cache = null;
+}
+
+typedef SetupAdminRequest = {
+	name:String,
+	password:String,
+	passwordConfirmation:String,
 }
 
 class HttpServer {
@@ -86,6 +94,8 @@ class HttpServer {
 					uploadFileLastChunk(req, res);
 				case "/upload":
 					uploadFile(req, res);
+				case "/setup":
+					finishSetup(req, res);
 			}
 			return;
 		}
@@ -105,6 +115,20 @@ class HttpServer {
 			return;
 		}
 
+		if (url.pathname == "/setup") {
+			if (main.hasAdmins()) {
+				res.redirect("/");
+				return;
+			}
+
+			Fs.readFile('$dir/setup.html', (err:Dynamic, data:Buffer) -> {
+				data = Buffer.from(localizeHtml(data.toString(), req.headers["accept-language"]));
+				res.setHeader("content-type", getMimeType("html"));
+				res.end(data);
+			});
+			return;
+		}
+
 		if (url.pathname == "/proxy") {
 			if (!proxyUrl(req, res)) res.end('Proxy error: ${req.url}');
 			return;
@@ -113,6 +137,8 @@ class HttpServer {
 		if (hasCustomRes) {
 			final path = getPath(customDir, url);
 			if (Fs.existsSync(path)) filePath = path;
+			final ext = Path.extension(filePath).toLowerCase();
+			res.setHeader("content-type", getMimeType(ext));
 		}
 
 		if (isMediaExtension(ext)) {
@@ -124,7 +150,12 @@ class HttpServer {
 				readFileError(err, res, filePath);
 				return;
 			}
+
 			if (ext == "html") {
+				if (!main.isNoState && !main.hasAdmins()) {
+					res.redirect("/setup");
+					return;
+				}
 				// replace ${textId} to localized strings
 				data = cast localizeHtml(data.toString(), req.headers["accept-language"]);
 			}
@@ -133,34 +164,32 @@ class HttpServer {
 	}
 
 	function uploadFileLastChunk(req:IncomingMessage, res:ServerResponse) {
-		final name = cache.getFreeFileName(req.headers["content-name"]);
+		var fileName = try decodeURIComponent(req.headers["content-name"]) catch (e) "";
+		if (fileName.trim().length == 0) fileName = null;
+		final name = cache.getFreeFileName(fileName);
 		final filePath = cache.getFilePath(name);
 		final body:Array<Any> = [];
 		req.on("data", chunk -> body.push(chunk));
 		req.on("end", () -> {
 			final buffer = Buffer.concat(body);
 			uploadingFilesLastChunks[filePath] = buffer;
-			res.writeHead(200, {
-				"content-type": getMimeType("json"),
-			});
 			final json:UploadResponse = {
 				info: "File last chunk uploaded",
 				url: cache.getFileUrl(name)
 			}
-			res.end(Json.stringify(json));
+			res.status(200).json(json);
 		});
 	}
 
 	function uploadFile(req:IncomingMessage, res:ServerResponse) {
-		final name = cache.getFreeFileName(req.headers["content-name"]);
-		final clientName = req.headers["client-name"];
+		var fileName = try decodeURIComponent(req.headers["content-name"]) catch (e) "";
+		if (fileName.trim().length == 0) fileName = null;
+		final name = cache.getFreeFileName(fileName);
 		final filePath = cache.getFilePath(name);
 		final size = Std.parseInt(req.headers["content-length"]) ?? return;
 
 		inline function end(code:Int, json:UploadResponse):Void {
-			res.statusCode = code;
-			res.end(Json.stringify(json));
-
+			res.status(code).json(json);
 			uploadingFilesSizes.remove(filePath);
 			uploadingFilesLastChunks.remove(filePath);
 		}
@@ -209,9 +238,72 @@ class HttpServer {
 		});
 	}
 
+	function finishSetup(req:IncomingMessage, res:ServerResponse) {
+		if (main.hasAdmins()) {
+			return res.redirect("/");
+		}
+
+		final bodyChunks:Array<Buffer> = [];
+
+		req.on("data", chunk -> {
+			bodyChunks.push(chunk);
+		});
+
+		req.on("end", () -> {
+			final body = Buffer.concat(bodyChunks).toString();
+			final jsonParser = new JsonParser<SetupAdminRequest>();
+			final jsonData = jsonParser.fromJson(body);
+			if (jsonParser.errors.length > 0) {
+				final errors = ErrorUtils.convertErrorArray(jsonParser.errors);
+				trace(errors);
+				res.status(400).json({success: false, errors: []});
+				return;
+			}
+			final name = jsonData.name;
+			final password = jsonData.password;
+			final passwordConfirmation = jsonData.passwordConfirmation;
+			final lang = req.headers["accept-language"] ?? "en";
+			final errors:Array<{type:String, error:String}> = [];
+
+			if (main.isBadClientName(name)) {
+				final error = Lang.get(lang, "usernameError")
+					.replace("$MAX", '${main.config.maxLoginLength}');
+				errors.push({
+					type: "name",
+					error: error
+				});
+			}
+
+			final min = Main.MIN_PASSWORD_LENGTH;
+			final max = Main.MAX_PASSWORD_LENGTH;
+			if (password.length < min || password.length > max) {
+				final error = Lang.get(lang, "passwordError")
+					.replace("$MIN", '$min').replace("$MAX", '$max');
+				errors.push({
+					type: "password",
+					error: error
+				});
+			}
+
+			if (password != passwordConfirmation) {
+				errors.push({
+					type: "password",
+					error: Lang.get(lang, "passwordsMismatchError")
+				});
+			}
+
+			if (errors.length > 0) {
+				res.status(400).json({success: false, errors: errors});
+				return;
+			}
+
+			main.addAdmin(name, password);
+			res.status(200).json({success: true});
+		});
+	}
+
 	function getPath(dir:String, url:URL):String {
-		var filePath = dir + url.pathname;
-		filePath = filePath.urlDecode();
+		final filePath = dir.urlDecode() + decodeURIComponent(url.pathname);
 		if (!FileSystem.isDirectory(filePath)) return filePath;
 		return Path.addTrailingSlash(filePath) + "index.html";
 	}
@@ -377,5 +469,9 @@ class HttpServer {
 
 	inline function decodeURI(data:String):String {
 		return js.Syntax.code("decodeURI({0})", data);
+	}
+
+	inline function decodeURIComponent(data:String):String {
+		return js.Syntax.code("decodeURIComponent({0})", data);
 	}
 }

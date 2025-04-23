@@ -4,6 +4,7 @@ import haxe.io.Mime;
 import js.Browser.document;
 import js.Browser.navigator;
 import js.Browser.window;
+import js.html.Blob;
 import js.html.Element;
 import js.html.FileReader;
 import js.html.URL;
@@ -181,7 +182,7 @@ class Utils {
 	}
 
 	public static function saveFile(name:String, mime:Mime, data:String):Void {
-		final blob = new js.html.Blob([data], {
+		final blob = new Blob([data], {
 			type: mime
 		});
 		final url = URL.createObjectURL(blob);
@@ -201,7 +202,6 @@ class Utils {
 	public static function createResizeObserver(callback:(entries:Array<Dynamic>) -> Void):Null<{
 		observe:(el:Element) -> Void
 	}> {
-		return null;
 		final window = js.Browser.window;
 		final observer = (window : Dynamic).ResizeObserver ?? return null;
 		return js.Syntax.code("new ResizeObserver({0})", callback);

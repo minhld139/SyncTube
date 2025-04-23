@@ -22,6 +22,7 @@ import js.npm.ws.Server as WSServer;
 import js.npm.ws.WebSocket;
 import json2object.ErrorUtils;
 import json2object.JsonParser;
+import server.cache.Cache;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -30,6 +31,8 @@ private typedef MainOptions = {
 }
 
 class Main {
+	public static inline var MIN_PASSWORD_LENGTH = 4;
+	public static inline var MAX_PASSWORD_LENGTH = 50;
 	static inline var VIDEO_START_MAX_DELAY = 3000;
 	static inline var VIDEO_SKIP_DELAY = 1000;
 	static inline var FLASHBACKS_COUNT = 50;
@@ -41,14 +44,14 @@ class Main {
 	public final userDir:String;
 	public final logsDir:String;
 	public final config:Config;
+	public final isNoState:Bool;
 
-	final isNoState:Bool;
 	final verbose:Bool;
 	final statePath:String;
 	var wss:WSServer;
 	final localIp:String;
 	var globalIp:String;
-	final playersCacheSupport:Array<PlayerType> = [];
+	final playersCacheSupport:Array<PlayerType> = [RawType];
 	var port:Int;
 	final userList:UserList;
 
@@ -332,25 +335,19 @@ class Main {
 		File.saveContent('$crashesFolder/$name.json', Json.stringify(data, "\t"));
 	}
 
-	var isHeroku = false;
-
 	function initIntergationHandlers():Void {
-		isHeroku = process.env["_"] != null && process.env["_"].contains("heroku");
-		// Prevent heroku idle when clients online (needs APP_URL env var)
-		if (isHeroku && process.env["APP_URL"] != null) {
-			var url = process.env["APP_URL"];
-			if (!url.startsWith("http")) url = 'http://$url';
-			new Timer(10 * 60 * 1000).run = () -> {
-				if (clients.length == 0) return;
-				trace('Ping $url');
-				Http.get(url, r -> {});
-			}
+		// Prevent heroku-like services to sleep when clients online
+		var url = process.env["APP_URL"] ?? return;
+		if (!url.startsWith("http")) url = 'http://$url';
+		new Timer(10 * 60 * 1000).run = () -> {
+			if (clients.length == 0) return;
+			trace('Ping $url');
+			Http.get(url, r -> {});
 		}
 	}
 
 	function clientIp(req:IncomingMessage):String {
-		// Heroku uses internal proxy, so header cannot be spoofed
-		if (config.allowProxyIps || isHeroku) {
+		if (config.allowProxyIps) {
 			final forwarded:String = req.headers["x-forwarded-for"];
 			if (forwarded == null || forwarded.length == 0) return req.socket.remoteAddress;
 			return forwarded.split(",")[0].trim();
@@ -373,6 +370,10 @@ class Main {
 			userList.admins.find(item -> item.name == name)
 		);
 		trace('Admin $name removed.');
+	}
+
+	public function hasAdmins():Bool {
+		return userList.admins.length > 0;
 	}
 
 	public function replayLog(events:Array<ServerEvent>):Void {
@@ -583,7 +584,7 @@ class Main {
 			case Login:
 				final name = data.login.clientName.trim();
 				final lcName = name.toLowerCase();
-				if (badNickName(lcName)) {
+				if (isBadClientName(lcName)) {
 					serverMessage(client, "usernameError");
 					send(client, {type: LoginError});
 					return;
@@ -638,7 +639,7 @@ class Main {
 
 			case Message:
 				if (!checkPermission(client, WriteChatPerm)) return;
-				var text = data.message.text;
+				var text = data.message.text.trim();
 				if (text.length == 0) return;
 				if (text.length > config.maxMessageLength) {
 					text = text.substr(0, config.maxMessageLength);
@@ -691,11 +692,23 @@ class Main {
 				if (!item.doCache) {
 					addVideo();
 				} else {
-					cache.cacheYoutubeVideo(client, item.url, (name) -> {
-						item = item.withUrl(cache.getFileUrl(name));
-						if (item.duration > 1) item.duration -= 1;
-						addVideo();
-					});
+					switch item.playerType {
+						case RawType:
+							cache.cacheRawVideo(client, item.url, (name) -> {
+								item = item.withUrl(cache.getFileUrl(name));
+								addVideo();
+							});
+						case YoutubeType:
+							cache.cacheYoutubeVideo(client, item.url, (name) -> {
+								item = item.withUrl(cache.getFileUrl(name));
+								if (item.duration > 1) item.duration -= 1;
+								addVideo();
+							});
+						case type:
+							final name = '$type'.replace("Type", "");
+							serverMessage(client, 'No cache support for $name player.');
+							addVideo();
+					}
 				}
 
 			case VideoLoaded:
@@ -704,9 +717,9 @@ class Main {
 				prepareVideoPlayback();
 
 			case RemoveVideo:
+				if (videoList.length == 0) return;
 				if (isPlaylistLockedFor(client)) return;
 				if (!checkPermission(client, RemoveVideoPerm)) return;
-				if (videoList.length == 0) return;
 				final url = data.removeVideo.url;
 				final index = videoList.findIndex(item -> item.url == url);
 				if (index == -1) return;
@@ -803,8 +816,8 @@ class Main {
 				});
 
 			case Rewind:
-				if (!checkPermission(client, RewindPerm)) return;
 				if (videoList.length == 0) return;
+				if (!checkPermission(client, RewindPerm)) return;
 				data.rewind.time += videoTimer.getTime();
 				if (data.rewind.time < 0) data.rewind.time = 0;
 				saveFlashbackTime(videoList.currentItem);
@@ -815,8 +828,8 @@ class Main {
 				});
 
 			case Flashback:
-				if (!checkPermission(client, RewindPerm)) return;
 				if (videoList.length == 0) return;
+				if (!checkPermission(client, RewindPerm)) return;
 				loadFlashbackTime(videoList.currentItem);
 				broadcast({
 					type: Rewind,
@@ -889,17 +902,19 @@ class Main {
 			case ClearPlaylist:
 				if (isPlaylistLockedFor(client)) return;
 				if (!checkPermission(client, RemoveVideoPerm)) return;
-				if (videoTimer.getTime() > FLASHBACK_DIST) {
-					saveFlashbackTime(videoList.currentItem);
+				if (videoList.length != 0) {
+					if (videoTimer.getTime() > FLASHBACK_DIST) {
+						saveFlashbackTime(videoList.currentItem);
+					}
 				}
 				videoTimer.stop();
 				videoList.clear();
 				broadcast(data);
 
 			case ShufflePlaylist:
+				if (videoList.length == 0) return;
 				if (isPlaylistLockedFor(client)) return;
 				if (!checkPermission(client, ChangeOrderPerm)) return;
-				if (videoList.length == 0) return;
 				videoList.shuffle();
 				broadcast({
 					type: UpdatePlaylist,
@@ -942,12 +957,9 @@ class Main {
 					logs: logger.getLogs()
 				}
 				final json = jsonStringify(data, "\t");
-				send(client, {
-					type: ServerMessage,
-					serverMessage: {
-						textId: "Free space: " + (cache.getFreeSpace() / 1024).toFixed() + "KiB"
-					}
-				});
+				serverMessage(client, "Free space: "
+					+ (cache.getFreeSpace() / 1024).toFixed()
+					+ "KiB");
 				send(client, {
 					type: Dump,
 					dump: {
@@ -1037,12 +1049,7 @@ class Main {
 		if (client.isBanned) checkBan(client);
 		final state = client.hasPermission(perm, config.permissions);
 		if (!state) {
-			send(client, {
-				type: ServerMessage,
-				serverMessage: {
-					textId: "accessError"
-				}
-			});
+			serverMessage(client, 'accessError|$perm');
 		}
 		return state;
 	}
@@ -1070,7 +1077,7 @@ class Main {
 	final matchHtmlChars = ~/[&^<>'"]/;
 	final matchGuestName = ~/guest [0-9]+/;
 
-	public function badNickName(name:String):Bool {
+	public function isBadClientName(name:String):Bool {
 		if (name.length > config.maxLoginLength) return true;
 		if (name.length == 0) return true;
 		if (matchHtmlChars.match(name)) return true;
@@ -1151,5 +1158,9 @@ class Main {
 			if (!checkPermission(client, LockPlaylistPerm)) return true;
 		}
 		return false;
+	}
+
+	public function hasPlaylistUrl(url:String):Bool {
+		return videoList.exists(item -> item.url == url);
 	}
 }

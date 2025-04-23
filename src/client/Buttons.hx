@@ -222,6 +222,7 @@ class Buttons {
 		}
 
 		final mediaUrl:InputElement = getEl("#mediaurl");
+		final checkboxCache:InputElement = getEl("#cache-on-server");
 		mediaUrl.oninput = () -> {
 			final url = mediaUrl.value;
 			final playerType = main.getLinkPlayerType(url);
@@ -230,8 +231,13 @@ class Buttons {
 			getEl("#mediatitleblock").style.display = isSingleRawVideo ? "" : "none";
 			getEl("#subsurlblock").style.display = isSingleRawVideo ? "" : "none";
 			getEl("#voiceoverblock").style.display = (url.length > 0 && isSingle) ? "" : "none";
-			final showCache = isSingle && main.playersCacheSupport.contains(playerType);
-			getEl("#cache-on-server").parentElement.style.display = showCache ? "" : "none";
+
+			final isExternal = main.isExternalVideoUrl(url);
+			final showCache = isSingle && isExternal
+				&& main.playersCacheSupport.contains(playerType);
+			checkboxCache.parentElement.style.display = showCache ? "" : "none";
+			checkboxCache.checked = settings.checkedCache.contains(playerType);
+
 			final panel = getEl("#addfromurl");
 			final oldH = panel.style.height; // save for animation
 			panel.style.height = ""; // to calculate height from content
@@ -241,6 +247,16 @@ class Buttons {
 		}
 		mediaUrl.onfocus = mediaUrl.oninput;
 
+		checkboxCache.addEventListener("change", () -> {
+			final url = mediaUrl.value;
+			final playerType = main.getLinkPlayerType(url);
+			final checked = checkboxCache.checked;
+
+			settings.checkedCache.remove(playerType);
+			if (checked) settings.checkedCache.push(playerType);
+			Settings.write(settings);
+		});
+
 		getEl("#insert_template").onclick = e -> {
 			mediaUrl.value = main.getTemplateUrl();
 			mediaUrl.focus();
@@ -248,7 +264,10 @@ class Buttons {
 
 		getEl("#mediaurl-upload").onclick = e -> {
 			Utils.browseFile((buffer, name) -> {
-				if (name == null || name.length == 0) name = "video";
+				name ??= "";
+				name = ~/[?#%\/\\]/g.replace(name, "").trim();
+				if (name.length == 0) name = "video";
+				name = (window : Dynamic).encodeURIComponent(name);
 
 				// send last chunk separately to allow server file streaming while uploading
 				final chunkSize = 1024 * 1024 * 5; // 5 MB
@@ -258,7 +277,6 @@ class Buttons {
 					method: "POST",
 					headers: {
 						"content-name": name,
-						"client-name": main.getName(),
 					},
 					body: lastChunk,
 				});
@@ -276,7 +294,6 @@ class Buttons {
 				final request = new XMLHttpRequest();
 				request.open("POST", "/upload", true);
 				request.setRequestHeader("content-name", name);
-				request.setRequestHeader("client-name", main.getName());
 
 				request.upload.onprogress = (event:ProgressEvent) -> {
 					var ratio = 0.0;
@@ -517,7 +534,6 @@ class Buttons {
 		});
 		final checkboxes:Array<InputElement> = [
 			getEl("#add-temp"),
-			getEl("#cache-on-server"),
 		];
 		for (checkbox in checkboxes) {
 			checkbox.addEventListener("change", () -> {
